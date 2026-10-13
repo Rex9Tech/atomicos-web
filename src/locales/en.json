@@ -11,18 +11,28 @@
     "error": "Error",
     "success": "Success",
     "not_found": "Page Not Found",
-    "not_found_desc": "The page you are looking for does not exist."
+    "not_found_desc": "The page you are looking for does not exist.",
+    "retry": "Retry"
   },
 
   "user": {
     "profile": "User Profile",
-    "change_avatar": "Change Avatar",
-    "avatar_hint": "Upload a new profile picture (PNG, JPG, WebP supported)",
-    "select_image": "Choose Image",
-    "upload_avatar": "Upload Avatar",
     "account_info": "Account Information",
     "roles": "Roles",
-    "permissions": "Permissions"
+    "permissions": "Permissions",
+    "edit_avatar": "Change profile photo",
+    "avatar_hint": "Upload a new profile picture (PNG, JPG, WebP supported)",
+    "email": {
+      "label": "Email",
+      "helper": "Email cannot be changed."
+    },
+    "errors": {
+      "update": "Failed to update profile",
+      "upload_avatar": "Failed to upload profile photo"
+    },
+    "toasts": {
+      "update_success": "Profile updated successfully"
+    }
   },
 
   "feedback": {
@@ -51,6 +61,20 @@
     "send": "Send",
     "processing": "AI is thinking...",
     "clear_history": "Clear History",
+    "clear_history_confirm": "All messages in this conversation will be permanently deleted. Are you sure you want to clear chat history?",
+    "default_greeting": "Hello! I'm your AI assistant. How can I help you today?",
+    "listen": "Listen",
+    "thinking": "AI is thinking",
+    "cancel_listening": "Cancel listening",
+    "mic_permission_title": "Microphone access required",
+    "mic_permission_message": "Voice input needs microphone access. Please allow microphone access in your browser address bar (lock icon) to use voice input.",
+    "open_settings": "Open Settings",
+    "retry": "Retry",
+    "ai_start_recording_failed": "Failed to start recording",
+    "ai_transcription_failed": "Failed to transcribe audio",
+    "ai_send_message_failed": "Failed to send message",
+    "ai_tts_failed": "Failed to play speech",
+    "ai_tts_empty": "Nothing to speak",
     "errors": {
       "unexpected": "An error occurred. Please try again.",
       "load_rooms": "Failed to load rooms",
@@ -61,6 +85,14 @@
       "rename_room": "Failed to rename room",
       "delete_room": "Failed to delete room"
     }
+  },
+
+  "speech": {
+    "tts_failed": "Failed to synthesize speech",
+    "stt_failed": "Failed to transcribe audio",
+    "playback_failed": "Audio playback failed",
+    "permission_denied": "Microphone permission was denied",
+    "audio_required": "Audio file or URL is required"
   },
 
   "payment": {
@@ -264,7 +296,8 @@
         "iam": "IAM",
         "support": "Support",
         "observability": "Observability",
-        "media": "Media"
+        "media": "Media",
+        "version_management": "Version Management"
       },
       "items": {
         "analytics": "Analytics",
@@ -277,7 +310,9 @@
         "roles": "Roles",
         "feedback": "Feedback Inbox",
         "logs": "Client Logs & Telemetry",
-        "assets": "Assets"
+        "assets": "Assets",
+        "versions": "Versions",
+        "user_versions": "User Versions"
       }
     },
     "common": {
@@ -303,6 +338,25 @@
         "apply_filter": "Apply Filter",
         "reset_filter": "Reset Filter",
         "open_recycle_bin": "Open recycle bin"
+      },
+      "recycle_bin": {
+        "empty_button": "Empty Recycle Bin",
+        "empty_title": "Empty all items in the recycle bin",
+        "confirm_empty_title": "Empty Recycle Bin",
+        "confirm_empty_message": "Are you sure you want to empty the recycle bin? This action cannot be undone and will permanently delete all {{count}} discarded item(s) from storage."
+      },
+      "batch": {
+        "selected_count": "{{count}} item(s) selected",
+        "clear_selection": "Clear selection",
+        "discard_selected": "Discard Selected",
+        "restore_selected": "Restore Selected",
+        "destroy_selected": "Delete Permanently",
+        "confirm_discard_title": "Discard Selected Items",
+        "confirm_discard_message": "Are you sure you want to discard {{count}} selected item(s)? They will be moved to the recycle bin.",
+        "confirm_restore_title": "Restore Selected Items",
+        "confirm_restore_message": "Are you sure you want to restore {{count}} selected item(s)?",
+        "confirm_destroy_title": "Permanently Delete Selected Items",
+        "confirm_destroy_message": "Are you sure you want to permanently delete {{count}} selected item(s)? This action cannot be undone and will purge all files from storage."
       },
       "tabs": {
         "active": "Active",
@@ -800,8 +854,8 @@
         "delivery": "Delivery Channels",
         "email": "Email",
         "event": "Notification Event",
-        "in_app": "In-App Sockets",
-        "push": "Push Notifications",
+        "in_app": "In-App",
+        "push": "Push",
         "recipients": "Recipients",
         "selected_roles": "Selected roles",
         "selected_users": "Selected users"
@@ -836,6 +890,78 @@
         "load_templates": "Unable to load notification events",
         "search_users": "User search is unavailable in the current API.",
         "send": "Unable to send notification"
+      },
+      "tabs": {
+        "broadcast": "Send Broadcast",
+        "templates": "Notification Templates"
+      },
+      "templates": {
+        "title": "Notification Templates",
+        "description": "Configure delivery copy and templates across In-App, Push, and Email channels.",
+        "new_template": "Create Template",
+        "search_placeholder": "Search templates by name or event...",
+        "all_categories": "All Categories",
+        "empty_title": "No notification templates found",
+        "empty_desc": "Create a custom template for broadcast and marketing messages.",
+        "loading": "Loading notification templates...",
+        "delete_title": "Delete Notification Template",
+        "delete_message": "Are you sure you want to delete \"{{name}}\"? Dispatched user receipts will not be affected.",
+        "delete_confirm": "Delete Template",
+        "columns": {
+          "template_event": "Template / Event",
+          "category": "Category",
+          "channels": "Configured Channels",
+          "target_link": "Target Link",
+          "sent_read": "Sent / Read",
+          "actions": "Actions"
+        },
+        "toasts": {
+          "create_success": "Template created successfully",
+          "update_success": "Template updated successfully",
+          "delete_success": "Template deleted successfully"
+        },
+        "dialog": {
+          "new_title": "Create Notification Template",
+          "edit_title": "Edit Notification Template",
+          "general_info": "General Information",
+          "event_label": "Event Key",
+          "event_placeholder": "e.g. promotional_campaign_fall",
+          "name_label": "Display Name",
+          "name_placeholder": "e.g. Fall Discount Campaign",
+          "desc_label": "Description (Internal)",
+          "desc_placeholder": "Brief context on who receives this and when",
+          "category_label": "Category",
+          "link_label": "Redirect Link (Optional)",
+          "link_placeholder": "/payment or https://...",
+          "admin_only": "Admin Broadcast Only",
+          "channel_content": "Channel Content & Templates",
+          "variables_hint": "Variables: {{user_name}}, {{user_email}}",
+          "in_app_tab": "In-App (Socket)",
+          "push_tab": "Push Notification",
+          "email_tab": "Email",
+          "in_app_title": "In-App Notification Title",
+          "in_app_title_placeholder": "e.g. Announcement: {{title}}",
+          "in_app_body": "In-App Message Body",
+          "in_app_body_placeholder": "e.g. Hello {{user_name}}, we have a special announcement...",
+          "push_title": "Push Notification Title",
+          "push_title_placeholder": "e.g. New Announcement",
+          "push_body": "Push Notification Body",
+          "push_body_placeholder": "e.g. Check out our latest features...",
+          "push_template_id": "Provider Push Template ID (Optional)",
+          "push_template_id_placeholder": "e.g. push_template_uuid",
+          "push_template_id_helper": "If using an external provider-managed push layout",
+          "email_subject": "Email Subject Line",
+          "email_subject_placeholder": "e.g. Important news for {{user_name}}",
+          "email_body": "Email Body (HTML / Text)",
+          "email_body_placeholder": "<p>Dear {{user_name}},</p><p>We are excited to share...</p>",
+          "email_template_id": "Provider Email Template ID (Optional)",
+          "email_template_id_placeholder": "e.g. d-1234567890abcdef",
+          "cancel": "Cancel",
+          "save": "Save Changes",
+          "create": "Create Template",
+          "event_required": "Event identifier is required",
+          "name_required": "Template name is required"
+        }
       }
     },
     "analytics": {
@@ -917,18 +1043,43 @@
         "title": "Upload Assets",
         "type_label": "Asset Type",
         "file_label": "Select Files",
-        "choose_files": "Choose Files",
+        "choose_files": "Choose Files (Up to {{count}})",
         "upload_button": "Upload",
         "uploading": "Uploading...",
         "bulk_notice_title": "Notice for Batch Uploads",
-        "bulk_notice": "All selected files in a batch will share the chosen Asset Type (e.g., all Thumbnails, all Avatars, or all Covers). Mixed types cannot be uploaded in the same batch.",
+        "bulk_notice": "You can choose up to {{count}} files per batch (Max {{imageLimit}}MB per image, {{videoLimit}}MB per video). All selected files in a batch will share the chosen Asset Type (e.g., all Thumbnails, all Avatars, or all Covers). Mixed types cannot be uploaded in the same batch.",
         "selected_files": "Selected Files",
         "clear_all": "Clear All",
         "uploading_status": "Uploading file {{current}} of {{total}}: {{name}}",
+        "max_files_exceeded": "Maximum {{count}} files allowed per batch upload.",
+        "file_size_exceeded": "Some files exceed maximum size limit: {{names}}",
+        "file_limit_hint": "You can choose up to {{count}} files per batch (Max {{imageLimit}}MB per image, {{videoLimit}}MB per video).",
         "compress_tip_title": "Compression Recommended",
         "compress_tip_desc": "Built-in media compression is not yet available. Please compress large files before uploading to optimize loading performance and reduce storage usage:",
         "compress_images": "Compress Images (TinyPNG)",
         "compress_videos": "Compress Videos (FreeConvert)"
+      },
+      "compression": {
+        "compress": "Compress",
+        "compressing": "Compressing...",
+        "trigger_compression": "Trigger Compression",
+        "min_size": "Min Size",
+        "at_min_size": "At Minimum Size",
+        "min_size_tooltip": "File is at minimum size",
+        "trigger_tooltip": "Trigger Compression"
+      },
+      "download": {
+        "action": "Download asset",
+        "failed": "Failed to download asset"
+      },
+      "thumbnail": {
+        "regenerate": "Regenerate thumbnail",
+        "regenerating": "Regenerating thumbnail...",
+        "upload": "Upload thumbnail",
+        "uploading": "Uploading thumbnail...",
+        "queued": "Thumbnail regeneration queued",
+        "replaced": "Thumbnail replaced successfully",
+        "failed": "Failed to update thumbnail"
       },
       "picker": {
         "title": "Select Asset",
@@ -950,7 +1101,11 @@
         "discard_success": "Asset discarded successfully",
         "restore_success": "Asset restored successfully",
         "destroy_success": "Asset permanently deleted",
-        "update_success": "Asset updated successfully"
+        "update_success": "Asset updated successfully",
+        "recycle_bin_emptied": "Recycle bin emptied successfully",
+        "batch_discard_success": "Successfully discarded {{count}} assets",
+        "batch_restore_success": "Successfully restored {{count}} assets",
+        "batch_destroy_success": "Successfully deleted {{count}} assets permanently"
       },
       "errors": {
         "load_failed": "Failed to load assets",
@@ -966,6 +1121,118 @@
         "empty_desc": "Upload an asset to get started or adjust your filters.",
         "recycle_empty_title": "Recycle Bin Empty",
         "recycle_empty_desc": "No discarded assets found."
+      },
+      "storage_stats": {
+        "title": "Storage & VPS Capacity",
+        "provider": "Storage Provider",
+        "occupied": "Garage Storage Occupied",
+        "objects": "objects",
+        "vps_disk": "VPS Host Disk Space",
+        "vps_available": "Free",
+        "vps_total": "Total",
+        "vps_used": "Used",
+        "vps_low_warning": "Warning: VPS disk space is critically low (<15% free). Consider upgrading VPS disk capacity soon.",
+        "db_assets": "Tracked Assets",
+        "partitions_title": "Garage Environment Partitions",
+        "tracked_partitions": "Tracked assets by environment partition",
+        "total": "Total",
+        "node_capacity": "Node capacity:",
+        "online": "Online",
+        "refresh": "Refresh Stats",
+        "refreshing": "Refreshing..."
+      }
+    },
+    "versions": {
+      "title": "Versions",
+      "description": "Publish app versions, force updates, and review install counts.",
+      "recycle_title": "Discarded Versions",
+      "recycle_description": "Restore discarded app versions. Versions are never permanently destroyed.",
+      "create_title": "Create Version",
+      "edit_title": "Edit Version",
+      "tabs": {
+        "active_versions": "Active Versions",
+        "recycle_bin": "Recycle Bin"
+      },
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "yanked": "Yanked"
+      },
+      "filters": {
+        "status": "Status",
+        "all_statuses": "All statuses"
+      },
+      "table": {
+        "number": "Number",
+        "title": "Title",
+        "status": "Status",
+        "force_update": "Force update",
+        "force": "Force",
+        "installs": "Installs",
+        "released_at": "Released"
+      },
+      "form": {
+        "number_label": "Version number",
+        "number_placeholder": "1.4.0",
+        "number_helper": "Semver in the form x.y.z. Must be unique among active versions.",
+        "number_error": "Enter a valid semver number such as 1.4.0.",
+        "title_label": "Title",
+        "title_placeholder": "Release title",
+        "title_error": "Title is required.",
+        "description_label": "Release notes",
+        "description_placeholder": "What changed in this version",
+        "status_label": "Status",
+        "force_update_label": "Force update",
+        "ios_build_label": "iOS build number",
+        "android_build_label": "Android build number",
+        "build_placeholder": "Optional",
+        "build_helper": "Optional integer greater than 0. Leave empty to clear.",
+        "build_number_error": "Build number must be an integer greater than 0.",
+        "released_at_label": "Released at",
+        "install_count_label": "Install count",
+        "not_released": "Not released yet",
+        "create_version": "Create version",
+        "save_version": "Save version"
+      },
+      "toasts": {
+        "create_success": "App version created successfully",
+        "update_success": "App version updated successfully",
+        "discard_success": "App version discarded successfully",
+        "restore_success": "App version restored successfully"
+      },
+      "errors": {
+        "load_list": "Failed to load app versions",
+        "load_one": "Failed to load app version",
+        "create": "Failed to create app version",
+        "update": "Failed to update app version",
+        "discard": "Failed to discard app version",
+        "restore": "Failed to restore app version"
+      }
+    },
+    "user_versions": {
+      "title": "User Versions",
+      "title_with_version": "{{number}} — {{title}}",
+      "description": "Current install snapshot per user and platform across every version.",
+      "scoped_description": "Current install snapshot per user and platform for this version.",
+      "back_to_versions": "Back to versions",
+      "empty_desc": "No installs have been reported yet.",
+      "filters": {
+        "platform": "Platform",
+        "all_platforms": "All platforms"
+      },
+      "platforms": {
+        "ios": "iOS",
+        "android": "Android"
+      },
+      "table": {
+        "user": "User",
+        "platform": "Platform",
+        "number": "Number",
+        "build": "Build",
+        "last_seen": "Last seen"
+      },
+      "errors": {
+        "load_list": "Failed to load app installs"
       }
     }
   },
@@ -984,5 +1251,21 @@
     "timer_hours": "Hours",
     "welcome_donations": "If this is helpful for you to find your inner peace, you may support its maintenance and future development with some loving kindness collecting some merits!",
     "timer_start_message": "Let's start the training of mindfulness!"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "filter_all": "All",
+    "filter_unread": "Unread",
+    "filter_read": "Read",
+    "mark_all_read": "Mark all as read",
+    "empty_all": "No notifications yet",
+    "empty_unread": "You're all caught up!",
+    "empty_read": "No read notifications",
+    "empty_desc": "We'll let you know when something important arrives.",
+    "load_more": "Load More",
+    "loading": "Loading notifications...",
+    "delete": "Delete notification",
+    "delete_success": "Notification deleted",
+    "mark_read_success": "Marked as read"
   }
 }

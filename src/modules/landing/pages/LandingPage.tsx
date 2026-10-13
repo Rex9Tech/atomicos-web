@@ -17,6 +17,56 @@ import { images, iconsLib } from "../../../assets";
 
 export const LandingPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState("#Greetings");
+  const [activeTestimonialIdx, setActiveTestimonialIdx] = useState(0);
+  const testimonialsTrackRef = React.useRef<HTMLDivElement>(null);
+
+  const getTestimonialsScrollStep = () => {
+    if (!testimonialsTrackRef.current) return 380;
+    const firstCard = testimonialsTrackRef.current.querySelector("article");
+    return firstCard ? firstCard.offsetWidth + 20 : 380;
+  };
+
+  const handlePrevTestimonial = () => {
+    if (testimonialsTrackRef.current) {
+      testimonialsTrackRef.current.scrollBy({
+        left: -getTestimonialsScrollStep(),
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleNextTestimonial = () => {
+    if (testimonialsTrackRef.current) {
+      testimonialsTrackRef.current.scrollBy({
+        left: getTestimonialsScrollStep(),
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleTestimonialDotClick = (index: number) => {
+    if (testimonialsTrackRef.current) {
+      const cards = testimonialsTrackRef.current.querySelectorAll("article");
+      if (cards[index]) {
+        cards[index].scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "start",
+        });
+      }
+    }
+  };
+
+  const handleTestimonialsScroll = () => {
+    if (!testimonialsTrackRef.current) return;
+    const scrollLeft = testimonialsTrackRef.current.scrollLeft;
+    const step = getTestimonialsScrollStep();
+    const idx = Math.min(
+      Math.round(scrollLeft / step),
+      LANDING_DATA.testimonials.length - 1,
+    );
+    setActiveTestimonialIdx(Math.max(0, idx));
+  };
 
   // Track active section on scroll
   useEffect(() => {
@@ -107,22 +157,15 @@ export const LandingPage: React.FC = () => {
 
         {/* 3. Catchphrase & Social Profiles */}
         <section className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
-          <p>Champion, welcome! 🌟</p>
+          <p>Champion, Welcome! 🌟</p>
+          <p>Rex is an Architect tempered by stillness since age 14. 🧘‍♂️</p>
           <p>
-            I am a battle-hardened Full-Stack Architect with a mind sharpened by
-            meditation. 🧘‍♂️💻
+            Forging sovereign realms where clarity meets code, and simplicity
+            meets soul. 🛡️✨
           </p>
           <p>
-            Forging digital realms where clarity meets code, and simplicity
-            meets soul. ✨
-          </p>
-          <p>
-            Carving seamless paths where beauty and strength walk side by side.
-            ⚔️🌿
-          </p>
-          <p>
-            Let's shape thy vision into reality with purpose, and a touch of
-            magic! 🚀
+            No journey is walked alone. Let's conquer the greatness & stillness
+            together. 🏹
           </p>
         </section>
 
@@ -132,7 +175,6 @@ export const LandingPage: React.FC = () => {
         {/* Down Arrow Button */}
         <div className="flex justify-center my-8 animate-down-bounce">
           <Button
-            type="button"
             variant={ButtonVariants.TERTIARY}
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
@@ -165,7 +207,7 @@ export const LandingPage: React.FC = () => {
         <section id="Projects" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
-              My Recent Works
+              Forged Realms & Masterworks
             </h2>
           </div>
 
@@ -184,9 +226,53 @@ export const LandingPage: React.FC = () => {
             </h2>
           </div>
 
-          <div className="flex overflow-x-auto gap-5 py-5 scrollbar-thin scrollbar-thumb-glass-border scrollbar-track-black/40">
-            {LANDING_DATA.testimonials.map((testimonial, idx) => (
-              <TestimonialCard key={idx} testimonial={testimonial} />
+          <div className="relative flex items-center max-w-7xl mx-auto px-2 sm:px-4">
+            {/* Left Carousel Arrow */}
+            <button
+              type="button"
+              aria-label="Previous Testimonial"
+              onClick={handlePrevTestimonial}
+              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11 h-11 rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+            >
+              <iconsLib.chevronLeft className="w-5 h-5 stroke-[2.5]" />
+            </button>
+
+            {/* Carousel Cards Track */}
+            <div
+              ref={testimonialsTrackRef}
+              onScroll={handleTestimonialsScroll}
+              className="flex overflow-x-auto gap-5 py-5 w-full scroll-smooth snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary scrollbar-track-transparent px-1"
+            >
+              {LANDING_DATA.testimonials.map((testimonial, idx) => (
+                <TestimonialCard key={idx} testimonial={testimonial} />
+              ))}
+            </div>
+
+            {/* Right Carousel Arrow */}
+            <button
+              type="button"
+              aria-label="Next Testimonial"
+              onClick={handleNextTestimonial}
+              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11 h-11 rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+            >
+              <iconsLib.chevronRight className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center items-center gap-2 mt-4">
+            {LANDING_DATA.testimonials.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Go to testimonial ${i + 1}`}
+                onClick={() => handleTestimonialDotClick(i)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeTestimonialIdx === i
+                    ? "w-6 bg-primary shadow-[0_0_10px_var(--color-primary)] scale-110"
+                    : "w-2 bg-primary/25 hover:bg-primary/50"
+                }`}
+              />
             ))}
           </div>
         </section>
@@ -197,9 +283,11 @@ export const LandingPage: React.FC = () => {
             {/* Left Contact Text & Resume Button */}
             <div className="w-full lg:w-1/2 text-center lg:text-left space-y-6">
               <div className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed font-normal text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
-                I'm always interested in hearing about new projects,
-                <br className="hidden sm:inline" /> so if you'd like to chat,
-                please kindly get in touch with me.
+                Every greatness begins with a single covenant.
+                <br className="hidden sm:inline" /> Whether forging a new
+                digital realm or conquering complex systems,
+                <br className="hidden sm:inline" /> send thy raven and let us
+                build with purpose, soul, and zero technical debt. ⚔️
               </div>
 
               <div className="resumeBox text-center lg:text-left pt-6">

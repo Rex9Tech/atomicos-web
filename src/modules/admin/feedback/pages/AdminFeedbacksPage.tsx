@@ -13,15 +13,19 @@ import {
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
+  Button,
   Dropdown,
   DropdownSizes,
   getCategoryBadgeVariant,
   getPriorityBadgeVariant,
   StatusBadge,
 } from "../../../../design";
+import {
+  ButtonTypes,
+  ButtonVariants,
+} from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback } from "../types";
-import AdminFeedbackController from "../feedback.controller";
 import {
   AdminPagination,
   AdminState,
@@ -43,6 +47,7 @@ import {
   ADMIN_FEEDBACK_TABLE_KEYS,
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { Admin } from "../..";
 
 export const AdminFeedbacksPage: React.FC = () => {
   const t = useTranslate();
@@ -107,7 +112,7 @@ export const AdminFeedbacksPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    const result = await AdminFeedbackController.getFeedbacks({
+    const result = await Admin.FeedbackController.getFeedbacks({
       page,
       limit: ADMIN_PAGE_SIZE,
       status: statusFilter || undefined,
@@ -190,7 +195,28 @@ export const AdminFeedbacksPage: React.FC = () => {
             </div>
             {item.platform && (
               <div className="text-caption text-base-content opacity-60 text-xs">
-                {item.platform} • {item.app_version || "web"}
+                {item.platform}
+                {" • "}
+                {item.app_version && item.version_id ? (
+                  <Button
+                    type={ButtonTypes.BUTTON}
+                    variant={ButtonVariants.TERTIARY}
+                    className="h-auto min-h-0 p-0 text-xs font-medium text-primary underline-offset-2 hover:underline"
+                    onClick={() => {
+                      if (!item.version_id) return;
+                      navigate(
+                        AppRoutes.withId(
+                          AppRoutes.client.protected.admin.VERSION_INSTALLS,
+                          item.version_id,
+                        ),
+                      );
+                    }}
+                  >
+                    {item.app_version}
+                  </Button>
+                ) : (
+                  item.app_version || "web"
+                )}
               </div>
             )}
           </div>
@@ -215,11 +241,8 @@ export const AdminFeedbacksPage: React.FC = () => {
         key: ADMIN_FEEDBACK_TABLE_KEYS.CREATED_AT,
         header: t(AppLocales.Admin.Common.Table.CreatedAt),
         sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
-        render: (item) => (
-          <div className="text-caption text-base-content opacity-70">
-            {formatAdminDate(item.created_at)}
-          </div>
-        ),
+        className: "text-center",
+        render: (item) => formatAdminDate(item.created_at),
       },
       {
         key: ADMIN_FEEDBACK_TABLE_KEYS.ACTIONS,
@@ -244,7 +267,7 @@ export const AdminFeedbacksPage: React.FC = () => {
         ),
       },
     ],
-    [t],
+    [navigate, t],
   );
 
   return (

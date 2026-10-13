@@ -15,10 +15,11 @@ Built under the same creed as Rexone Core: **clear in thought, exact in structur
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![CI](https://github.com/rex-9/rexone-web/actions/workflows/test.yml/badge.svg)](https://github.com/rex-9/rexone-web/actions/workflows/test.yml)
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Explore the client](#feature-map) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Analytics Guide](ANALYTICS.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [E2E Testing](#end-to-end-testing-playwright) · [Connect the API](#configuration)
+[Explore the client](#feature-map) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Analytics Guide](ANALYTICS.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [E2E Testing](#end-to-end-testing-playwright) · [Connect the API](#configuration)
 
 </div>
 
@@ -59,22 +60,23 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 
 ## Feature map
 
-| Foundation    | What is ready                                                                         | Details                                                |
-| ------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry          | [Authentication & security](#authentication--security) |
-| Navigation    | Public and protected routes with centralized route definitions                        | [Routing & access](#routing--access)                   |
-| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography            | [Design system](#design-system)                        |
-| State         | React contexts, Jotai atoms, and deliberate browser persistence                       | [State & application flow](#state--application-flow)   |
-| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows           | [Payments & entitlements](#payments--entitlements)     |
-| Media         | Authenticated upload requests and reusable image/video presentation                   | [Media & assets](#media--assets)                       |
-| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities)                    |
-| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                    | [Real-time delivery](#real-time-delivery)              |
-| Localization  | English, Spanish, and Burmese resources with organized typed keys                     | [Localization](#localization)                          |
-| Observability | React boundary, global browser capture, structured context, and Core API delivery     | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, and notification management with RBAC guards   | [Administration](#administration)                      |
-| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model       | [End-to-End Testing](#end-to-end-testing-playwright)   |
-| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview      | [Quality toolchain](#quality-toolchain)                |
-| Delivery      | Vite production output and a Docker-based development environment                     | [Delivery](#delivery)                                  |
+| Foundation    | What is ready                                                                          | Details                                                |
+| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry           | [Authentication & security](#authentication--security) |
+| Navigation    | Public and protected routes with centralized route definitions                         | [Routing & access](#routing--access)                   |
+| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography             | [Design system](#design-system)                        |
+| State         | React contexts, Jotai atoms, and deliberate browser persistence                        | [State & application flow](#state--application-flow)   |
+| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows            | [Payments & entitlements](#payments--entitlements)     |
+| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, optimal badges       | [Media & assets](#media--assets)                       |
+| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition | [Speech & audio](#speech--audio)                       |
+| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools  | [AI capabilities](#ai-capabilities)                    |
+| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                     | [Real-time delivery](#real-time-delivery)              |
+| Localization  | English, Spanish, and Burmese resources with organized typed keys                      | [Localization](#localization)                          |
+| Observability | React boundary, global browser capture, structured context, and Core API delivery      | [Client observability](#client-observability)          |
+| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC    | [Administration](#administration)                      |
+| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model        | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview       | [Quality toolchain](#quality-toolchain)                |
+| Delivery      | Vite production output and a Docker-based development environment                      | [Delivery](#delivery)                                  |
 
 ## Architecture
 
@@ -153,12 +155,18 @@ The client admin panel architecture provides a protected workspace for managing 
 
 - **Architecture**: Sidebar navigation, permission-based visibility, and strict route guards (`AdminRootRoute`, `AdminHomeRoute`).
 - **Client-Side RBAC**: The `usePermissions` hook evaluates the current user's role and permission matrix to determine access and UI state dynamically.
-- **Admin Modules**:
-  - **Users**: User management, reserved for super admins.
-  - **Roles**: Role and permission management with an interactive permission matrix.
-  - **Products**: Product and pricing management synchronized with Stripe.
+- **Admin Modules & Dedicated Create/Edit Consoles**:
+  - **Users**: User management (`/admin/users`), user creation (`/admin/users/create`), and user edit (`/admin/users/:id/edit`) powered by `AdminUserForm`.
+  - **Roles**: Role and permission management (`/admin/roles`), role creation (`/admin/roles/create`), and role edit (`/admin/roles/:id/edit`) powered by `AdminRoleForm`.
+  - **Products**: Product and pricing management (`/admin/products`), product creation (`/admin/products/create`), and product edit (`/admin/products/:id/edit`) powered by `AdminProductForm`.
+  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), and template edit (`/admin/notifications/:id/edit`) powered by `AdminNotificationForm`.
+  - **Accesses**: Entitlements and access management (`/admin/accesses`), access grant console (`/admin/accesses/create`), and validity extension console (`/admin/accesses/:id/edit`) powered by `AdminAccessForm`.
+  - **Assets**: Asset control center (`/admin/assets`), batch upload console (`/admin/assets/create`), and asset edit console (`/admin/assets/:id/edit`) powered by `AdminAssetForm`. Canonical server-generated video thumbnails are consumed from the asset response and updated live through `asset_thumbnail_generated`; clients only show placeholders while generation is pending. Super admins additionally receive Garage and VPS capacity telemetry with separate object and byte usage for the `dev/`, `uat/`, and `prod/` storage partitions; regular admins never request or render these statistics.
+  - **Versions**: Super-admin-only version catalogue (`/admin/versions`), create (`/admin/versions/create`), edit (`/admin/versions/:id/edit`), recycle bin (`/admin/versions/bin`), and user versions (`/admin/user-versions`, `GET /v1/admin/client/versions/user_versions`). Nested user versions for one version remain at `/admin/versions/:id/user-versions` (`GET /v1/admin/client/versions/:id/user_versions`). Updates use PUT. There is no hard delete.
   - **Chat**: Moderation tools for chat rooms and messages.
-  - **Notifications**: Broadcast notification dispatch targeting audiences by roles, users, or all.
+  - **Feedbacks & Logs**: User feedback review and client runtime error telemetry.
+- **Form Component Unification**: Every admin module featuring Create and Edit shares a single, reusable `Admin[Entity]Form` component (`mode: CREATE | EDIT`) between its dedicated create and edit route pages. Modals and dialogs are retired in favor of full pages.
+- **Table Compactness**: `AdminTableActions` uses compact square icon action buttons (pencil for edit, red bin for delete/discard/revoke, arrow path for restore) to optimize horizontal table space.
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
@@ -201,9 +209,32 @@ This gives product modules a real-time path without coupling components directly
 
 ### Media & assets
 
-The client exposes the authenticated `/v1/media/upload` contract and reusable media presentation components. Provider selection, durable metadata, remote deletion, and Cloudinary/local storage behavior remain responsibilities of Rexone Core.
+The client provides comprehensive media upload, presentation, and compression management integrated with Rexone Core:
 
-That boundary keeps storage credentials and provider rules out of the browser.
+- **Bulk Upload Dialog (`AdminAssetUploadDialog`)**: Multi-file selection queue supporting uploads up to **10 MB** for images/non-videos and **100 MB** for videos when the media container is enabled.
+- **Optimistic Table Prepending**: Previews and newly uploaded asset records appear immediately in the asset table upon upload completion rather than blocking until the entire batch completes.
+- **Real-Time Cable Compression Sync**: Listens to ActionCable `asset_updated` events over `NotificationChannel`, automatically reflecting status transitions (`pending` $\rightarrow$ `processing` $\rightarrow$ `ready` or `optimal`), updated file sizes, and reduction percentages in real-time.
+- **Race-Condition Safeguard (`pendingSocketUpdates`)**: An in-memory buffer catches any socket completion events that arrive before an asset is registered in the table state, merging updates deterministically without dropping events or requiring manual page refreshes.
+- **Action Guards**: Action buttons (compress, edit, delete) are dynamically disabled while an asset is in `pending` or `processing` states to prevent race conditions and duplicate jobs.
+- **Optimal & Pass Badging**: Renders color-coded status badges (`optimal`, `ready`, `processing`, `pending`) and allows an admin to trigger a manual secondary compression pass (safeguarded by a 2-pass cap).
+- **Empty Recycle Bin (`AdminEmptyRecycleBinButton`)**: Built-in modal confirmation button that allows admins to empty all discarded items from the recycle bin in one click, permanently purging database records and remote storage objects.
+- **Batch Operations & Multi-Select (`AdminBatchActionBar` & `AdminTable`)**: Support for row checkboxes in `AdminTable`, allowing admins to multi-select items and perform batch discards in the active view, or batch restorations and permanent batch deletions in the recycle bin.
+- **Unified Modular Analytics Cards (`AdminKpiCard`)**: High-reusability metric KPI card shared between the Analytics overview and Asset storage capacity dashboards.
+- **Presentation Primitives**: Standardized `Asset`, `Image`, and `Video` components prevent raw `<img>` or `<video>` tags and handle loading skeletons, fallbacks, and aspect ratios cleanly.
+
+### Speech & audio
+
+The speech integration provides audio playback and streaming communication with Rexone Core's speech engine:
+
+- **Live Audio Streaming & Recognition (`SpeechLiveChannel`)**:
+  - Direct microphone streaming to Rexone Core using Action Cable over WebSockets (`SpeechLiveChannel`).
+  - High-performance audio ingestion via `AudioWorklet` (`pcm-processor.js`) with automatic fallback to `ScriptProcessorNode`.
+  - Client-side downsampling from native sample rates (e.g. 44.1kHz / 48kHz) down to 16kHz mono linear PCM 16-bit, buffered into 3,200-byte chunks and base64-framed for low-latency transmission.
+  - Real-time RMS voice energy tracking calculating normalized voice amplitude levels (`voiceLevel: 0..1`) for visual waveform frequency bars.
+  - Stream lifecycle management with visibility pause/teardown handling (`document.visibilityState === "hidden"`), network disconnect recovery, and graceful session abort.
+- **Binary MP3 Audio Streaming**: Direct playback of synthesized audio from `POST /v1/speech/tts` returning raw binary MP3 streams without base64 wrapper overhead.
+- **Chat TTS Synthesis**: Asynchronous text-to-speech generation for conversational messages via `SpeechController.queueTextToSpeech()`, receiving `tts_ready` notifications via Action Cable and playing attached audio assets.
+- **Microphone Permissions & Web Recovery**: Browser permission guidance with lock-icon address bar instructions and instant retry flow.
 
 ### AI capabilities
 
@@ -241,7 +272,7 @@ Frontend failures are treated as operational data, not console debris.
 - Global initialization captures browser runtime failures.
 - Client reports can include stack traces, event context, route, platform, browser, operating system, device information, storage snapshots, severity, and occurrence data.
 - Authenticated requests associate failures with the current user when available.
-- Logs are delivered to `POST /v1/log/clients` and become visible in the Rexone Core administration and error workflows.
+- Logs are delivered to `POST /v1/client/logs` and become visible in the Rexone Core administration and error workflows.
 
 This complements backend exception tracking: the server explains what failed there, while client telemetry explains what the user actually experienced here.
 
@@ -267,6 +298,7 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 - **ESLint** with React Hooks and React Refresh rules.
 - **Vitest** for automated unit and component tests.
 - **Playwright** for end-to-end user journey verification.
+- **Continuous Integration (GitHub Actions)** for automated build validation (`npm run build`) and Vitest test execution on PR branch pushes.
 - **Vite** production builds and local production preview.
 - Dependency and browser-baseline checks through the npm toolchain.
 
@@ -342,27 +374,35 @@ e2e/
         └── sso.spec.ts            # Google SSO authentication & challenge token setup
 ```
 
-### Running E2E Tests
+### Running Tests
 
-Rexone Web provides a unified test runner script at [`scripts/test.sh`](scripts/test.sh):
+Rexone Web provides specialized and unified test runner scripts in [`scripts/`](scripts/):
 
 ```bash
-# Run all 19 E2E tests (default)
+# 1. Run FULL test suite (Unit + E2E)
 ./scripts/test.sh
-# or: npm run test:e2e:all
+# or: npm run test:all
 
-# Run specific flows
-./scripts/test.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
-./scripts/test.sh sign-up        # Registration & input validations
-./scripts/test.sh password       # Password matching & retries
-./scripts/test.sh password-reset # Reset request & cooldowns
-./scripts/test.sh sso            # Google SSO authentication
-./scripts/test.sh sign-out       # Sign-out & session termination
+# 2. Run ONLY Unit tests (Vitest) - fast feedback loop
+./scripts/test_unit.sh
+# or: npm run test:unit
+
+# 3. Run ONLY E2E tests (Playwright)
+./scripts/test_e2e.sh
+# or: npm run test:e2e
+
+# Run specific E2E flows
+./scripts/test_e2e.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
+./scripts/test_e2e.sh sign-up        # Registration & input validations
+./scripts/test_e2e.sh password       # Password matching & retries
+./scripts/test_e2e.sh password-reset # Reset request & cooldowns
+./scripts/test_e2e.sh sso            # Google SSO authentication
+./scripts/test_e2e.sh sign-out       # Sign-out & session termination
 
 # Interactive & Debugging Modes
-./scripts/test.sh --headed       # Watch tests in a real browser window
-./scripts/test.sh --ui           # Open Playwright's interactive visual UI
-./scripts/test.sh --debug        # Launch Playwright step-by-step inspector
+./scripts/test_e2e.sh --headed       # Watch tests in a real browser window
+./scripts/test_e2e.sh --ui           # Open Playwright's interactive visual UI
+./scripts/test_e2e.sh --debug        # Launch Playwright step-by-step inspector
 ```
 
 ### Test Guarantees
@@ -383,41 +423,68 @@ The checked-in [`.env.example`](.env.example) documents the client settings.
 | Variable                              | Purpose                                                                                      | Development default     |
 | ------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------- |
 | `NODE_ENV`                            | Runtime environment label                                                                    | `development`           |
+| `VITE_REACT_APP_NAME`                 | Application display name                                                                     | `rexone.me`             |
 | `VITE_REACT_APP_GOOGLE_CLIENT_ID`     | Google OAuth browser client ID                                                               | Empty                   |
 | `VITE_REACT_APP_GOOGLE_CLIENT_SECRET` | Legacy checked-in configuration field; browser apps should not receive Google client secrets | Empty                   |
 | `VITE_REACT_APP_SERVER_BASE_URL`      | Rexone Core HTTP base URL                                                                    | `http://localhost:3000` |
 | `VITE_REACT_APP_CLIENT_BASE_URL`      | Public web client base URL                                                                   | `http://localhost:4000` |
 | `VITE_REACT_APP_SERVER_WS_BASE_URL`   | Rexone Core WebSocket base URL                                                               | `ws://localhost:3000`   |
+| `VITE_PORT`                           | Vite dev server local port                                                                   | `4000`                  |
 | `VITE_REACT_APP_PORT_MAP`             | Docker host/container port mapping                                                           | `4000:4000`             |
 | `VITE_REACT_APP_DOCKERFILE`           | Dockerfile selected by Compose                                                               | `Dockerfile.dev`        |
+| `VITE_MEDIA_MAX_NON_VIDEO_SIZE_MB`    | Maximum upload size for non-video files (MB)                                                 | `10`                    |
+| `VITE_MEDIA_MAX_VIDEO_SIZE_MB`        | Maximum upload size for video files (MB)                                                     | `100`                   |
+| `VITE_MEDIA_MAX_FILE_COUNT`           | Maximum batch upload count                                                                   | `20`                    |
 
-Only variables prefixed with `VITE_` are exposed to browser code. Never place private credentials or provider secrets in them. In particular, Google client secrets belong on a trusted backend or provider configuration, not in a Vite application.
+All frontend environment variables are centralized through [`src/AppConfig.tsx`](src/AppConfig.tsx) (`AppConfig.*`). Only variables prefixed with `VITE_` are exposed to browser code. Never place private credentials or provider secrets in them. In particular, Google client secrets belong on a trusted backend or provider configuration, not in a Vite application.
 
 ## Client route surface
 
-| Access    | Route                  | Purpose                                 |
-| --------- | ---------------------- | --------------------------------------- |
-| Public    | `/`                    | Root experience                         |
-| Public    | `/signin`              | Open the authentication dialog          |
-| Public    | `/signup`              | Enter the account creation flow         |
-| Public    | `/email/confirm`       | Handle confirmation links or code entry |
-| Public    | `/password/forgot`     | Request account recovery                |
-| Public    | `/password/reset`      | Complete password reset links           |
-| Public    | `/anapana`             | Anapana interval reminder               |
-| Protected | `/home`                | Authenticated home                      |
-| Protected | `/profile`             | Current-user profile                    |
-| Protected | `/payment`             | Products and checkout                   |
-| Protected | `/payment/success`     | Checkout success return                 |
-| Protected | `/payment/cancel`      | Checkout cancellation return            |
-| Protected | `/ai`                  | AI workspace                            |
-| Protected | `/signout`             | Sign out and provider cleanup           |
-| Protected | `/admin`               | Admin panel entry with smart redirect   |
-| Protected | `/admin/users`         | User management (super admin only)      |
-| Protected | `/admin/roles`         | Role and permission management          |
-| Protected | `/admin/products`      | Product and pricing management          |
-| Protected | `/admin/chat/rooms`    | Chat room moderation                    |
-| Protected | `/admin/chat/messages` | Chat message moderation                 |
-| Protected | `/admin/notifications` | Broadcast notification dispatch         |
+| Access    | Route                           | Purpose                                     |
+| --------- | ------------------------------- | ------------------------------------------- |
+| Public    | `/`                             | Root experience                             |
+| Public    | `/signin`                       | Open the authentication dialog              |
+| Public    | `/signup`                       | Enter the account creation flow             |
+| Public    | `/email/confirm`                | Handle confirmation links or code entry     |
+| Public    | `/password/forgot`              | Request account recovery                    |
+| Public    | `/password/reset`               | Complete password reset links               |
+| Public    | `/anapana`                      | Anapana interval reminder                   |
+| Protected | `/home`                         | Authenticated home                          |
+| Protected | `/profile`                      | Current-user profile                        |
+| Protected | `/payment`                      | Products and checkout                       |
+| Protected | `/payment/success`              | Checkout success return                     |
+| Protected | `/payment/cancel`               | Checkout cancellation return                |
+| Protected | `/ai`                           | AI workspace                                |
+| Protected | `/signout`                      | Sign out and provider cleanup               |
+| Protected | `/admin`                        | Admin panel entry with smart redirect       |
+| Protected | `/admin/users`                  | User management (super admin only)          |
+| Protected | `/admin/users/create`           | User creation console                       |
+| Protected | `/admin/users/:id/edit`         | User edit console                           |
+| Protected | `/admin/roles`                  | Role and permission management              |
+| Protected | `/admin/roles/create`           | Role creation console                       |
+| Protected | `/admin/roles/:id/edit`         | Role edit console                           |
+| Protected | `/admin/products`               | Product and pricing management              |
+| Protected | `/admin/products/create`        | Product creation console                    |
+| Protected | `/admin/products/:id/edit`      | Product edit console                        |
+| Protected | `/admin/accesses`               | Entitlements and user access management     |
+| Protected | `/admin/accesses/create`        | Access grant console                        |
+| Protected | `/admin/accesses/:id/edit`      | Access validity extension console           |
+| Protected | `/admin/assets`                 | Asset control center & storage overview     |
+| Protected | `/admin/assets/create`          | Asset upload console                        |
+| Protected | `/admin/assets/:id/edit`        | Asset edit and compression console          |
+| Protected | `/admin/notifications`          | Broadcast notification dispatch & templates |
+| Protected | `/admin/notifications/create`   | Notification template creation console      |
+| Protected | `/admin/notifications/:id/edit` | Notification template edit console          |
+| Protected | `/admin/chat/rooms`             | Chat room moderation                        |
+| Protected | `/admin/chat/messages`          | Chat message moderation                     |
+| Protected | `/admin/feedback`               | User feedback management                    |
+| Protected | `/admin/logs`                   | Client error and telemetry logs             |
+| Protected | `/admin/versions`               | App versions (super admin only)             |
+| Protected | `/admin/versions/create`        | App version create console                  |
+| Protected | `/admin/versions/:id/edit`      | App version edit console                    |
+| Protected | `/admin/versions/bin`           | Discarded app versions                      |
+| Protected | `/admin/user-versions`          | All current user versions (super admin)     |
+| Protected | `/admin/versions/:id/user-versions` | User versions for one version           |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 
@@ -431,8 +498,10 @@ rexone-web/
 │   ├── pages/           # Page Object Model (POM) classes
 │   └── specs/           # User journey test specifications
 ├── scripts/             # Development & test automation scripts
-│   ├── dev.sh       # Docker compose dev environment starter
-│   └── test.sh       # Playwright E2E runner CLI
+│   ├── dev.sh           # Local Vite development server
+│   ├── test.sh          # Full test suite runner (Unit + E2E)
+│   ├── test_unit.sh     # Vitest unit test runner
+│   └── test_e2e.sh      # Playwright E2E runner CLI
 ├── src/
 │   ├── assets/          # Static application media
 │   ├── constants/       # Storage keys, dialog steps, and route parameter constants
@@ -513,7 +582,7 @@ A software engineer, full-stack architect, and long-time practitioner of meditat
 I build systems the same way I approach the path itself: **with a clear mind, deliberate steps, and no unnecessary weight.**
 
 - GitHub: [@rex-9](https://github.com/rex-9)
-- Portfolio: [rex9.vercel.app](https://rex9.vercel.app)
+- Portfolio: [rex9.me](https://rex9.me)
 - LinkedIn: [rex9](https://www.linkedin.com/in/rex9/)
 
 _Built with ❤️ by Rex9 on Rexone Ecosystem_

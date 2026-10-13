@@ -30,10 +30,13 @@ const ADMIN_ROLE_RESOURCE_PREFIXES: Record<AdminResource, readonly string[]> = {
   [ADMIN_RESOURCES.FEEDBACKS]: ["feedbacks", "feedback"],
   [ADMIN_RESOURCES.CLIENTS]: ["clients", "client", "logs", "log"],
   [ADMIN_RESOURCES.ASSETS]: ["assets", "asset"],
+  [ADMIN_RESOURCES.VERSIONS]: ["versions", "version"],
+  [ADMIN_RESOURCES.USER_VERSIONS]: ["user_versions", "user_version"],
 };
 
 interface IUsePermissionsResult {
   permissions: IPermission[];
+  isSuperAdmin: boolean;
   isLoading: boolean;
   error: string;
   can: (action: AdminAction, resource: AdminResource) => boolean;
@@ -134,5 +137,5 @@ export const usePermissions = (): IUsePermissionsResult => {
 
   const refresh = useCallback(async () => undefined, []);
 
-  return { permissions, isLoading, error: "", can, refresh };
+  return { permissions, isSuperAdmin, isLoading, error: "", can, refresh };
 };

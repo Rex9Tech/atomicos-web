@@ -13,6 +13,12 @@ vi.mock("./asset.service", () => ({
     discardAsset: vi.fn(),
     restoreAsset: vi.fn(),
     destroyAsset: vi.fn(),
+    compressAsset: vi.fn(),
+    getStorageStats: vi.fn(),
+    emptyRecycleBin: vi.fn(),
+    discardBatch: vi.fn(),
+    undiscardBatch: vi.fn(),
+    destroyBatch: vi.fn(),
   },
 }));
 
@@ -71,11 +77,100 @@ describe("AdminAssetController", () => {
         search: "avatar",
       });
     });
+
+    it("handles server 500 error response gracefully on page load", async () => {
+      const mock500Response = {
+        data: {
+          status: {
+            code: 500,
+            success: false,
+            message: "Internal Server Error",
+            error: "Internal Server Error",
+          },
+          data: null,
+        },
+      };
+
+      vi.mocked(AdminAssetService.getAssets).mockResolvedValue(
+        mock500Response as never,
+      );
+
+      const result = await AdminAssetController.getAssets({
+        page: 1,
+        limit: 20,
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.assets).toEqual([]);
+      expect(result.pagination).toBeNull();
+      expect(result.error).toBe("Internal Server Error");
+    });
+
+    it("handles network error or rejected promise during assets fetch", async () => {
+      vi.mocked(AdminAssetService.getAssets).mockRejectedValue(
+        new Error("Network Error: 500"),
+      );
+
+      await expect(
+        AdminAssetController.getAssets({ page: 1 }),
+      ).rejects.toThrow("Network Error: 500");
+    });
+  });
+
+  describe("getAsset", () => {
+    it("returns parsed asset details on success", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "OK" },
+          data: {
+            asset: {
+              id: "a1",
+              name: "dev/admin/avatar.png",
+              url: "https://example.com/avatar.png",
+              type: "avatar",
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.getAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.getAsset("a1");
+      expect(result.success).toBe(true);
+      expect(result.asset?.name).toBe("dev/admin/avatar.png");
+    });
+
+    it("returns error and failure when asset belongs to another environment (404 Not Found)", async () => {
+      const mock404Response = {
+        data: {
+          status: {
+            code: 404,
+            success: false,
+            message: "Asset not found",
+            error: "Not Found",
+          },
+          data: null,
+        },
+      };
+
+      vi.mocked(AdminAssetService.getAsset).mockResolvedValue(
+        mock404Response as never,
+      );
+
+      const result = await AdminAssetController.getAsset("foreign-env-asset-id");
+      expect(result.success).toBe(false);
+      expect(result.asset).toBeUndefined();
+      expect(result.error).toBe("Not Found");
+    });
   });
 
   describe("uploadAsset", () => {
     it("uploads asset with metadata and folder", async () => {
-      const file = new File(["test-content"], "test.png", { type: "image/png" });
+      const file = new File(["test-content"], "test.png", {
+        type: "image/png",
+      });
       const mockResponse = {
         data: {
           status: { code: 201, success: true, message: "Uploaded" },
@@ -110,6 +205,270 @@ describe("AdminAssetController", () => {
           folder: "admin_uploads",
         }),
       );
+    });
+  });
+
+  describe("compressAsset", () => {
+    it("calls service and returns parsed asset and message", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Compression enqueued" },
+          data: {
+            id: "a3",
+            type: "asset",
+            attributes: {
+              id: "a3",
+              name: "banner.png",
+              status: "processing",
+              size_bytes: 5000,
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a3");
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Compression enqueued");
+      expect(result.asset?.id).toBe("a3");
+      expect(result.asset?.status).toBe("processing");
+      expect(AdminAssetService.compressAsset).toHaveBeenCalledWith("a3");
+    });
+
+    it("handles failure response", async () => {
+      const mockResponse = {
+        data: {
+          status: {
+            code: 422,
+            success: false,
+            message: "Only images and videos can be compressed",
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a4");
+
+      expect(result.success).toBe(false);
+      expect(result.isOptimal).toBe(false);
+      expect(result.error).toBe("Only images and videos can be compressed");
+    });
+
+    it("identifies optimal status when asset is already optimal or reached limit", async () => {
+      const mockResponse = {
+        data: {
+          status: {
+            code: 422,
+            success: false,
+            message: "Asset is already at optimal compression size.",
+          },
+          data: {
+            asset: {
+              id: "a5",
+              name: "icon.png",
+              status: "optimal",
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a5");
+
+      expect(result.success).toBe(false);
+      expect(result.isOptimal).toBe(true);
+      expect(result.asset?.status).toBe("optimal");
+    });
+  });
+
+  describe("getStorageStats", () => {
+    it("returns parsed storage statistics", async () => {
+      const mockStats = {
+        provider: "garage",
+        bucket: "rexone",
+        bucket_bytes: 500000,
+        bucket_objects: 12,
+        partitions: {
+          dev: { bytes: 100000, objects: 3 },
+          uat: { bytes: 150000, objects: 4 },
+          prod: { bytes: 250000, objects: 5 },
+        },
+        tracked_partitions: {
+          dev: { bytes: 100000, objects: 3 },
+          uat: { bytes: 150000, objects: 4 },
+          prod: { bytes: 250000, objects: 5 },
+        },
+        disk_available_bytes: 40000000000,
+        disk_total_bytes: 50000000000,
+        disk_used_percent: 20,
+        disk_free_percent: 80,
+        node_capacity_bytes: 1000000000,
+        db_assets_count: 12,
+        db_assets_bytes: 500000,
+      };
+
+      const mockResponse = {
+        data: {
+          status: {
+            code: 200,
+            success: true,
+            message: "Storage statistics retrieved successfully",
+          },
+          data: { stats: mockStats },
+        },
+      };
+
+      vi.mocked(AdminAssetService.getStorageStats).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.getStorageStats();
+
+      expect(result.success).toBe(true);
+      expect(result.stats).toEqual(mockStats);
+      expect(result.stats?.provider).toBe("garage");
+      expect(result.stats?.bucket_bytes).toBe(500000);
+      expect(result.stats?.partitions?.prod.bytes).toBe(250000);
+      expect(result.stats?.tracked_partitions?.uat.objects).toBe(4);
+      expect(AdminAssetService.getStorageStats).toHaveBeenCalled();
+    });
+  });
+
+  describe("emptyRecycleBin", () => {
+    it("calls service and returns success with purged count", async () => {
+      const mockResponse = {
+        data: {
+          status: {
+            code: 200,
+            success: true,
+            message: "Recycle bin emptied successfully",
+          },
+          data: { count: 5 },
+        },
+      };
+
+      vi.mocked(AdminAssetService.emptyRecycleBin).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.emptyRecycleBin();
+
+      expect(result.success).toBe(true);
+      expect(result.count).toBe(5);
+      expect(result.message).toBe("Recycle bin emptied successfully");
+      expect(AdminAssetService.emptyRecycleBin).toHaveBeenCalled();
+    });
+
+    it("handles failure response", async () => {
+      const mockResponse = {
+        data: {
+          status: {
+            code: 500,
+            success: false,
+            message: "Storage cleanup error",
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.emptyRecycleBin).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.emptyRecycleBin();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Storage cleanup error");
+    });
+  });
+
+  describe("batchDiscard", () => {
+    it("calls service with ids and returns affected count", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "2 assets discarded" },
+          data: { count: 2 },
+        },
+      };
+
+      vi.mocked(AdminAssetService.discardBatch).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.discardBatch(["id1", "id2"]);
+
+      expect(result.success).toBe(true);
+      expect(result.count).toBe(2);
+      expect(AdminAssetService.discardBatch).toHaveBeenCalledWith([
+        "id1",
+        "id2",
+      ]);
+    });
+  });
+
+  describe("batchUndiscard", () => {
+    it("calls service with ids and returns affected count", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "2 assets restored" },
+          data: { count: 2 },
+        },
+      };
+
+      vi.mocked(AdminAssetService.undiscardBatch).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.undiscardBatch(["id1", "id2"]);
+
+      expect(result.success).toBe(true);
+      expect(result.count).toBe(2);
+      expect(AdminAssetService.undiscardBatch).toHaveBeenCalledWith([
+        "id1",
+        "id2",
+      ]);
+    });
+  });
+
+  describe("batchDestroy", () => {
+    it("calls service with ids and returns permanently deleted count", async () => {
+      const mockResponse = {
+        data: {
+          status: {
+            code: 200,
+            success: true,
+            message: "3 assets permanently deleted",
+          },
+          data: { count: 3 },
+        },
+      };
+
+      vi.mocked(AdminAssetService.destroyBatch).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.destroyBatch([
+        "id1",
+        "id2",
+        "id3",
+      ]);
+
+      expect(result.success).toBe(true);
+      expect(result.count).toBe(3);
+      expect(AdminAssetService.destroyBatch).toHaveBeenCalledWith([
+        "id1",
+        "id2",
+        "id3",
+      ]);
     });
   });
 });

@@ -18,6 +18,8 @@ const STATUS_VARIANT_MAP: Record<string, BadgeVariant> = {
   completed: BadgeVariants.SUCCESS,
   success: BadgeVariants.SUCCESS,
   live: BadgeVariants.SUCCESS,
+  ready: BadgeVariants.SUCCESS,
+  optimal: BadgeVariants.SUCCESS,
   true: BadgeVariants.SUCCESS,
 
   // Warning / In-Progress / Moderate
@@ -51,9 +53,18 @@ const STATUS_VARIANT_MAP: Record<string, BadgeVariant> = {
   open: BadgeVariants.INFO,
   feature: BadgeVariants.INFO,
   info: BadgeVariants.INFO,
+  processing: BadgeVariants.INFO,
   custom: BadgeVariants.PRIMARY,
   system: BadgeVariants.DEFAULT,
   general: BadgeVariants.DEFAULT,
+
+  //Version Status
+  yanked: BadgeVariants.ERROR,
+  published: BadgeVariants.SUCCESS,
+  draft: BadgeVariants.WARNING,
+  ios: BadgeVariants.INFO,
+  android: BadgeVariants.INFO,
+  web: BadgeVariants.INFO,
 };
 
 const formatStatusText = (status: string): string => {

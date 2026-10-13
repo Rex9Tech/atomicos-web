@@ -6,14 +6,14 @@
 import React, { useEffect } from "react";
 import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
-import { ToastTypes, type ToastType } from "../../constants";
+import { ToastTypes, type TToastTypes } from "../../constants";
 
 export { ToastTypes };
-export type { ToastType };
+export type { TToastTypes };
 
 export interface IToastProps {
   message: string;
-  type?: ToastType;
+  type?: TToastTypes;
   duration?: number;
   onClose: () => void;
   icon?: React.ReactNode;
@@ -35,14 +35,14 @@ export const Toast: React.FC<IToastProps> = ({
     }
   }, [duration, onClose]);
 
-  const typeClasses = {
-    success: "alert-success",
-    info: "alert-info",
-    warning: "alert-warning",
-    error: "alert-error",
+  const typeClasses: Record<TToastTypes, string> = {
+    success: "bg-success/15 border-success/30",
+    info: "bg-info/15 border-info/30",
+    warning: "bg-warning/15 border-warning/30",
+    error: "bg-error/15 border-error/30",
   };
 
-  const defaultIcons = {
+  const defaultIcons: Record<TToastTypes, React.ReactNode> = {
     success: (
       <iconsLib.check className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
     ),
@@ -57,7 +57,7 @@ export const Toast: React.FC<IToastProps> = ({
     ),
   };
 
-  const typeColors = {
+  const typeColors: Record<TToastTypes, string> = {
     success: "text-emerald-800 dark:text-emerald-200",
     info: "text-sky-800 dark:text-sky-200",
     warning: "text-amber-800 dark:text-amber-200",
@@ -65,7 +65,7 @@ export const Toast: React.FC<IToastProps> = ({
   };
 
   return (
-    <div className="toast toast-top toast-center z-[9999] animate-fade-in">
+    <div className="toast toast-top toast-center z-9999 animate-fade-in">
       <div
         className={cn(
           "alert shadow-lg max-w-md border border-base-300",
@@ -85,7 +85,7 @@ export const Toast: React.FC<IToastProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-xs btn-square flex-shrink-0 opacity-70 hover:opacity-100"
+            className="btn btn-ghost btn-xs btn-square shrink-0 opacity-70 hover:opacity-100"
             aria-label="Close alert"
           >
             <iconsLib.close className="w-4 h-4" />

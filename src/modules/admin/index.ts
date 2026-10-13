@@ -5,12 +5,11 @@ import { ProductController, ProductService } from "./product";
 import { RoleController, RoleService } from "./role";
 import UserController from "./user/user.controller";
 import UserService from "./user/user.service";
-import AdminAccessesController from "./access/access.controller";
-import AdminAccessesService from "./access/access.service";
-import AdminFeedbackController from "./feedback/feedback.controller";
-import AdminFeedbackService from "./feedback/feedback.service";
-import AdminLogsController from "./log/log.controller";
-import AdminLogsService from "./log/log.service";
+import { FeedbackController, FeedbackService } from "./feedback";
+import { LogController, LogService } from "./log";
+import { AccessController, AccessService } from "./access";
+import { AssetController, AssetService } from "./asset";
+import { VersionController, VersionService } from "./version";
 
 export * from "./analytics";
 export * from "./chat";
@@ -22,6 +21,7 @@ export * from "./log";
 export * from "./role";
 export * from "./user";
 export * from "./asset";
+export * from "./version";
 export * from "./components";
 export * from "./helpers/admin.helper";
 export * from "./constants";
@@ -39,10 +39,14 @@ export const Admin = {
   RoleService,
   UserController,
   UserService,
-  AdminAccessesController,
-  AdminAccessesService,
-  AdminFeedbackController,
-  AdminFeedbackService,
-  AdminLogsController,
-  AdminLogsService,
+  AccessController,
+  AccessService,
+  FeedbackController,
+  FeedbackService,
+  LogController,
+  LogService,
+  AssetController,
+  AssetService,
+  VersionController,
+  VersionService,
 };
