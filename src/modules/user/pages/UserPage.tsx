@@ -137,30 +137,6 @@ export const UserPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-
-    const result = await UserController.updateCurrentUser({
-      name: name.trim(),
-      username,
-    });
-
-    setLoading(false, { overlay: false });
-
-    if (!result.success || !result.user) {
-      setAlertMessage(
-        result.error || t(AppLocales.User.Errors.Update),
-      );
-      return;
-    }
-
-    setCurrentUser({
-      ...currentUser,
-      ...result.user,
-      avatar_url: result.user.avatar_url || uploadedAvatarUrl || currentUser?.avatar_url,
-    });
-    setSelectedFile(null);
-    toast.success(
-      result.message || t(AppLocales.User.Toasts.UpdateSuccess),
-    );
   };
 
   return (

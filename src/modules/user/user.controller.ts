@@ -95,32 +95,6 @@ class UserController {
     };
   }
 
-  async updateCurrentUser(values: ICurrentUserUpdateValues): Promise<{
-    success: boolean;
-    user?: IUser;
-    message?: string;
-    error?: string;
-  }> {
-    const response = await UserService.updateCurrentUser(values);
-    const { status, data } = response.data || {};
-
-    if (status?.success && data?.user) {
-      return {
-        success: true,
-        user: data.user,
-        message: status.message,
-      };
-    }
-
-    return {
-      success: false,
-      error: getApiError(
-        response,
-        translate(AppLocales.User.Errors.Update),
-      ),
-    };
-  }
-
   async uploadImage(
     file: File,
     options?: IAssetUploadOptions,

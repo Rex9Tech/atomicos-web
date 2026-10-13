@@ -189,10 +189,6 @@ class AppRoutes {
       SPEECH_TTS: AppRoutes.api("/speech/tts"), // POST
       SPEECH_STT: AppRoutes.api("/speech/stt"), // POST
 
-      // Speech
-      SPEECH_TTS: AppRoutes.api("/speech/tts"), // POST
-      SPEECH_STT: AppRoutes.api("/speech/stt"), // POST
-
       // Feedback
       FEEDBACKS: AppRoutes.api("/feedbacks"), // GET
 

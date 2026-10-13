@@ -34,7 +34,6 @@ import {
   Tabs,
   type ITabItem,
 } from "../../components";
-import { AdminNotificationTemplatesTab } from "../components";
 import {
   AdminNotificationTemplatesTab,
   AdminNotificationPreview,
