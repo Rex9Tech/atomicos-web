@@ -1,7 +1,7 @@
 {
-  "name": "RexOne Sovereign Ecosystem",
-  "short_name": "RexOne",
-  "description": "Start from One. Not from Zero. Sovereign tri-platform application foundation & full-stack masterclass.",
+  "name": "AtomicOS",
+  "short_name": "AtomicOS",
+  "description": "AtomicOS — a modern AI-powered workspace platform.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#160b11",
