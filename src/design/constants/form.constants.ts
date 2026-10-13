@@ -1,7 +1,7 @@
 // src/design/constants/form.constants.ts
 
 /**
- * Rexone Design System - Form & Input Constants
+ * RexOne Design System - Form & Input Constants
  */
 
 export const InputVariants = {
@@ -17,3 +17,15 @@ export const FormVariants = {
 } as const;
 
 export type FormVariant = (typeof FormVariants)[keyof typeof FormVariants];
+
+export const InputTypes = {
+  TEXT: "text",
+  EMAIL: "email",
+  PASSWORD: "password",
+  NUMBER: "number",
+  TEL: "tel",
+  URL: "url",
+  SEARCH: "search",
+} as const;
+
+export type InputType = (typeof InputTypes)[keyof typeof InputTypes];

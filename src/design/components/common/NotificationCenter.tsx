@@ -5,18 +5,29 @@ import { useNavigate } from "react-router-dom";
 import { iconsLib } from "../../../assets";
 import { AppLocales, translate } from "../../../locales";
 import {
-  IUserNotification,
+  type IUserNotification,
+  type INotificationMetadata,
+  type TAsyncOperationStatus,
+  type TAsyncOperationType,
   NotificationController,
-  NotificationFilter,
+  type NotificationFilter,
   NOTIFICATION_FILTERS,
+  NOTIFICATION_CLIENTS,
+  isExternalNotificationLink,
+  resolveNotificationRoute,
 } from "../../../modules/notification";
-import socketService, { ISocketMessage } from "../../../services/socket.service";
+import socketService, {
+  ISocketMessage,
+} from "../../../services/socket.service";
 import { Button } from "../button";
+import { Dialog } from "../overlay/Dialog";
 import { Dropdown, DropdownSizes } from "../form/Dropdown";
 import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../constants";
 import { cn } from "../../helpers";
-import { formatDateTime } from "../../../helpers/date.helper";
+import { getUtcNowIso } from "../../../helpers/date.helper";
+import { DateTime } from "./DateTime";
 import type { IApiPagination } from "../../../models";
+import { AnalyticsService } from "../../../services";
 
 export interface INotificationCenterProps {
   className?: string;
@@ -29,11 +40,28 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<IUserNotification[]>([]);
+  const notificationsRef = useRef<IUserNotification[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
-  const [filter, setFilter] = useState<NotificationFilter>(NOTIFICATION_FILTERS.ALL);
+  const [filter, setFilter] = useState<NotificationFilter>(
+    NOTIFICATION_FILTERS.ALL,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [detailNotification, setDetailNotification] =
+    useState<IUserNotification | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const isNotificationOverflowing = (item: IUserNotification) => {
+    return (
+      item.message.length > 85 ||
+      item.message.includes("\n") ||
+      item.title.length > 50
+    );
+  };
+
+  useEffect(() => {
+    notificationsRef.current = notifications;
+  }, [notifications]);
 
   // Fetch unread count for badge
   const fetchUnreadCount = useCallback(async () => {
@@ -77,22 +105,27 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
   // Initial load of unread count
   useEffect(() => {
-    fetchUnreadCount();
+    const timeoutId = window.setTimeout(() => void fetchUnreadCount(), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [fetchUnreadCount]);
 
   // When opening or filter changing, load notifications
   useEffect(() => {
-    if (isOpen) {
-      fetchNotifications(1, filter);
-      fetchUnreadCount();
-    }
+    if (!isOpen) return;
+
+    const timeoutId = window.setTimeout(() => {
+      void fetchNotifications(1, filter);
+      void fetchUnreadCount();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [isOpen, filter, fetchNotifications, fetchUnreadCount]);
 
   // Handle outside click & Esc key
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
@@ -108,10 +141,12 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
@@ -120,28 +155,74 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   useEffect(() => {
     const handleSocketMessage = (msg: ISocketMessage) => {
       // If message is an in-app notification payload
-      const raw = (msg as any).data || msg;
-      const notificationId = raw.id || (msg as any).id;
-      const title = raw.title || msg.message;
+      const envelope = msg as ISocketMessage & Partial<IUserNotification>;
+      if (
+        envelope.clients &&
+        !envelope.clients.includes(NOTIFICATION_CLIENTS.WEB)
+      )
+        return;
+      const notificationId = envelope.id;
+      const title = envelope.title || msg.message;
 
       if (notificationId && title) {
         const newNotification: IUserNotification = {
           id: notificationId,
           title: title,
-          message: raw.message || "",
-          link: raw.link || null,
-          data: raw.data || {},
+          message: envelope.message || "",
+          link: envelope.link || null,
+          clients: envelope.clients || [
+            NOTIFICATION_CLIENTS.WEB,
+            NOTIFICATION_CLIENTS.MOBILE,
+          ],
+          metadata: (envelope.data as INotificationMetadata) || {},
+          operation_id:
+            typeof envelope.operation_id === "string"
+              ? envelope.operation_id
+              : typeof envelope.data?.operation_id === "string"
+                ? envelope.data.operation_id
+                : null,
+          operation_type:
+            (envelope.operation_type as TAsyncOperationType | undefined) ||
+            (envelope.data?.operation_type as
+              | TAsyncOperationType
+              | undefined) ||
+            null,
+          operation_status:
+            (envelope.operation_status as TAsyncOperationStatus | undefined) ||
+            (envelope.data?.operation_status as
+              | TAsyncOperationStatus
+              | undefined) ||
+            null,
           read: false,
           read_at: null,
-          notification_id: raw.notification_id || null,
-          created_at: raw.created_at || new Date().toISOString(),
+          notification_id:
+            typeof envelope.notification_id === "string"
+              ? envelope.notification_id
+              : null,
+          created_at: envelope.created_at || getUtcNowIso(),
         };
 
-        setUnreadCount((prev) => prev + 1);
+        const operationId = newNotification.operation_id;
+        const existing = notificationsRef.current.find(
+          (notification) =>
+            notification.id === newNotification.id ||
+            (operationId && notification.operation_id === operationId),
+        );
+        if (!existing) setUnreadCount((prev) => prev + 1);
 
         setNotifications((prev) => {
-          // Prevent duplicates
-          if (prev.some((n) => n.id === newNotification.id)) return prev;
+          const existingIndex = prev.findIndex(
+            (notification) =>
+              notification.id === newNotification.id ||
+              (operationId && notification.operation_id === operationId),
+          );
+          if (existingIndex >= 0) {
+            return prev.map((notification, index) =>
+              index === existingIndex
+                ? { ...notification, ...newNotification }
+                : notification,
+            );
+          }
           if (filter === NOTIFICATION_FILTERS.READ) return prev;
           return [newNotification, ...prev];
         });
@@ -156,11 +237,12 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
   // Mark single as read & navigate if link exists
   const handleItemClick = async (item: IUserNotification) => {
+    void AnalyticsService.logOpenNotification(item.id);
     if (!item.read) {
       // Optimistic update
       setNotifications((prev) =>
         prev.map((n) =>
-          n.id === item.id ? { ...n, read: true, read_at: new Date().toISOString() } : n,
+          n.id === item.id ? { ...n, read: true, read_at: getUtcNowIso() } : n,
         ),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -172,10 +254,32 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       }
     }
 
+    // If message has overflow/is long, show detail modal instead of directly navigating
+    if (isNotificationOverflowing(item)) {
+      setDetailNotification(item);
+      return;
+    }
+
+    // Otherwise, direct navigation flow for compact notifications
     if (item.link) {
       setIsOpen(false);
-      navigate(item.link);
+      if (isExternalNotificationLink(item.link)) {
+        window.open(item.link, "_blank", "noopener,noreferrer");
+        return;
+      }
+      navigate(resolveNotificationRoute(item.link));
     }
+  };
+
+  const handleDetailActionClick = (item: IUserNotification) => {
+    if (!item.link) return;
+    setDetailNotification(null);
+    setIsOpen(false);
+    if (isExternalNotificationLink(item.link)) {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+      return;
+    }
+    navigate(resolveNotificationRoute(item.link));
   };
 
   // Mark all as read
@@ -184,7 +288,11 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
     // Optimistic update
     setNotifications((prev) =>
-      prev.map((n) => ({ ...n, read: true, read_at: new Date().toISOString() })),
+      prev.map((n) => ({
+        ...n,
+        read: true,
+        read_at: getUtcNowIso(),
+      })),
     );
     setUnreadCount(0);
 
@@ -217,9 +325,18 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
   // Filter options for Dropdown
   const filterOptions = [
-    { value: NOTIFICATION_FILTERS.ALL, label: translate(AppLocales.Notifications.FilterAll) },
-    { value: NOTIFICATION_FILTERS.UNREAD, label: translate(AppLocales.Notifications.FilterUnread) },
-    { value: NOTIFICATION_FILTERS.READ, label: translate(AppLocales.Notifications.FilterRead) },
+    {
+      value: NOTIFICATION_FILTERS.ALL,
+      label: translate(AppLocales.Notifications.FilterAll),
+    },
+    {
+      value: NOTIFICATION_FILTERS.UNREAD,
+      label: translate(AppLocales.Notifications.FilterUnread),
+    },
+    {
+      value: NOTIFICATION_FILTERS.READ,
+      label: translate(AppLocales.Notifications.FilterRead),
+    },
   ];
 
   return (
@@ -238,11 +355,21 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
         {/* Unread Count Badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[11px] font-bold text-white shadow-sm ring-2 ring-base-100 animate-pulse">
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[11px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </Button>
+
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs transition-opacity sm:hidden"
+          onClick={() => setIsOpen(false)}
+          onTouchEnd={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Popover Dropdown Panel */}
       {isOpen && (
@@ -250,8 +377,9 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           role="dialog"
           aria-label={translate(AppLocales.Notifications.Title)}
           className={cn(
-            "absolute right-0 top-12 z-50 mt-1 w-84 sm:w-96 rounded-2xl border border-base-300 bg-base-100 shadow-2xl overflow-hidden flex flex-col font-primary",
-            "max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
+            "fixed inset-x-3 top-16 mt-2 z-50 mx-auto max-w-sm sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:mt-1 sm:w-96 sm:max-w-none sm:mx-0",
+            "rounded-2xl border border-base-300 bg-base-100 shadow-2xl overflow-hidden flex flex-col font-primary",
+            "max-h-[calc(100dvh-5rem)] sm:max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
           )}
         >
           {/* Header */}
@@ -262,7 +390,10 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
               </h3>
               {unreadCount > 0 && (
                 <span className="badge badge-primary badge-sm font-semibold">
-                  {unreadCount} {translate(AppLocales.Notifications.FilterUnread).toLowerCase()}
+                  {unreadCount}{" "}
+                  {translate(
+                    AppLocales.Notifications.FilterUnread,
+                  ).toLowerCase()}
                 </span>
               )}
             </div>
@@ -281,6 +412,14 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   </span>
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="p-1 text-base-content/60 hover:text-base-content rounded-lg transition-colors cursor-pointer sm:hidden"
+                aria-label="Close"
+              >
+                <iconsLib.close className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -301,7 +440,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
 
           {/* Notifications List */}
-          <div className="flex-1 overflow-y-auto divide-y divide-base-200/60 min-h-[160px] max-h-[460px]">
+          <div className="flex-1 overflow-y-auto divide-y divide-base-200/60 min-h-40 max-h-[calc(100dvh-13rem)] sm:max-h-115">
             {isLoading ? (
               <div className="p-4 space-y-3">
                 {[1, 2, 3].map((i) => (
@@ -325,7 +464,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                       ? translate(AppLocales.Notifications.EmptyRead)
                       : translate(AppLocales.Notifications.EmptyAll)}
                 </p>
-                <p className="text-caption text-base-content/50 mt-1 max-w-[240px]">
+                <p className="text-caption text-base-content/50 mt-1 max-w-60">
                   {translate(AppLocales.Notifications.EmptyDesc)}
                 </p>
               </div>
@@ -355,7 +494,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   <div className="flex-1 min-w-0 pr-6">
                     <h4
                       className={cn(
-                        "text-body-s line-clamp-1",
+                        "text-body-s line-clamp-2",
                         item.read
                           ? "font-medium text-base-content/80"
                           : "font-bold text-base-content",
@@ -366,16 +505,23 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                     <p className="text-caption text-base-content/70 line-clamp-2 mt-0.5 leading-relaxed">
                       {item.message}
                     </p>
-                    <span className="text-[11px] text-base-content/40 mt-1.5 block">
-                      {formatDateTime(item.created_at)}
-                    </span>
+                    <div className="flex items-center justify-between mt-1.5">
+                      <span className="text-[11px] text-base-content/40">
+                        <DateTime value={item.created_at} />
+                      </span>
+                      {isNotificationOverflowing(item) && (
+                        <span className="text-[11px] font-medium text-primary hover:underline">
+                          {translate(AppLocales.Notifications.ReadMore)}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Delete Button */}
                   <button
                     type="button"
                     onClick={(e) => handleDelete(e, item.id)}
-                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-base-200/80 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
+                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-base-200/80 transition-colors opacity-70 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
                     title={translate(AppLocales.Notifications.Delete)}
                     aria-label={translate(AppLocales.Notifications.Delete)}
                   >
@@ -391,7 +537,12 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                 <button
                   type="button"
                   disabled={isLoadingMore}
-                  onClick={() => fetchNotifications((pagination.current_page || 1) + 1, filter)}
+                  onClick={() =>
+                    fetchNotifications(
+                      (pagination.current_page || 1) + 1,
+                      filter,
+                    )
+                  }
                   className="text-body-s font-medium text-primary hover:text-primary-focus transition-colors disabled:opacity-50 cursor-pointer py-1 px-3 rounded-lg hover:bg-primary/10"
                 >
                   {isLoadingMore
@@ -403,6 +554,50 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
         </div>
       )}
+
+      {/* Long Notification Detail Modal */}
+      <Dialog
+        isOpen={Boolean(detailNotification)}
+        onClose={() => setDetailNotification(null)}
+        title={
+          detailNotification?.title || translate(AppLocales.Notifications.Title)
+        }
+        footer={
+          <div className="flex items-center justify-end gap-2 w-full">
+            <Button
+              type={ButtonTypes.BUTTON}
+              variant={ButtonVariants.TERTIARY}
+              size={ComponentSizes.SM}
+              onClick={() => setDetailNotification(null)}
+            >
+              {translate(AppLocales.Common.Cancel)}
+            </Button>
+            {detailNotification?.link && (
+              <Button
+                type={ButtonTypes.BUTTON}
+                variant={ButtonVariants.PRIMARY}
+                size={ComponentSizes.SM}
+                onClick={() => handleDetailActionClick(detailNotification)}
+              >
+                {((detailNotification.metadata as Record<string, unknown>)
+                  ?.cta_text as string) ||
+                  translate(AppLocales.Notifications.OpenLink)}
+              </Button>
+            )}
+          </div>
+        }
+      >
+        <div className="space-y-4 pt-2">
+          <div className="text-body text-base-content/90 whitespace-pre-wrap wrap-break-word leading-relaxed">
+            {detailNotification?.message}
+          </div>
+          {detailNotification?.created_at && (
+            <div className="text-caption text-base-content/50 pt-2 border-t border-base-200">
+              <DateTime value={detailNotification.created_at} />
+            </div>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 };

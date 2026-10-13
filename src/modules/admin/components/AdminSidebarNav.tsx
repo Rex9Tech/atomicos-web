@@ -1,14 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
-import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
-import { hasAdminRole } from "../role";
 import type { AdminResource } from "../role";
-import {
-  ADMIN_ACTIONS,
-  ADMIN_RESOURCES,
-} from "../constants";
+import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../constants";
 import { cn } from "../../../design/helpers";
 import { iconsLib } from "../../../assets";
 import { useTranslate, AppLocales } from "../../../locales";
@@ -57,6 +52,24 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.cube,
       },
       {
+        labelKey: AppLocales.Admin.Nav.Items.Purchases,
+        to: AppRoutes.client.protected.admin.PURCHASES,
+        resource: ADMIN_RESOURCES.PURCHASES,
+        icon: iconsLib.banknotes,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Subscriptions,
+        to: AppRoutes.client.protected.admin.SUBSCRIPTIONS,
+        resource: ADMIN_RESOURCES.SUBSCRIPTIONS,
+        icon: iconsLib.document,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Coupons,
+        to: AppRoutes.client.protected.admin.COUPONS,
+        resource: ADMIN_RESOURCES.COUPONS,
+        icon: iconsLib.tag,
+      },
+      {
         labelKey: AppLocales.Admin.Nav.Items.Accesses,
         to: AppRoutes.client.protected.admin.ACCESSES,
         resource: ADMIN_RESOURCES.ACCESSES,
@@ -65,31 +78,7 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
-    id: "communication",
-    labelKey: AppLocales.Admin.Nav.Sections.Communication,
-    items: [
-      {
-        labelKey: AppLocales.Admin.Nav.Items.Notifications,
-        to: AppRoutes.client.protected.admin.NOTIFICATIONS,
-        resource: ADMIN_RESOURCES.NOTIFICATIONS,
-        icon: iconsLib.bellAlert,
-      },
-      {
-        labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
-        to: AppRoutes.client.protected.admin.CHAT_ROOMS,
-        resource: ADMIN_RESOURCES.ROOMS,
-        icon: iconsLib.chatBubbleLeftRight,
-      },
-      {
-        labelKey: AppLocales.Admin.Nav.Items.ChatMessages,
-        to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
-        resource: ADMIN_RESOURCES.MESSAGES,
-        icon: iconsLib.inboxStack,
-      },
-    ],
-  },
-  {
-    id: "access",
+    id: "iam",
     labelKey: AppLocales.Admin.Nav.Sections.Iam,
     items: [
       {
@@ -97,7 +86,6 @@ const navSections: IAdminNavSection[] = [
         to: AppRoutes.client.protected.admin.USERS,
         resource: ADMIN_RESOURCES.USERS,
         icon: iconsLib.userGroup,
-        superAdminOnly: true,
       },
       {
         labelKey: AppLocales.Admin.Nav.Items.Roles,
@@ -141,6 +129,24 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
+    id: "ai",
+    labelKey: AppLocales.Admin.Nav.Sections.Ai,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiProfiles,
+        to: AppRoutes.client.protected.admin.AI_PROFILES,
+        resource: ADMIN_RESOURCES.AI_PROFILES,
+        icon: iconsLib.sparkles,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiRuns,
+        to: AppRoutes.client.protected.admin.AI_RUNS,
+        resource: ADMIN_RESOURCES.AI_RUNS,
+        icon: iconsLib.chartBar,
+      },
+    ],
+  },
+  {
     id: "support",
     labelKey: AppLocales.Admin.Nav.Sections.Support,
     items: [
@@ -159,8 +165,45 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Logs,
         to: AppRoutes.client.protected.admin.LOGS,
-        resource: ADMIN_RESOURCES.CLIENTS,
+        resource: ADMIN_RESOURCES.LOGS,
         icon: iconsLib.document,
+      },
+    ],
+  },
+  {
+    id: "communication",
+    labelKey: AppLocales.Admin.Nav.Sections.Communication,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Notifications,
+        to: AppRoutes.client.protected.admin.NOTIFICATIONS,
+        resource: ADMIN_RESOURCES.NOTIFICATIONS,
+        icon: iconsLib.bellAlert,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
+        to: AppRoutes.client.protected.admin.CHAT_ROOMS,
+        resource: ADMIN_RESOURCES.CHAT_ROOMS,
+        icon: iconsLib.chatBubbleLeftRight,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.ChatMessages,
+        to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
+        resource: ADMIN_RESOURCES.CHAT_MESSAGES,
+        icon: iconsLib.inboxStack,
+      },
+    ],
+  },
+  {
+    id: "version-management",
+    labelKey: AppLocales.Admin.Nav.Sections.VersionManagement,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Versions,
+        to: AppRoutes.client.protected.admin.VERSIONS,
+        resource: ADMIN_RESOURCES.VERSIONS,
+        icon: iconsLib.tag,
+        superAdminOnly: true,
       },
     ],
   },
@@ -174,9 +217,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   const [collapsedSections, setCollapsedSections] = useState<
     Record<string, boolean>
   >({});
-  const { currentUser } = useAuth();
-  const { can, isLoading, isSuperAdmin } = usePermissions();
-  const hasAdminAccess = hasAdminRole(currentUser?.role_names);
+  const { can, isAdmin, isLoading, isSuperAdmin } = usePermissions();
 
   const enabledItems = useMemo(
     () =>
@@ -184,7 +225,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
         .map((section) => ({
           ...section,
           items: section.items.filter((item) =>
-            !hasAdminAccess
+            !isAdmin
               ? false
               : item.superAdminOnly
                 ? isSuperAdmin
@@ -193,7 +234,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
           ),
         }))
         .filter((section) => section.items.length > 0),
-    [can, hasAdminAccess, isLoading, isSuperAdmin],
+    [can, isAdmin, isLoading, isSuperAdmin],
   );
 
   const toggleSection = (sectionId: string) => {
@@ -271,7 +312,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                                 ? "h-11 gap-3 px-3 text-body-m justify-start"
                                 : "h-10 w-10 p-0 mx-auto justify-center lg:h-11 lg:w-full lg:px-3 lg:gap-3 lg:justify-start text-body-m",
                               isActive
-                                ? "bg-primary text-navy-900 shadow-sm"
+                                ? "bg-primary text-primary-content shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                             )
                           }

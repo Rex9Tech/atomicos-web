@@ -3,6 +3,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
   Outlet,
@@ -12,9 +13,16 @@ import { AdminHomeRoute } from "./AdminHomeRoute";
 import { AdminRootRoute } from "./AdminRootRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
-import { HomePage, NotFoundPage, PageLayout, RootPage } from "../design/pages";
+import {
+  HomePage,
+  NotFoundPage,
+  PageLayout,
+  RootPage,
+  TestPage,
+} from "../design/pages";
 import { UserPage } from "../modules/user";
 import { AnapanaRoute } from "../modules/anapana/pages";
+import { PrivacyPolicyPage, TermsPage, VsPage } from "../modules/landing";
 import {
   AuthDialog,
   ConfirmEmailPage,
@@ -37,12 +45,14 @@ import {
   AdminAccessesPage,
   AdminAccessCreatePage,
   AdminAccessEditPage,
+  AdminAccessDetailPage,
   AdminFeedbacksPage,
   AdminFeedbackDetailPage,
   AdminLogsPage,
   AdminDiscardedLogsPage,
   AdminLogDetailPage,
   AdminChatMessageEditPage,
+  AdminChatMessageDetailPage,
   AdminChatMessagesPage,
   AdminDiscardedChatMessagesPage,
   AdminChatRoomEditPage,
@@ -51,34 +61,57 @@ import {
   AdminNotificationsPage,
   AdminNotificationCreatePage,
   AdminNotificationEditPage,
+  AdminUserNotificationDetailPage,
   AdminProductCreatePage,
   AdminProductEditPage,
+  AdminProductDetailPage,
   AdminDiscardedProductsPage,
   AdminProductsPage,
+  AdminPurchasesPage,
+  AdminPurchaseDetailPage,
+  AdminSubscriptionsPage,
+  AdminSubscriptionDetailPage,
+  AdminCouponsPage,
+  AdminCouponCreatePage,
+  AdminCouponDetailPage,
+  AdminUserCouponsPage,
   AdminRoleCreatePage,
   AdminRoleEditPage,
+  AdminRoleDetailPage,
   AdminRolesPage,
   AdminDiscardedRolesPage,
   AdminUserCreatePage,
   AdminDiscardedUsersPage,
   AdminUserEditPage,
+  AdminUserDetailPage,
   AdminUsersPage,
   AdminAssetsPage,
   AdminDiscardedAssetsPage,
   AdminAssetCreatePage,
   AdminAssetEditPage,
+  AdminAssetDetailPage,
   AdminVersionsPage,
   AdminDiscardedVersionsPage,
   AdminVersionCreatePage,
   AdminVersionEditPage,
-  AdminUserVersionsPage,
+  AdminVersionDetailPage,
+  AdminAiProfilesPage,
+  AdminAiProfileCreatePage,
+  AdminAiProfileDetailPage,
+  AdminAiProfileEditPage,
+  AdminAiRunsPage,
+  AdminAiRunDetailPage,
+  ADMIN_VERSION_TABS,
+  NOTIFICATION_ADMIN_TABS,
 } from "../modules/admin";
+import { AnalyticsPageView } from "./AnalyticsPageView";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
       element={
         <>
+          <AnalyticsPageView />
           <AuthDialog />
           <Outlet />
         </>
@@ -89,6 +122,26 @@ const router = createBrowserRouter(
         <Route
           path={AppRoutes.client.public.ANAPANA}
           element={<AnapanaRoute />}
+        />
+        <Route
+          path={AppRoutes.client.public.PRIVACY_POLICY}
+          element={<PrivacyPolicyPage />}
+        />
+        <Route
+          path={AppRoutes.client.public.TERMS_AND_CONDITIONS}
+          element={<TermsPage />}
+        />
+        <Route
+          path={AppRoutes.client.public.VS}
+          element={<VsPage />}
+        />
+        <Route
+          path="/vs-shipfast"
+          element={<Navigate to={AppRoutes.client.public.VS} replace />}
+        />
+        <Route
+          path="/alternatives/shipfast"
+          element={<Navigate to={AppRoutes.client.public.VS} replace />}
         />
 
         {/* Public Routes */}
@@ -120,6 +173,10 @@ const router = createBrowserRouter(
           <Route
             path={AppRoutes.client.protected.HOME}
             element={<HomePage />}
+          />
+          <Route
+            path={AppRoutes.client.protected.TEST}
+            element={<TestPage />}
           />
           <Route
             path={AppRoutes.client.protected.PROFILE}
@@ -168,7 +225,6 @@ const router = createBrowserRouter(
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
                 resource={ADMIN_RESOURCES.USERS}
-                superAdminOnly
               />
             }
           >
@@ -176,6 +232,20 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.USERS}
               element={<AdminUsersPage />}
             />
+            <Route
+              path={AppRoutes.client.protected.admin.USER_DETAIL}
+              element={<AdminUserDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.USERS}
+                superAdminOnly
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.USERS_RECYCLE_BIN}
               element={<AdminDiscardedUsersPage />}
@@ -221,6 +291,10 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.ROLES}
               element={<AdminRolesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.ROLE_DETAIL}
+              element={<AdminRoleDetailPage />}
             />
           </Route>
           <Route
@@ -316,6 +390,10 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.CHAT_MESSAGES}
               element={<AdminChatMessagesPage />}
             />
+            <Route
+              path={AppRoutes.client.protected.admin.CHAT_MESSAGE_DETAIL}
+              element={<AdminChatMessageDetailPage />}
+            />
           </Route>
           <Route
             element={
@@ -341,6 +419,66 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT}
               element={<AdminChatMessageEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILES}
+              element={<AdminAiProfilesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_DETAIL}
+              element={<AdminAiProfileDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_CREATE}
+              element={<AdminAiProfileCreatePage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_EDIT}
+              element={<AdminAiProfileEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.AI_RUNS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_RUNS}
+              element={<AdminAiRunsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.AI_RUN_DETAIL}
+              element={<AdminAiRunDetailPage />}
             />
           </Route>
           <Route
@@ -386,6 +524,48 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.USER_NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.USER_NOTIFICATIONS}
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}`}
+                  replace
+                />
+              }
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL}
+              element={<AdminUserNotificationDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.USER_NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={
+                AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN
+              }
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}&view=discarded`}
+                  replace
+                />
+              }
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
                 resource={ADMIN_RESOURCES.PRODUCTS}
               />
             }
@@ -393,6 +573,10 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.PRODUCTS}
               element={<AdminProductsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.PRODUCT_DETAIL}
+              element={<AdminProductDetailPage />}
             />
           </Route>
           <Route
@@ -445,6 +629,100 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.ACCESSES}
               element={<AdminAccessesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.ACCESS_DETAIL}
+              element={<AdminAccessDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PURCHASES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.PURCHASES}
+              element={<AdminPurchasesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.PURCHASE_DETAIL}
+              element={<AdminPurchaseDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.SUBSCRIPTIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.SUBSCRIPTIONS}
+              element={<AdminSubscriptionsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.SUBSCRIPTION_DETAIL}
+              element={<AdminSubscriptionDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PAYMENT_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.COUPONS}
+              element={<AdminCouponsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.COUPON_DETAIL}
+              element={<AdminCouponDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.PAYMENT_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.COUPON_CREATE}
+              element={<AdminCouponCreatePage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PAYMENT_USER_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.USER_COUPONS}
+              element={<AdminUserCouponsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.ACCESSES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ACCESS_CREATE}
+              element={<AdminAccessCreatePage />}
             />
           </Route>
           <Route
@@ -550,6 +828,10 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.ASSETS}
               element={<AdminAssetsPage />}
             />
+            <Route
+              path={AppRoutes.client.protected.admin.ASSET_DETAIL}
+              element={<AdminAssetDetailPage />}
+            />
           </Route>
           <Route
             element={
@@ -602,6 +884,10 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.VERSIONS}
               element={<AdminVersionsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.VERSION_DETAIL}
+              element={<AdminVersionDetailPage />}
             />
           </Route>
           <Route
@@ -657,11 +943,12 @@ const router = createBrowserRouter(
           >
             <Route
               path={AppRoutes.client.protected.admin.USER_VERSIONS}
-              element={<AdminUserVersionsPage />}
-            />
-            <Route
-              path={AppRoutes.client.protected.admin.VERSION_INSTALLS}
-              element={<AdminUserVersionsPage />}
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.VERSIONS}?tab=${ADMIN_VERSION_TABS.USER_VERSIONS}`}
+                  replace
+                />
+              }
             />
           </Route>
         </Route>

@@ -13,7 +13,7 @@ import {
 } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
-import { Button, StatusBadge } from "../../../../design";
+import { Button, SearchInput, StatusBadge } from "../../../../design";
 import type { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
@@ -37,7 +37,7 @@ import {
   ADMIN_PRODUCT_SORT_KEYS,
   ADMIN_PRODUCT_TABLE_KEYS,
 } from "../constants";
-import { formatAdminDate } from "../../../../helpers";
+import { DateTime, DateTimeFormats } from "../../../../design";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 const formatPrice = (amount: number, currency: string, freeLabel = "Free"): string => {
@@ -70,6 +70,8 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const searchQuery = searchParams.get("search") || "";
+  const [searchInput, setSearchInput] = useState(searchQuery);
 
   const { sortBy, sortOrder, handleSort } = useSort({
     defaultSortBy:
@@ -92,13 +94,18 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   } | null>(null);
 
   const updateFilters = useCallback(
-    (updates: { page?: number }) => {
+    (updates: { page?: number; search?: string }) => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
           if (updates.page !== undefined) {
             if (updates.page > 1) next.set("page", updates.page.toString());
             else next.delete("page");
+          }
+          if (updates.search !== undefined) {
+            if (updates.search.trim())
+              next.set("search", updates.search.trim());
+            else next.delete("search");
           }
           return next;
         },
@@ -107,6 +114,22 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     },
     [setSearchParams],
   );
+
+  // Keep local search input in sync if URL search param changes externally
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setSearchInput(searchQuery), 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  // Debounce search input by 300ms before updating URL and querying API
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput.trim() !== searchQuery) {
+        updateFilters({ search: searchInput.trim(), page: 1 });
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput, searchQuery, updateFilters]);
 
   const loadProducts = useCallback(async () => {
     if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PRODUCTS)) return;
@@ -119,12 +142,14 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         ? await ProductController.getProducts({
             page,
             limit: ADMIN_PAGE_SIZE,
+            search: searchQuery.trim() || undefined,
             sort_by: sortBy,
             sort_order: sortOrder,
           })
         : await ProductController.getDiscardedProducts({
             page,
             limit: ADMIN_PAGE_SIZE,
+            search: searchQuery.trim() || undefined,
             sort_by: sortBy,
             sort_order: sortOrder,
           });
@@ -136,7 +161,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       setError(result.error || t(AppLocales.Admin.Products.Errors.LoadList));
     }
     setLoading(false);
-  }, [can, page, setLoading, sortBy, sortOrder, t, view]);
+  }, [can, page, searchQuery, setLoading, sortBy, sortOrder, t, view]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -168,20 +193,20 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       {
         key: ADMIN_PRODUCT_TABLE_KEYS.PRICE,
         header: t(AppLocales.Admin.Products.Table.Price),
-        sortKey: ADMIN_PRODUCT_SORT_KEYS.PRICE_UNIT_AMOUNT,
+        sortKey: ADMIN_PRODUCT_SORT_KEYS.UNIT_AMOUNT,
         render: (product) => (
           <div className="font-medium text-base-content">
-            {formatPrice(product.price_unit_amount, product.currency, "Free")}
+            {formatPrice(product.unit_amount, product.currency, "Free")}
           </div>
         ),
       },
       {
-        key: ADMIN_PRODUCT_TABLE_KEYS.CYCLE,
-        header: t(AppLocales.Admin.Products.Table.Cycle),
-        sortKey: ADMIN_PRODUCT_SORT_KEYS.CYCLE,
+        key: ADMIN_PRODUCT_TABLE_KEYS.INTERVAL,
+        header: t(AppLocales.Admin.Products.Table.Interval),
+        sortKey: ADMIN_PRODUCT_SORT_KEYS.INTERVAL,
         render: (product) => (
           <span className="text-body-m capitalize text-base-content">
-            {product.cycle || "One-time"}
+            {product.interval || "One-time"}
           </span>
         ),
       },
@@ -203,12 +228,16 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
             ? ADMIN_PRODUCT_SORT_KEYS.CREATED_AT
             : ADMIN_PRODUCT_SORT_KEYS.DISCARDED_AT,
         className: "text-center",
-        render: (product) =>
-          formatAdminDate(
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? product.created_at
-              : product.discarded_at,
-          ),
+        render: (product) => (
+          <DateTime
+            value={
+              view === ADMIN_VIEW_MODES.ACTIVE
+                ? product.created_at
+                : product.discarded_at
+            }
+            format={DateTimeFormats.ADMIN}
+          />
+        ),
       },
       {
         key: ADMIN_PRODUCT_TABLE_KEYS.ACTIONS,
@@ -309,39 +338,55 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           ) : null
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS) && (
-          <Tabs
-            value={view}
-            onChange={(tab) => {
-              navigate(
-                tab === ADMIN_VIEW_MODES.ACTIVE
-                  ? AppRoutes.client.protected.admin.PRODUCTS
-                  : AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN,
-              );
-              updateFilters({ page: 1 });
-            }}
-            items={[
-              {
-                value: ADMIN_VIEW_MODES.ACTIVE,
-                label: t(AppLocales.Admin.Products.Tabs.ActiveProducts),
-                icon: iconsLib.sparkles,
-                count:
-                  view === ADMIN_VIEW_MODES.ACTIVE
-                    ? pagination?.total_count
-                    : undefined,
-              },
-              {
-                value: ADMIN_VIEW_MODES.DISCARDED,
-                label: t(AppLocales.Admin.Products.Tabs.RecycleBin),
-                icon: iconsLib.trash,
-                count:
-                  view === ADMIN_VIEW_MODES.DISCARDED
-                    ? pagination?.total_count
-                    : undefined,
-              },
-            ]}
-          />
-        )}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS) ? (
+            <Tabs
+              value={view}
+              onChange={(tab) => {
+                navigate(
+                  tab === ADMIN_VIEW_MODES.ACTIVE
+                    ? AppRoutes.client.protected.admin.PRODUCTS
+                    : AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN,
+                );
+                updateFilters({ page: 1 });
+              }}
+              items={[
+                {
+                  value: ADMIN_VIEW_MODES.ACTIVE,
+                  label: t(AppLocales.Admin.Products.Tabs.ActiveProducts),
+                  icon: iconsLib.sparkles,
+                  count:
+                    view === ADMIN_VIEW_MODES.ACTIVE
+                      ? pagination?.total_count
+                      : undefined,
+                },
+                {
+                  value: ADMIN_VIEW_MODES.DISCARDED,
+                  label: t(AppLocales.Admin.Products.Tabs.RecycleBin),
+                  icon: iconsLib.trash,
+                  count:
+                    view === ADMIN_VIEW_MODES.DISCARDED
+                      ? pagination?.total_count
+                      : undefined,
+                },
+              ]}
+            />
+          ) : (
+            <div />
+          )}
+          <div className="w-full sm:w-72">
+            <SearchInput
+              placeholder={t(AppLocales.Admin.Products.SearchPlaceholder)}
+              searchableKeys={[
+                t(AppLocales.Admin.Products.Table.Product),
+                t(AppLocales.Admin.Products.Table.Code),
+              ]}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onClear={() => setSearchInput("")}
+            />
+          </div>
+        </div>
       </PageHeader>
 
       {/* Table & States */}
@@ -370,6 +415,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={handleSort}
+            onRowClick={(record) => navigate(AppRoutes.withId(AppRoutes.client.protected.admin.PRODUCT_DETAIL, record.id))}
           />
           <AdminPagination
             pagination={pagination}
@@ -404,4 +450,3 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     </div>
   );
 };
-

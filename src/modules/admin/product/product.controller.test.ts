@@ -30,9 +30,9 @@ describe("ProductController", () => {
           attributes: {
             id: "p1",
             name: "Pro Plan",
-            price_unit_amount: 1999,
+            unit_amount: 1999,
             currency: "USD",
-            cycle: "month",
+            interval: "month",
             active: true,
           },
         },
@@ -68,6 +68,20 @@ describe("ProductController", () => {
       );
     });
 
+    it("passes search parameter to ProductService", async () => {
+      vi.mocked(ProductService.getProducts).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "OK" },
+          data: [],
+          meta: { pagination: { page: 1, limit: 20, total_count: 0, total_pages: 0 } },
+        },
+      } as never);
+
+      await ProductController.getProducts({ page: 1, search: "Pro" });
+
+      expect(ProductService.getProducts).toHaveBeenCalledWith({ page: 1, search: "Pro" });
+    });
+
     it("returns error on failure", async () => {
       vi.mocked(ProductService.getProducts).mockResolvedValue({
         data: {
@@ -90,7 +104,7 @@ describe("ProductController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { product: mockProduct },
+          data: mockProduct,
         },
       };
 
@@ -142,16 +156,16 @@ describe("ProductController", () => {
       const formValues: IAdminProductFormValues = {
         name: "Enterprise",
         description: "Enterprise tier",
-        price_unit_amount: 9900,
+        unit_amount: 9900,
         currency: "USD",
-        cycle: "year",
+        interval: "year",
         active: true,
       };
 
       const mockResponse = {
         data: {
           status: { code: 201, success: true, message: "Product created" },
-          data: { product: { id: "p3", name: "Enterprise" } },
+          data: { id: "p3", name: "Enterprise" },
         },
       };
 
@@ -173,16 +187,16 @@ describe("ProductController", () => {
       const formValues: IAdminProductFormValues = {
         name: "Enterprise Updated",
         description: "Updated description",
-        price_unit_amount: 9900,
+        unit_amount: 9900,
         currency: "USD",
-        cycle: "year",
+        interval: "year",
         active: true,
       };
 
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Product updated" },
-          data: { product: { id: "p3", name: "Enterprise Updated" } },
+          data: { id: "p3", name: "Enterprise Updated" },
         },
       };
 

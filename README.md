@@ -2,43 +2,97 @@
 
 <div align="center">
 
-# Rexone Web
+# RexOne Web
 
-### A disciplined React client, built to turn a powerful foundation into a clear product experience.
+### Start from One. Not from Zero. A disciplined React client, built to turn a powerful foundation into a clear product experience.
 
-A production-minded web foundation for authenticated products. Identity, payments, access control, media, AI, real-time delivery, localization, client telemetry, and reusable interface primitives meet here—not as isolated demos, but as one coherent browser application.
+A production-grade web foundation for authenticated, modern web applications. Identity, payments, access control, media, AI, real-time delivery, localization, client telemetry, and reusable interface primitives meet here—not as isolated demos, but as one coherent, modular browser application.
 
-Built under the same creed as Rexone Core: **clear in thought, exact in structure, simple in use, and strong enough to endure what comes after launch.**
+Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clear in thought, exact in structure, simple in use, and strong enough to endure what comes after launch.**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Sponsor rex-9](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rex-9)
+[![Product Hunt](https://img.shields.io/badge/Product_Hunt-Live-DA552F?logo=producthunt&logoColor=white)](https://www.producthunt.com/products/rexone)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-rexone.rex9.me-FF2238?logo=firefox&logoColor=white)](https://rexone.rex9.me)
 [![CI](https://github.com/rex-9/rexone-web/actions/workflows/test.yml/badge.svg)](https://github.com/rex-9/rexone-web/actions/workflows/test.yml)
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Explore the client](#feature-map) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Analytics Guide](ANALYTICS.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [E2E Testing](#end-to-end-testing-playwright) · [Connect the API](#configuration)
+[Live Demo ↗](https://rexone.rex9.me) · [Product Hunt ↗](https://www.producthunt.com/products/rexone) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Agent Governance](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md) · [Design System](docs/DESIGN_SYSTEM.md) · [AI Discovery & GEO](docs/SEO_GEO.md) · [Public Distribution](https://github.com/rex-9/rexone-core/blob/dev/docs/DISTRIBUTION.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
 
 </div>
 
 ---
 
-> [!IMPORTANT]
-> **🏛️ Unified Ecosystem**: For the complete cross-platform architecture, feature parity matrix, and communication protocols between Core, Web, and Mobile, see **[ECOSYSTEM.md](ECOSYSTEM.md)**.
->
-> **📜 Constitutional Law**: All development must strictly adhere to the architecture, design system, and state laws in **[LAW.md](LAW.md)**. Zero exceptions.
+### 🏛️ Unified Ecosystem & Constitutional Directives
 
-## Why Rexone Web?
+| Resource                            | Purpose & Canonical Specification                                                                                                                                                                                                                                                                                      |
+| :---------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **🏛️ Unified Ecosystem**            | Complete cross-platform architecture, feature parity matrix, and communication protocols across Core, Web, and Mobile: **[Ecosystem Architecture](https://github.com/rex-9/rexone-core/blob/dev/ECOSYSTEM.md)** and **[Visual Walkthrough](https://github.com/rex-9/rexone-core/blob/dev/docs/VISUAL_WALKTHROUGH.md)** |
+| **📜 Constitutional Law**           | Non-negotiable architecture, design system, and state laws: **[LAW.md](LAW.md)** _(Zero exceptions)_                                                                                                                                                                                                                   |
+| **🤖 Operational Agent Governance** | Autonomous agent rules, secret isolation, and documentation synchronization: **[AGENTS.md](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md)**                                                                                                                                                                  |
+| **🌐 AI Discovery & GEO**           | Generative Engine Optimization, crawler allowlists, and LLM context files: **[AI Discovery & GEO Guide](docs/SEO_GEO.md)**                                                                                                                                                                                             |
+| **🌐 Public Distribution Index**    | Curated software directories, Awesome-lists, and community launch indexes: **[docs/DISTRIBUTION.md](https://github.com/rex-9/rexone-core/blob/dev/docs/DISTRIBUTION.md)**                                                                                                                                              |
+
+---
+
+## Why RexOne Web?
 
 A capable backend is only half a product. The browser still has to manage identity, expired sessions, protected navigation, asynchronous failures, payment handoffs, live connections, loading states, localization, and the thousand small interactions that decide whether a system feels dependable.
 
-Rexone Web exists so that work does not have to be improvised for every product built on Rexone Core.
+RexOne Web exists so that work does not have to be improvised or rebuilt from scratch for every product.
 
-This is not a gallery of components pretending to be an application architecture. Routes, contexts, controllers, services, models, modules, and design primitives have distinct responsibilities. Authentication flows preserve only appropriate state in the URL. API interceptors coordinate credentials and session expiry. Errors leave the browser as structured telemetry. Product capabilities remain grouped by domain instead of dissolving into a global collection of requests and screens.
+### The Purpose: Start from One. Not from Zero.
 
-The client is designed to **bend around the product**, never to make the product kneel before the foundation.
+Instead of burning money and compute wasting AI tokens on weak, inconsistent frontend scaffolding or rebuilding foundational authentication, RBAC dialogs, and real-time state machines again and again for every product, RexOne Web provides a sovereign, production-grade starting point.
+
+### Discipline-Driven Development (DDD): The Unvarnished Frontend Truth
+
+RexOne Web pioneers **Discipline-Driven Development (DDD)** for client-side applications. In an era where AI agents can generate hundreds of React components in seconds, the bottleneck is never component generation—it is **preventing chaotic state corruption, brittle DOM hacks, and architectural rot**.
+
+> _You bring the idea. AI writes the code. RexOne keeps both of you from destroying the foundation._
+
+#### Fearless Frontend Realities Others Hesitate to Reveal:
+
+1. **The Frontend AI Vibe-Coding Mess**: An unguided AI agent will gladly dump raw `fetch()` calls inside UI buttons, invent duplicate state atoms, or tangle business logic into JSX. Within 3 prompts, your context window is hopelessly corrupted. Discipline-Driven Development enforces strict boundaries: UI components own presentation, controllers coordinate outcomes, services handle transport, and models define contracts.
+2. **The "Full-Stack Server Framework" Quagmire**: Cramming API routing, database queries, background tasks, and client hydration into a single node runtime produces fragile houses of cards where a minor framework update breaks production auth and SSR rendering. True engineering enforces client-server separation: an API-first backend (Rails 8) and a sovereign client-first web portal (React 19).
+3. **Zero Deprecation Shims & Zombie Code**: Retaining dead code, backwards-compatibility shims, or duplicate props is cowardice. Under Constitutional Law U14, when a contract is superseded, the old code is wiped out completely.
+4. **100% Free Sovereignty**: Unlike commercial boilerplates that charge $300–$800 for basic auth or lock RBAC behind "pro tiers", RexOne Web is 100% free, Apache 2.0 open-source, and sovereign.
+
+### 📊 Architectural Comparison: RexOne vs Commercial Boilerplates
+
+| Dimension / Capability       | 🛡️ **RexOne Sovereign Trinity**                                                               | ⚡ **ShipFast & Indie Kits ($169–$299)**                                               | 🏢 **Makerkit & Supastarter ($299–$699)**                                                 | 🚂 **Jumpstart Pro & Bullet Train ($249–$749)**                                   | 🐍 **SaaS Pegasus & Larafast ($99–$795)**                                         |
+| :--------------------------- | :-------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| **Architectural Model**      | ✅ **Sovereign Tri-Platform**: Rails 8 API + React 19 SPA + pure Flutter 3 native client      | ❌ **Node Monolith**: API, DB, jobs & DOM crammed into 1 fragile runtime             | ❌ **Client-Heavy BaaS**: Direct client DB queries + scattered edge functions     | ⚠️ **HTML Monolith**: Server-rendered HTML with Turbo/Livewire                    | ⚠️ **Monolithic Web**: Django/Laravel web-only runtimes with no mobile client     |
+| **Native Mobile App**        | ✅ **Native 60fps Flutter**: Shared contracts, hardware media, push & offline SQLite          | ❌ **None or Webview Shell**: Sluggish Capacitor/Cordova wrapper                     | ⚠️ **Fragmented SDKs**: Direct queries with zero encapsulation                           | ⚠️ **Turbo / Webview**: Web pages wrapped in a native navigation shell            | ❌ **None**: No mobile client provided                                            |
+| **Offline-First Durability** | ✅ **Drift SQLite (`rexone_offline`)**: Schema mirroring, offline subtitles & AES-256 saves   | ❌ **None**: Application breaks entirely on network disconnect                       | ⚠️ **No Relational Offline**: Unreliable offline sync across foreign keys         | ❌ **None**: Server-rendered pages require constant connectivity                  | ❌ **None**: Application breaks on disconnect                                      |
+| **Database Integrity**       | ✅ **Strict Relational PostgreSQL**: Foreign keys, ACID, UUIDs, soft-deletes                  | ⚠️ **ORM Inconsistencies**: Serverless connection pool limits on Prisma/Drizzle      | ✅ **PostgreSQL**: Relational integrity via managed Postgres instance             | ✅ **PostgreSQL / MySQL**: Mature relational ORM (ActiveRecord)                   | ✅ **PostgreSQL / MySQL**: Mature relational ORM (Django ORM / Eloquent)           |
+| **Background Processing**    | ✅ **Solid Queue (Fibers + Threads)**: Workload pooling, recurring cron, zero Redis costs     | ❌ **Serverless Timeouts**: Forced into third-party Inngest, QStash, or Celery ($$$) | ⚠️ **Edge Functions**: Strict 10s CPU limits, no persistent background workers    | ⚠️ **Redis Dependency**: Requires external Redis broker & extra hosting RAM       | ⚠️ **Redis Dependency**: Requires Celery/Redis daemon configuration                |
+| **Real-Time Delivery**       | ✅ **Native Action Cable**: Persistent WebSockets, auto-reconnect & binary STT/TTS            | ❌ **Broken on Serverless**: Forced into expensive Pusher / Ably tiers ($$$)         | ⚠️ **Supabase Realtime**: Row-level broadcast, high connection pricing tiers      | ⚠️ **External Broker**: Requires Redis/Reverb daemon configuration                | ⚠️ **External Broker**: Requires Pusher/Reverb daemon configuration                |
+| **Object Storage**           | ✅ **Self-Hosted Garage S3**: High-performance local S3, zero egress bills                    | ❌ **Vendor Cloud**: AWS S3 / Cloudflare R2 egress fees                              | ⚠️ **Proprietary Storage**: Vendor-locked BaaS pricing ladders                    | ⚠️ **ActiveStorage**: Tied to third-party cloud S3 bucket bills                   | ⚠️ **Flysystem / S3**: Tied to third-party cloud S3 bucket bills                   |
+| **AI Workflows & Speech**    | ✅ **Durable Queued AI**: Chunked streaming, 16kHz live STT, binary MP3 TTS                   | ⚠️ **Edge Timeouts**: LLM streams crash on cold starts or Vercel limits              | ❌ **Client Leaks**: Client-side API keys or basic Edge Function calls            | ⚠️ **Basic Wrappers**: Simple synchronous chat endpoints                          | ⚠️ **Basic Wrappers**: Simple synchronous chat endpoints                          |
+| **Anti-Vibe Governance**     | ✅ **Constitutional Law (`LAW.md`)**: Laws U14/U15 stop AI tech debt and zombie code          | ❌ **Unguided Vibe-Coding**: Fragile abstractions, dead shims & runaway debt         | ❌ **Scattered Cloud Logic**: Code fragmented across dozens of uncoordinated functions   | ⚠️ **Conventions Only**: No explicit constitutional AI agent rules                | ⚠️ **Conventions Only**: No explicit constitutional AI agent rules                |
+| **Cost & Sovereignty**       | ✅ **100% Free & Open (Apache 2.0)**: Zero paywalls, zero "Pro" upsells, sovereign VPS deploy | ❌ **$169–$299 Paid License**: Single-stack Next.js web MVPs (ShipFast, LaunchFast)   | ❌ **$299–$699 Paid License**: Closed-source seat paywalls (Makerkit, Supastarter) | ❌ **$249–$749 Paid License**: Proprietary paywalls (Jumpstart Pro, Bullet Train)  | ❌ **$99–$795 Paid License**: Commercial starter kit paywalls (Pegasus, Larafast)  |
+
+### 🥊 RexOne vs The Competition (ShipFast, Makerkit, Supastarter, Jumpstart Pro, SaaS Pegasus, Bullet Train, Larafast)
+
+- **ShipFast ($169–$299)**: Built by Marc Lou for quick indie hacker web MVPs. Excellent for launching a landing page with Stripe in 24 hours, but hits immediate architectural limits when you need real background queues, a native mobile app, enterprise RBAC, or AI agent constraints.
+- **Makerkit ($299–$699)**: High-quality B2B Next.js/Remix SaaS kit with team multi-tenancy, but locked behind a commercial license, tied to expensive Supabase cloud ladders, and web-only.
+- **Supastarter ($299–$599)**: Modern TypeScript/Next.js boilerplate with good i18n, but web-only, subject to 10s serverless timeouts, and lacking mobile offline sync.
+- **Jumpstart Pro ($249/yr or $749)** & **Bullet Train ($995)**: Solid Rails foundations, but monolithic server-rendered HTML. For mobile, Jumpstart relies on Turbo Native (wrapping web views inside a native shell) rather than compiled 60fps Flutter UI.
+- **SaaS Pegasus ($295–$795)**: The leading Django SaaS kit, but web-only, monolithic, and requires external Redis hosting for Celery.
+- **RexOne (100% Free & Open)**: Forges Rails 8 API + React 19 Web + Flutter 3 Mobile into one synchronized ecosystem, eliminates Redis with Solid Queue on PostgreSQL 18, includes self-hosted Garage S3 storage, and enforces constitutional AI laws (`LAW.md`) so AI coding agents never destroy the architecture.
+
+RexOne Web stops architectural decay before it starts:
+
+- **Server Frameworks on the Frontend Suck**: Clumsy server-rendered view hacks cannot match the fluid, state-aware responsiveness demanded by modern users. React 19 + TypeScript provides complete type safety, component modularity, and rich interactive control.
+- **Zero-Lag Developer Experience (Vite HMR)**: No waiting 3–5 seconds on every file save. Native ESM and esbuild deliver sub-50ms Hot Module Replacement (HMR) and instantaneous cold starts. Production builds yield pure static assets deployable on any Nginx container or CDN edge with zero Node runtime memory footprint.
+- **Client-First Responsibility**: Routes, contexts, controllers, services, models, modules, and design primitives have strict, distinct responsibilities.
+- **The Foundation Bends Around the Product**: RexOne Web provides the customer-facing application shell and a complete operational Admin Portal (RBAC, users, products, coupons, feedback, client logs) backed by the same versioned API contracts.
 
 Its boundaries are deliberate. UI components own interaction and presentation. Controllers coordinate application outcomes. Services own transport. Models describe contracts. Contexts own cross-cutting browser state. Modules keep product capabilities together. The result is a foundation that can grow without making every feature depend on every other feature.
 
@@ -46,9 +100,32 @@ And no—the interface was not assembled by stacking dependencies until a demo a
 
 Authentication edge cases were traced. Sensitive passcodes were kept out of URLs. Session replacement and expiry were handled centrally. Runtime and React failures were made observable. Translation keys were organized by domain. Real user journeys are verified by automated Playwright E2E suites. The client is built to remain understandable after the first release, not merely attractive before it.
 
+## Who RexOne Web is for
+
+RexOne Web is built for React teams, founder-engineers, and agencies creating authenticated browser products on RexOne Core that need both a customer-facing application foundation and a permission-aware operational portal.
+
+It is a particularly good fit when a web product needs several of these concerns to behave consistently:
+
+- Complete identity, confirmation, recovery, Google sign-in, user self-account deletion, and session-expiry flows.
+- User and administrator experiences backed by the same IAM contract.
+- Stripe checkout, subscriptions, purchases, and entitlement-aware interfaces.
+- Queued AI, media, and notification workflows that update through real-time events.
+- Centralized localization, browser-local date and time presentation, analytics, and client telemetry.
+- Reusable responsive design primitives instead of one-off page implementations.
+
+RexOne Web is not a generic component showcase or an independent mock frontend. It is the reference browser client for the RexOne ecosystem, and its transport and domain contracts are designed to follow RexOne Core.
+
+## What you get
+
+- **A working product shell:** public, authenticated, profile, commerce, AI, and administration experiences share one routing and state architecture.
+- **A serious admin client:** granular IAM controls navigation and actions across operational resource modules.
+- **Centralized infrastructure:** API interception, socket lifecycle, localization, analytics, telemetry, persistence, and timezone handling stay out of individual pages.
+- **Reusable interface foundations:** forms, dialogs, tables, detail layouts, feedback states, and responsive behavior are shared deliberately.
+- **Real ecosystem integration:** the application consumes RexOne Core's versioned JSON contracts and real-time operation lifecycle.
+
 ## The philosophy
 
-Rexone Web follows the same doctrine as the core it serves:
+RexOne Web follows the same doctrine as the core it serves:
 
 > **Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle.**
 
@@ -60,27 +137,29 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 
 ## Feature map
 
-| Foundation    | What is ready                                                                          | Details                                                |
-| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry           | [Authentication & security](#authentication--security) |
-| Navigation    | Public and protected routes with centralized route definitions                         | [Routing & access](#routing--access)                   |
-| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography             | [Design system](#design-system)                        |
-| State         | React contexts, Jotai atoms, and deliberate browser persistence                        | [State & application flow](#state--application-flow)   |
-| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows            | [Payments & entitlements](#payments--entitlements)     |
-| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, optimal badges       | [Media & assets](#media--assets)                       |
-| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition | [Speech & audio](#speech--audio)                       |
-| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools  | [AI capabilities](#ai-capabilities)                    |
-| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                     | [Real-time delivery](#real-time-delivery)              |
-| Localization  | English, Spanish, and Burmese resources with organized typed keys                      | [Localization](#localization)                          |
-| Observability | React boundary, global browser capture, structured context, and Core API delivery      | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC    | [Administration](#administration)                      |
-| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model        | [End-to-End Testing](#end-to-end-testing-playwright)   |
-| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview       | [Quality toolchain](#quality-toolchain)                |
-| Delivery      | Vite production output and a Docker-based development environment                      | [Delivery](#delivery)                                  |
+| Foundation    | What is ready                                                                                                                                         | Details                                                                                 |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, user self-account deletion, session expiry                                              | [Authentication & security](#authentication--security)                                  |
+| Navigation    | Public and protected routes with centralized route definitions                                                                                        | [Routing & access](#routing--access)                                                    |
+| Design        | Reusable inputs (including DateTimePicker, NumberInput), buttons, dialogs, overlays, media, themes, and typography                                    | [Design system](docs/DESIGN_SYSTEM.md)                                                  |
+| State         | React contexts, Jotai atoms, and deliberate browser persistence                                                                                       | [State & application flow](#state--application-flow)                                    |
+| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows                                                                           | [Payments & entitlements](#payments--entitlements)                                      |
+| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, thumbnails, progressive video/audio streaming with SRT subtitles and optimal badges | [Media & assets](#media--assets)                                                        |
+| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition                                                                | [Speech & audio](#speech--audio)                                                        |
+| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools                                                                 | [AI capabilities](#ai-capabilities)                                                     |
+| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                                                                                    | [Real-time delivery](#real-time-delivery)                                               |
+| Localization  | English, Spanish, and Burmese resources with organized typed keys                                                                                     | [Localization](#localization)                                                           |
+| Observability | React boundary, global browser capture, structured context, and Core API delivery                                                                     | [Client observability](#client-observability)                                           |
+| Admin         | User (with confirmation status auditing), role, permission, product (with access inspection), chat, asset, and notification management with RBAC      | [Administration](#administration--operational-consoles)                                 |
+| Governance    | Constitutional Architecture (LAW.md) & AI Agent Operational Rules (AGENTS.md)                                                                         | [LAW.md](LAW.md) · [AGENTS.md](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md) |
+| Testing (E2E) | 21 real user journey specs across 6 auth flows via Playwright Page Object Model                                                                       | [End-to-End Testing](#end-to-end-testing-playwright)                                    |
+| AI & GEO      | SaaS Boilerplate Master Comparison page (/vs), crawler pre-rendering, llms.txt, llms-full.txt, robots.txt, Schema.org, JSON-LD, sitemap | [AI Discovery & GEO](docs/SEO_GEO.md)                                                   |
+| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview                                                                      | [Quality toolchain](#quality-toolchain)                                                 |
+| Delivery      | Vite production output and a Docker-based development environment                                                                                     | [Delivery](#delivery)                                                                   |
 
 ## Architecture
 
-Rexone Web keeps browser concerns explicit and domain behavior grouped.
+RexOne Web keeps browser concerns explicit and domain behavior grouped.
 
 ```mermaid
 flowchart LR
@@ -89,7 +168,7 @@ flowchart LR
     UI --> Controllers[Controllers]
     Controllers --> Services[Domain services]
     Services --> API[Axios API client]
-    API --> Core[Rexone Core]
+    API --> Core[RexOne Core]
 
     Core <-->|Action Cable| Socket[Socket services & hooks]
     Socket --> UI
@@ -128,14 +207,22 @@ The UI does not need to know how Axios is configured, and transport code does no
 - Central handling for expired or replaced sessions, with a localized sign-in message.
 - Protected and public route boundaries.
 - Google logout coordination for Google-backed accounts.
+- User self-account deletion: Dedicated Danger Zone in Profile/User settings prompting a destructive confirmation dialog with non-recoverable email warnings and configurable support email contact, followed by session eviction.
 
-Authentication delegates identity rules and token authority to Rexone Core while keeping browser behavior, navigation, and feedback cohesive.
+Authentication delegates identity rules and token authority to RexOne Core while keeping browser behavior, navigation, and feedback cohesive.
+
+### Product analytics
+
+- Firebase Analytics uses the Web stream from the shared RexOne GA4 property.
+- Route changes emit `view_page` centrally without query strings, while successful authentication, onboarding, product, purchase, and notification interactions use the shared `action_noun` event contract.
+- Every event includes `platform: web`; authenticated sessions use only the opaque RexOne user ID and never send email or other personal data to Analytics.
+- Firebase client identifiers are configured through the `VITE_FIREBASE_*` variables in [`.env.example`](.env.example).
 
 ### Routing & access
 
 Client and server paths are defined in [`src/AppRoutes.ts`](src/AppRoutes.ts), giving components and services one source of truth.
 
-Public flows include sign-in, sign-up, email confirmation, forgotten passcodes, and passcode reset. Protected flows include home, profile, payment, AI, and sign-out. Access checks and current-user requests use the versioned Core API.
+Public flows include the landing page, Comparison & Starter Kit Guide ([`/vs`](https://rexone.rex9.me/vs)), Privacy Policy ([`/privacy`](https://rexone.rex9.me/privacy)), Terms & Conditions ([`/terms`](https://rexone.rex9.me/terms)), sign-in, sign-up, email confirmation, forgotten passcodes, and passcode reset. Protected flows include home, profile, payment, AI, and sign-out. Access checks and current-user requests use the versioned Core API.
 
 Authentication is presented as a URL-addressable dialog flow. This allows redirects from email links and session expiry to land on the correct step while keeping passcodes in memory rather than browser history.
 
@@ -149,442 +236,172 @@ The client enforces a synchronized three-tier administrative hierarchy:
   - **Permission Provenance**: Permissions granted to admin roles grant access to both client (`/v1/*`) and admin (`/v1/admin/*`) endpoints. Permissions in non-admin roles (such as `user`) only grant access to `/v1/*`.
   - **Sidebar Visibility**: The admin sidebar dynamically renders **only** the navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role.
 
-### Administration
+### Administration & Operational Consoles
 
-The client admin panel architecture provides a protected workspace for managing the application under `src/modules/admin/`. It includes:
+The client provides a permission-governed operational administration portal (`src/modules/admin/`). Instead of scattered modals or ad-hoc dialogs, administrative workflows are organized into dedicated operational consoles:
 
-- **Architecture**: Sidebar navigation, permission-based visibility, and strict route guards (`AdminRootRoute`, `AdminHomeRoute`).
-- **Client-Side RBAC**: The `usePermissions` hook evaluates the current user's role and permission matrix to determine access and UI state dynamically.
-- **Admin Modules & Dedicated Create/Edit Consoles**:
-  - **Users**: User management (`/admin/users`), user creation (`/admin/users/create`), and user edit (`/admin/users/:id/edit`) powered by `AdminUserForm`.
-  - **Roles**: Role and permission management (`/admin/roles`), role creation (`/admin/roles/create`), and role edit (`/admin/roles/:id/edit`) powered by `AdminRoleForm`.
-  - **Products**: Product and pricing management (`/admin/products`), product creation (`/admin/products/create`), and product edit (`/admin/products/:id/edit`) powered by `AdminProductForm`.
-  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), and template edit (`/admin/notifications/:id/edit`) powered by `AdminNotificationForm`.
-  - **Accesses**: Entitlements and access management (`/admin/accesses`), access grant console (`/admin/accesses/create`), and validity extension console (`/admin/accesses/:id/edit`) powered by `AdminAccessForm`.
-  - **Assets**: Asset control center (`/admin/assets`), batch upload console (`/admin/assets/create`), and asset edit console (`/admin/assets/:id/edit`) powered by `AdminAssetForm`. Canonical server-generated video thumbnails are consumed from the asset response and updated live through `asset_thumbnail_generated`; clients only show placeholders while generation is pending. Super admins additionally receive Garage and VPS capacity telemetry with separate object and byte usage for the `dev/`, `uat/`, and `prod/` storage partitions; regular admins never request or render these statistics.
-  - **Versions**: Super-admin-only version catalogue (`/admin/versions`), create (`/admin/versions/create`), edit (`/admin/versions/:id/edit`), recycle bin (`/admin/versions/bin`), and user versions (`/admin/user-versions`, `GET /v1/admin/client/versions/user_versions`). Nested user versions for one version remain at `/admin/versions/:id/user-versions` (`GET /v1/admin/client/versions/:id/user_versions`). Updates use PUT. There is no hard delete.
-  - **Chat**: Moderation tools for chat rooms and messages.
-  - **Feedbacks & Logs**: User feedback review and client runtime error telemetry.
-- **Form Component Unification**: Every admin module featuring Create and Edit shares a single, reusable `Admin[Entity]Form` component (`mode: CREATE | EDIT`) between its dedicated create and edit route pages. Modals and dialogs are retired in favor of full pages.
-- **Table Compactness**: `AdminTableActions` uses compact square icon action buttons (pencil for edit, red bin for delete/discard/revoke, arrow path for restore) to optimize horizontal table space.
-- **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
+- **Modular Domain Consoles**: Full-page, searchable workflows for Users (with quick confirmation for unconfirmed accounts), Roles & Permissions (IAM), Products & Pricing (with access grants user inspection), Coupons (with discount audits and batch generation), Notifications & Broadcasts, Entitlements (Accesses), Media Asset Control, Version Catalogues, Chat Moderation, and Feedback Telemetry.
+- **Unified Form & Table Contracts**: Reusable entity forms (`CREATE` and `EDIT` modes), compact action buttons, deep filterable tables, and dedicated recycle bins for recovering soft-deleted records. Form molecules include specialized controls such as `DateTimePicker` and `NumberInput` (with automated leading-zero sanitization).
+- **Dynamic Client-Side RBAC**: Route guards and sidebar navigation adapt dynamically to the authenticated user's permissions, ensuring non-admin users or partial admins only access authorized modules.
+- **Interactive Analytics**: Overview dashboard KPI cards link directly to corresponding operational tables, while revenue charts incorporate coupon redemptions count and period discounts with accurate current-day metrics.
 
-### Design system
-
-The design layer provides reusable:
-
-- Buttons, Google authentication actions, and text links.
-- Text, textarea, passcode, dropdown, and toggle inputs.
-- Dialogs, toasts, and loading overlays.
-- Images, video, profile avatars, and navigation components.
-- Color, typography, spacing, radius, shadow, and motion primitives.
-- Theme and language controls.
-
-Tailwind CSS, DaisyUI, Headless UI, Heroicons, and `tailwind-merge` provide the implementation substrate without owning the application architecture.
-
-### State & application flow
-
-React contexts coordinate authentication, loading, toast feedback, and error boundaries. Jotai provides lightweight atomic state where shared application state benefits from it. Reusable hooks manage themes, countdowns, sockets, and AI socket behavior.
-
-Browser persistence is used selectively. For example, sign-in cooldown timing survives a refresh, while passcodes do not enter local storage or query parameters.
-
-### Payments & entitlements
-
-The payment module communicates with Rexone Core for:
-
-- Available product retrieval with pagination.
-- Stripe Checkout Session creation.
-- Payment success and cancellation routes.
-- Subscription listing, cancellation, and resumption contracts.
-- Transaction retrieval with pagination.
-- Access listing and entitlement checks.
-
-Stripe secrets and webhook processing remain on the backend. The browser owns product presentation and secure checkout handoff, not payment authority.
-
-### Real-time delivery
-
-The socket service provides an Action Cable-compatible connection to Rexone Core with authenticated connection setup, message handling, reconnection, and teardown. Shared hooks expose connection state and lifecycle behavior to React features.
-
-This gives product modules a real-time path without coupling components directly to WebSocket protocol details.
-
-### Media & assets
-
-The client provides comprehensive media upload, presentation, and compression management integrated with Rexone Core:
-
-- **Bulk Upload Dialog (`AdminAssetUploadDialog`)**: Multi-file selection queue supporting uploads up to **10 MB** for images/non-videos and **100 MB** for videos when the media container is enabled.
-- **Optimistic Table Prepending**: Previews and newly uploaded asset records appear immediately in the asset table upon upload completion rather than blocking until the entire batch completes.
-- **Real-Time Cable Compression Sync**: Listens to ActionCable `asset_updated` events over `NotificationChannel`, automatically reflecting status transitions (`pending` $\rightarrow$ `processing` $\rightarrow$ `ready` or `optimal`), updated file sizes, and reduction percentages in real-time.
-- **Race-Condition Safeguard (`pendingSocketUpdates`)**: An in-memory buffer catches any socket completion events that arrive before an asset is registered in the table state, merging updates deterministically without dropping events or requiring manual page refreshes.
-- **Action Guards**: Action buttons (compress, edit, delete) are dynamically disabled while an asset is in `pending` or `processing` states to prevent race conditions and duplicate jobs.
-- **Optimal & Pass Badging**: Renders color-coded status badges (`optimal`, `ready`, `processing`, `pending`) and allows an admin to trigger a manual secondary compression pass (safeguarded by a 2-pass cap).
-- **Empty Recycle Bin (`AdminEmptyRecycleBinButton`)**: Built-in modal confirmation button that allows admins to empty all discarded items from the recycle bin in one click, permanently purging database records and remote storage objects.
-- **Batch Operations & Multi-Select (`AdminBatchActionBar` & `AdminTable`)**: Support for row checkboxes in `AdminTable`, allowing admins to multi-select items and perform batch discards in the active view, or batch restorations and permanent batch deletions in the recycle bin.
-- **Unified Modular Analytics Cards (`AdminKpiCard`)**: High-reusability metric KPI card shared between the Analytics overview and Asset storage capacity dashboards.
-- **Presentation Primitives**: Standardized `Asset`, `Image`, and `Video` components prevent raw `<img>` or `<video>` tags and handle loading skeletons, fallbacks, and aspect ratios cleanly.
-
-### Speech & audio
-
-The speech integration provides audio playback and streaming communication with Rexone Core's speech engine:
-
-- **Live Audio Streaming & Recognition (`SpeechLiveChannel`)**:
-  - Direct microphone streaming to Rexone Core using Action Cable over WebSockets (`SpeechLiveChannel`).
-  - High-performance audio ingestion via `AudioWorklet` (`pcm-processor.js`) with automatic fallback to `ScriptProcessorNode`.
-  - Client-side downsampling from native sample rates (e.g. 44.1kHz / 48kHz) down to 16kHz mono linear PCM 16-bit, buffered into 3,200-byte chunks and base64-framed for low-latency transmission.
-  - Real-time RMS voice energy tracking calculating normalized voice amplitude levels (`voiceLevel: 0..1`) for visual waveform frequency bars.
-  - Stream lifecycle management with visibility pause/teardown handling (`document.visibilityState === "hidden"`), network disconnect recovery, and graceful session abort.
-- **Binary MP3 Audio Streaming**: Direct playback of synthesized audio from `POST /v1/speech/tts` returning raw binary MP3 streams without base64 wrapper overhead.
-- **Chat TTS Synthesis**: Asynchronous text-to-speech generation for conversational messages via `SpeechController.queueTextToSpeech()`, receiving `tts_ready` notifications via Action Cable and playing attached audio assets.
-- **Microphone Permissions & Web Recovery**: Browser permission guidance with lock-icon address bar instructions and instant retry flow.
-
-### AI capabilities
-
-The AI module supports the Core API contracts for:
-
-- Non-blocking conversational chat backed by durable queued processing in Rexone Core.
-- Persisted rooms, messages, history, and processing state across navigation, refreshes, and closed sessions.
-- Clear “AI is thinking” feedback with additional submissions disabled only for the room being processed.
-- Real-time completion and failure events through the shared notification socket channel.
-- Automatic history refresh when a completed response belongs to the room currently on screen.
-- Global success or failure alerts while the user browses elsewhere in the application.
-- Room creation, deletion, and renaming with pagination.
-- Conversation clearing.
-- Summarization.
-- Translation.
-- Analysis.
-
-The browser owns interaction and presentation, not the lifetime of AI work. A user can leave the page or close the browser without losing the request; the persisted assistant response is waiting in history when they return. Prompts, provider credentials, queue execution, retries, and DeepSeek integration remain behind the Core service boundary.
-
-### Localization
-
-i18next and react-i18next provide runtime localization with English, Spanish, and Burmese resources.
-
-Translation keys are organized by module in [`src/locales/app_locales.ts`](src/locales/app_locales.ts), producing discoverable paths such as `AppLocales.Auth.SignInPasscode.Title`. React components use the reactive `useTranslate()` helper, while services use `translate()` outside React lifecycle rules.
-
-Every API request also carries the selected supported locale in the `X-Locale` header. Rexone Core currently accepts English and Burmese, so unsupported client locales—including Spanish—are mapped to English for backend messages.
-
-The structure is intended to stay navigable as product copy grows rather than becoming one flat catalog of unrelated messages.
-
-### Client observability
-
-Frontend failures are treated as operational data, not console debris.
-
-- A React error boundary records render failures with component stacks.
-- Global initialization captures browser runtime failures.
-- Client reports can include stack traces, event context, route, platform, browser, operating system, device information, storage snapshots, severity, and occurrence data.
-- Authenticated requests associate failures with the current user when available.
-- Logs are delivered to `POST /v1/client/logs` and become visible in the Rexone Core administration and error workflows.
-
-This complements backend exception tracking: the server explains what failed there, while client telemetry explains what the user actually experienced here.
-
-### Administration & Role-Based Access Control (RBAC)
-
-The web client includes a dedicated Client Admin Portal (`/admin/*`) providing operational management across Overview, Commerce, Communication, IAM, and Observability.
-
-- **Admin Portal Entry Gate**: Users holding only non-admin roles (e.g. `user`, `subscriber`) have ZERO access to the Admin Portal. All `/admin/*` routes render `NotFoundPage` (404), even if non-admin roles contain permissions.
-- **Strict Role Scoping & Non-Admin Isolation**: Admin capabilities are evaluated strictly against active **admin roles** (`super_admin`, `admin`, `*_admin`). Permissions granted under base/non-admin roles (`user`) are ignored and never leak into the admin portal.
-  - _Example_: A user holding `chat_admin` and `user` with `read_logs` under `user` can access `/admin/chat/*` but cannot see or access `/admin/log`.
-  - _Example_: A user holding `log_admin` with `read_logs` under `log_admin` can see and access `/admin/log`.
-- **Granular CUD UI & Route Protection**:
-  - **Create**: Create buttons in `<PageHeader>` and table headers are gated by `can(ADMIN_ACTIONS.CREATE, resource)`; `/admin/<resource>/new` is guarded by `AdminRootRoute(action: CREATE)`.
-  - **Update**: Edit, review, and extend buttons are gated by `can(ADMIN_ACTIONS.UPDATE, resource)`; `/admin/<resource>/:id/edit` is guarded by `AdminRootRoute(action: UPDATE)`.
-  - **Delete**: Discard, restore (`undiscard`), destroy, and revoke buttons are gated by `can(ADMIN_ACTIONS.DELETE, resource)`. The Recycle Bin tab in `<Tabs>` and `/admin/<resource>/discarded` route are accessible ONLY with `ADMIN_ACTIONS.DELETE` permission.
-  - **Read**: Sidebar nav links and list pages require `can(ADMIN_ACTIONS.READ, resource)`.
-
----
-
-## Quality toolchain
-
-- **TypeScript Project Builds** for strict compile-time type safety.
-- **ESLint** with React Hooks and React Refresh rules.
-- **Vitest** for automated unit and component tests.
-- **Playwright** for end-to-end user journey verification.
-- **Continuous Integration (GitHub Actions)** for automated build validation (`npm run build`) and Vitest test execution on PR branch pushes.
-- **Vite** production builds and local production preview.
-- Dependency and browser-baseline checks through the npm toolchain.
-
-## Getting started
+## ⚡ Quick Start
 
 ### Prerequisites
 
 - Node.js `22.13.0` or newer
 - npm `10` or newer
-- A running [Rexone Core](https://github.com/rex-9/rexone-core) API
-- Docker with Docker Compose, if using the containerized development path
-
-### 1. Clone and configure
+- Running **[RexOne Core](https://github.com/rex-9/rexone-core)** API (`http://localhost:3000`)
 
 ```bash
 git clone https://github.com/rex-9/rexone-web.git
-cd rexone-web
+cd rexone-web && git switch dev
 cp .env.example .env
-```
+./scripts/install_pre_commit.sh
 
-Set the Core HTTP and WebSocket URLs and provide a Google OAuth client ID if exercising Google sign-in.
-
-### 2. Install and run natively
-
-```bash
-npm install
-npm run dev
-```
-
-By default Vite listens on all interfaces. The checked-in development environment maps the client to [http://localhost:4000](http://localhost:4000).
-
-The convenience script runs the Docker development stack:
-
-```bash
+# 1. Local Development (connects to local Core API at http://localhost:3000)
 ./scripts/dev.sh
+# (or via npm:) npm run dev
+
+# 2. Remote UAT Staging (connects to https://uat.api.rexone.me)
+./scripts/uat.sh
+# (or via npm:) npm run uat
+
+# 3. Remote Production (connects to https://api.rexone.me)
+./scripts/prod.sh
+# (or via npm:) npm run prod
 ```
 
-### 3. Run with Docker Compose
-
-```bash
-docker compose -f docker-compose.dev.yaml up --build
-```
-
-The development service mounts the repository into the container, keeps container-managed `node_modules`, and publishes the port configured by `VITE_REACT_APP_PORT_MAP`.
-
-## End-to-End Testing (Playwright)
-
-Rexone Web includes a production-grade E2E test suite built with **[Playwright](https://playwright.dev/)**. Following Rails RSpec conventions, tests are organized by complete user journeys with deterministic setup, explicit state transitions, and meaningful boundary assertions.
-
-### Test Structure
-
-```text
-e2e/
-├── data/
-│   └── users.ts               # Centralized test users & dynamic user factory
-├── helpers/
-│   └── api.ts                 # API helpers using standard application routes
-├── pages/                     # Page Object Model (POM) layer
-│   ├── auth.page.ts           # Initial email entry dialog
-│   ├── confirm-email.page.ts  # 6-digit OTP verification dialog
-│   ├── forgot-password.page.ts # Password reset request dialog
-│   ├── home.page.ts           # Authenticated home page
-│   ├── sign-in-password.page.ts # 6-digit sign-in password dialog
-│   ├── sign-up-info.page.ts   # Name & username profile dialog
-│   └── sign-up-password.page.ts # Password creation & confirmation dialogs
-└── specs/
-    └── auth/
-        ├── password.spec.ts       # Password acceptance, mismatch, retry, state persistence
-        ├── password-reset.spec.ts # Forgot password, email delivery, 60s cooldown timer
-        ├── sign-in.spec.ts        # Sign in, wrong password, attempts countdown, 30s lockout, drop-off recovery
-        ├── sign-out.spec.ts       # Sign out & session revocation
-        ├── sign-up.spec.ts        # Full registration journey, validations, sanitization
-        └── sso.spec.ts            # Google SSO authentication & challenge token setup
-```
-
-### Running Tests
-
-Rexone Web provides specialized and unified test runner scripts in [`scripts/`](scripts/):
-
-```bash
-# 1. Run FULL test suite (Unit + E2E)
-./scripts/test.sh
-# or: npm run test:all
-
-# 2. Run ONLY Unit tests (Vitest) - fast feedback loop
-./scripts/test_unit.sh
-# or: npm run test:unit
-
-# 3. Run ONLY E2E tests (Playwright)
-./scripts/test_e2e.sh
-# or: npm run test:e2e
-
-# Run specific E2E flows
-./scripts/test_e2e.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
-./scripts/test_e2e.sh sign-up        # Registration & input validations
-./scripts/test_e2e.sh password       # Password matching & retries
-./scripts/test_e2e.sh password-reset # Reset request & cooldowns
-./scripts/test_e2e.sh sso            # Google SSO authentication
-./scripts/test_e2e.sh sign-out       # Sign-out & session termination
-
-# Interactive & Debugging Modes
-./scripts/test_e2e.sh --headed       # Watch tests in a real browser window
-./scripts/test_e2e.sh --ui           # Open Playwright's interactive visual UI
-./scripts/test_e2e.sh --debug        # Launch Playwright step-by-step inspector
-```
-
-### Test Guarantees
-
-- **No Fake Routes**: Tests interact only with real application routes and existing controllers.
-- **Database Safety**: Tests use dynamic user factories (`generateTestUser()`) for mutation tests to ensure zero data pollution.
-- **Page Object Encapsulation**: Selectors, actions, and form interactions are centralized in Page Objects.
-- **Typed Constants**: All routes, steps, and storage keys use centralized `AppRoutes`, `DialogParams`, and `DialogAuthSteps` constants.
+By default, the client is immediately available at **[http://localhost:4000](http://localhost:4000)**.
 
 ---
 
-Production assets are written to `dist/`.
+## 🧪 Quality Toolchain & Automated Testing
 
-## Configuration
+RexOne Web enforces high engineering discipline with strict compile-time checks and dual-layer automated testing:
 
-The checked-in [`.env.example`](.env.example) documents the client settings.
+```bash
+# 1. Run all unit tests (Vitest) - 45 suites, 372 tests
+npm test
 
-| Variable                              | Purpose                                                                                      | Development default     |
-| ------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------- |
-| `NODE_ENV`                            | Runtime environment label                                                                    | `development`           |
-| `VITE_REACT_APP_NAME`                 | Application display name                                                                     | `rexone.me`             |
-| `VITE_REACT_APP_GOOGLE_CLIENT_ID`     | Google OAuth browser client ID                                                               | Empty                   |
-| `VITE_REACT_APP_GOOGLE_CLIENT_SECRET` | Legacy checked-in configuration field; browser apps should not receive Google client secrets | Empty                   |
-| `VITE_REACT_APP_SERVER_BASE_URL`      | Rexone Core HTTP base URL                                                                    | `http://localhost:3000` |
-| `VITE_REACT_APP_CLIENT_BASE_URL`      | Public web client base URL                                                                   | `http://localhost:4000` |
-| `VITE_REACT_APP_SERVER_WS_BASE_URL`   | Rexone Core WebSocket base URL                                                               | `ws://localhost:3000`   |
-| `VITE_PORT`                           | Vite dev server local port                                                                   | `4000`                  |
-| `VITE_REACT_APP_PORT_MAP`             | Docker host/container port mapping                                                           | `4000:4000`             |
-| `VITE_REACT_APP_DOCKERFILE`           | Dockerfile selected by Compose                                                               | `Dockerfile.dev`        |
-| `VITE_MEDIA_MAX_NON_VIDEO_SIZE_MB`    | Maximum upload size for non-video files (MB)                                                 | `10`                    |
-| `VITE_MEDIA_MAX_VIDEO_SIZE_MB`        | Maximum upload size for video files (MB)                                                     | `100`                   |
-| `VITE_MEDIA_MAX_FILE_COUNT`           | Maximum batch upload count                                                                   | `20`                    |
+# 2. Run Playwright End-to-End user journeys (headless)
+npm run test:e2e
 
-All frontend environment variables are centralized through [`src/AppConfig.tsx`](src/AppConfig.tsx) (`AppConfig.*`). Only variables prefixed with `VITE_` are exposed to browser code. Never place private credentials or provider secrets in them. In particular, Google client secrets belong on a trusted backend or provider configuration, not in a Vite application.
-
-## Client route surface
-
-| Access    | Route                           | Purpose                                     |
-| --------- | ------------------------------- | ------------------------------------------- |
-| Public    | `/`                             | Root experience                             |
-| Public    | `/signin`                       | Open the authentication dialog              |
-| Public    | `/signup`                       | Enter the account creation flow             |
-| Public    | `/email/confirm`                | Handle confirmation links or code entry     |
-| Public    | `/password/forgot`              | Request account recovery                    |
-| Public    | `/password/reset`               | Complete password reset links               |
-| Public    | `/anapana`                      | Anapana interval reminder                   |
-| Protected | `/home`                         | Authenticated home                          |
-| Protected | `/profile`                      | Current-user profile                        |
-| Protected | `/payment`                      | Products and checkout                       |
-| Protected | `/payment/success`              | Checkout success return                     |
-| Protected | `/payment/cancel`               | Checkout cancellation return                |
-| Protected | `/ai`                           | AI workspace                                |
-| Protected | `/signout`                      | Sign out and provider cleanup               |
-| Protected | `/admin`                        | Admin panel entry with smart redirect       |
-| Protected | `/admin/users`                  | User management (super admin only)          |
-| Protected | `/admin/users/create`           | User creation console                       |
-| Protected | `/admin/users/:id/edit`         | User edit console                           |
-| Protected | `/admin/roles`                  | Role and permission management              |
-| Protected | `/admin/roles/create`           | Role creation console                       |
-| Protected | `/admin/roles/:id/edit`         | Role edit console                           |
-| Protected | `/admin/products`               | Product and pricing management              |
-| Protected | `/admin/products/create`        | Product creation console                    |
-| Protected | `/admin/products/:id/edit`      | Product edit console                        |
-| Protected | `/admin/accesses`               | Entitlements and user access management     |
-| Protected | `/admin/accesses/create`        | Access grant console                        |
-| Protected | `/admin/accesses/:id/edit`      | Access validity extension console           |
-| Protected | `/admin/assets`                 | Asset control center & storage overview     |
-| Protected | `/admin/assets/create`          | Asset upload console                        |
-| Protected | `/admin/assets/:id/edit`        | Asset edit and compression console          |
-| Protected | `/admin/notifications`          | Broadcast notification dispatch & templates |
-| Protected | `/admin/notifications/create`   | Notification template creation console      |
-| Protected | `/admin/notifications/:id/edit` | Notification template edit console          |
-| Protected | `/admin/chat/rooms`             | Chat room moderation                        |
-| Protected | `/admin/chat/messages`          | Chat message moderation                     |
-| Protected | `/admin/feedback`               | User feedback management                    |
-| Protected | `/admin/logs`                   | Client error and telemetry logs             |
-| Protected | `/admin/versions`               | App versions (super admin only)             |
-| Protected | `/admin/versions/create`        | App version create console                  |
-| Protected | `/admin/versions/:id/edit`      | App version edit console                    |
-| Protected | `/admin/versions/bin`           | Discarded app versions                      |
-| Protected | `/admin/user-versions`          | All current user versions (super admin)     |
-| Protected | `/admin/versions/:id/user-versions` | User versions for one version           |
-
-[`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
-
-## Project structure
-
-```text
-rexone-web/
-├── e2e/                 # Playwright End-to-End test suite
-│   ├── data/            # Centralized test users & factories
-│   ├── helpers/         # Standard API interaction helpers
-│   ├── pages/           # Page Object Model (POM) classes
-│   └── specs/           # User journey test specifications
-├── scripts/             # Development & test automation scripts
-│   ├── dev.sh           # Local Vite development server
-│   ├── test.sh          # Full test suite runner (Unit + E2E)
-│   ├── test_unit.sh     # Vitest unit test runner
-│   └── test_e2e.sh      # Playwright E2E runner CLI
-├── src/
-│   ├── assets/          # Static application media
-│   ├── constants/       # Storage keys, dialog steps, and route parameter constants
-│   ├── contexts/        # Authentication, loading, toast, and error boundaries
-│   ├── controllers/     # Cross-domain application coordination
-│   ├── design/          # Pages, components, and visual primitives
-│   ├── helpers/         # Shared utilities
-│   ├── hooks/           # Reusable React lifecycle behavior
-│   ├── locales/         # i18n resources, typed keys, and translation helpers
-│   ├── models/          # API and application data contracts
-│   ├── modules/         # Auth, payments, AI, logs, admin, and product domains
-│   ├── routes/          # Router and access boundaries
-│   ├── services/        # HTTP, sockets, persistence, and shared transport
-│   ├── AppConfig.tsx    # Environment-backed client configuration
-│   ├── AppRoutes.ts     # Client and Core API route constants
-│   └── main.tsx         # Browser entrypoint and telemetry initialization
-├── Dockerfile.dev
-├── docker-compose.dev.yaml
-├── package.json
-├── playwright.config.ts # Playwright E2E test configuration
-├── tsconfig.json
-├── vite.config.ts
-└── vitest.config.ts
+# 3. Architecture & i18n invariants validation (LAW.md checks)
+npm run check:architecture
+npm run check:locales
 ```
 
-## Delivery
+---
 
-`npm run build` performs a TypeScript project build followed by an optimized Vite build. Serve the resulting `dist/` directory from a static host, CDN, container, or frontend platform with SPA fallback configured for browser routes.
+## 📚 Technical Documentation & Subsystem Architecture
 
-For production deployments:
+To maintain high architectural discipline without cluttering the primary showcase, exhaustive technical specifications, API contracts, and design tokens are organized in **[`docs/`](docs/)**:
 
-1. Point HTTP and WebSocket variables at the deployed Rexone Core instance.
-2. Configure the Google OAuth client for the production origin.
-3. Serve the client over TLS and use `wss://` for real-time traffic.
-4. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
-5. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/test.sh` in CI.
+| Resource                             | Scope & Canonical Specification                                                                                                                             |
+| :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **📖 Master Web Documentation Hub**  | Architecture topology, admin workflows, and testing guide: **[`docs/README.md`](docs/README.md)**                                                           |
+| **🎨 Design System & Tokens**        | DaisyUI 5 tokens, scarlet phosphor neon palette, and typography: **[`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)**                                       |
+| **🌐 AI Discovery & GEO Guide**      | Generative Engine Optimization, crawler allowlists, and JSON-LD: **[`docs/SEO_GEO.md`](docs/SEO_GEO.md)**                                                   |
+| **🚀 Production Deployment**         | Vite production builds, Coolify Docker deployment, and Nginx proxy: **[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)**                                          |
+| **🛡️ Architecture Invariant Checks** | AST linter enforcing LAW.md (centralized keys, no raw cookies): **[`docs/ARCHITECTURE_CHECKS.md`](docs/ARCHITECTURE_CHECKS.md)**                            |
+| **🌐 Public Distribution Index**     | Curated software directories, Awesome-lists, and catalogs: **[`docs/DISTRIBUTION.md`](https://github.com/rex-9/rexone-core/blob/dev/docs/DISTRIBUTION.md)** |
 
-## Other Repos in Rexone Ecosystem
+---
 
-- [Rexone Core](https://github.com/rex-9/rexone-core) — Rails API, IAM, payments, jobs, notifications, storage, AI, administration, and observability
-- [Rexone Mobile](https://github.com/rex-9/rexone_mobile) — mobile client
+## 🚀 Production Deployment & Smoke Testing
+
+Execute an optimized production build:
+
+```bash
+npm run build
+```
+
+Production bundles are emitted to `dist/`. The output can be deployed via Coolify, static CDN, or containerized via the included `Dockerfile` with standard SPA fallback routing.
+
+### Test Production Container Locally
+
+To test the exact production multi-stage Docker image and Nginx configuration (SPA routing, health checks, gzip) locally on your Mac:
+
+```bash
+# 1. Full production Docker + Nginx container test on http://localhost:8080:
+./scripts/test_prod.sh
+# (or via npm:)
+npm run test:prod
+
+# 2. Or test on a custom port:
+./scripts/test_prod.sh -p 8081
+
+# 3. Lightweight Vite preview without Docker:
+./scripts/test_prod.sh --preview
+```
+
+For the complete Coolify deployment guide, see **[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)**.
+
+## Other Repos in RexOne Ecosystem
+
+- [RexOne Core](https://github.com/rex-9/rexone-core) — Rails API, IAM, payments, jobs, notifications, storage, AI, administration, and observability
+- [RexOne Mobile](https://github.com/rex-9/rexone_mobile) — mobile client
 
 ## 🎨 Rebranding
 
-Rexone Web can be rebranded directly via the master rebranding engine in `rexone-core` or standalone:
+RexOne Web is rebranded across the entire ecosystem via the master rebranding engine in `rexone-core`:
 
 ```bash
-# 1. From rexone-core (rebrands all 3 repositories):
-cd ../rexone-core && ./scripts/rebrand.sh
-
-# 2. Local variables in .env.*:
-VITE_APP_NAME="My New App Name"
+# Rebrand Core, Web, and Mobile simultaneously from rexone-core:
+cd ../rexone-core && ./scripts/rebrand.sh brand.config.json
 ```
+
+For the comprehensive guide, automated file matrix, and manual checklist, see **[Ecosystem Rebranding Guide (rexone-core/docs/REBRANDING.md)](https://github.com/rex-9/rexone-core/blob/dev/docs/REBRANDING.md)**.
+
+> [!NOTE]
+> The rebranding script intentionally leaves the **landing module** (`src/modules/landing`) and **SEO / AI discovery assets** (`index.html` metadata/Schema.org, `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`) completely untouched. RexOne SEO belongs to the foundation architecture; product-specific landing and SEO design are 100% the developer's responsibility.
 
 ---
 
 ## 🏛️ Ecosystem Lineage & Attribution
 
-This application is built on top of the **Rexone Ecosystem** (`rex-9`). When creating derivative products or white-label applications:
+This application is built on top of the **RexOne Ecosystem** (`rex-9`). When creating derivative products or white-label applications:
 
 - Developers and creators are warmly encouraged to preserve ecosystem credit in documentation to support the project.
 - All development must strictly adhere to the constitutional engineering standards in **[LAW.md](LAW.md)** and **[ECOSYSTEM.md](ECOSYSTEM.md)**.
 
 ---
 
-## Support the project
+## 💖 Sponsor & Support RexOne
 
-If Rexone Web saves you a few weeks—or saves your users from one memorable edge case—consider giving it a star. 🌟
+> _"I'm not a wealthy founder or a venture-backed company ~ I'm an independent developer and meditator who built RexOne with my own hands. I could have easily closed-sourced this enterprise foundation or charged $800+ behind a commercial paywall. Instead, out of pure loving-kindness (mettā) cultivated through my meditation journey under Theravada Buddhist teachings, I chose to gift RexOne 100% free and open-source under Apache 2.0 to empower builders, indie hackers, and learners worldwide._
+>
+> _If this foundation saves you months of engineering, thousands of dollars, or sparks your product journey, please consider supporting me so I can sustain my life and craft. Kindly return the loving-kindness: [Sponsor Rex on GitHub](https://github.com/sponsors/rex-9) and star the repositories. Thank you so much for your generosity and kindness. 🙏"_
 
+RexOne Web is architected, forged, and maintained by Rex ([@rex-9](https://github.com/rex-9)). If RexOne saves you engineering months, AI tokens, or cloud compute costs, please consider supporting the foundation!
+
+[![Sponsor rex-9](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rex-9)
 [![GitHub Stars](https://img.shields.io/github/stars/rex-9/rexone-web.svg?style=social&label=Star)](https://github.com/rex-9/rexone-web)
+
+👉 **[Sponsor Rex on GitHub](https://github.com/sponsors/rex-9)**
+
+---
+
+## 🕯️ The Candle Philosophy of Open Source
+
+> _"Sharing is like lighting candles from one candle to another: sharing one's light does not make its own flame dimmer or weaker, but the world illuminates more and more with each light shared... making the world more and more beautiful... one light at a time... ~ "_
+>
+> — **Htet Naing (Rex9)**, _Creator of RexOne_
 
 ## Author
 
-Built with Clarity & Simplicity Driven Development, by **Rex (Rex9)**.
+Architected with Discipline-Driven Development (DDD), by **Htet Naing (Rex9)**.
 
-A software engineer, full-stack architect, and long-time practitioner of meditation.
+A full-stack architect, product craftsman, and long-time practitioner of meditation.
 
-I build systems the same way I approach the path itself: **with a clear mind, deliberate steps, and no unnecessary weight.**
+I build systems the same way I approach the path itself: **with a clear mind, deliberate steps, and zero unnecessary weight.**
 
-- GitHub: [@rex-9](https://github.com/rex-9)
-- Portfolio: [rex9.me](https://rex9.me)
-- LinkedIn: [rex9](https://www.linkedin.com/in/rex9/)
+- **Creator**: Htet Naing ([@rex-9](https://github.com/rex-9))
+- **Portfolio**: [rex9.me](https://rex9.me)
+- **LinkedIn**: [Htet Naing (rex9)](https://www.linkedin.com/in/rex9/)
+- **X / Twitter**: [@htetnaing0814](https://x.com/htetnaing0814)
 
-_Built with ❤️ by Rex9 on Rexone Ecosystem_
+_Built with ❤️ by Htet Naing (Rex9) on the RexOne Ecosystem_
 
 <p align="right"><a href="#readme-top">Back to top ↑</a></p>

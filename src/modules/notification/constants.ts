@@ -6,8 +6,38 @@ export const NOTIFICATION_FILTERS = {
   READ: "read",
 } as const;
 
+export const NOTIFICATION_CLIENTS = {
+  WEB: "web",
+  MOBILE: "mobile",
+} as const;
+
+export const DEFAULT_NOTIFICATION_CLIENTS = [
+  NOTIFICATION_CLIENTS.WEB,
+  NOTIFICATION_CLIENTS.MOBILE,
+] as const;
+
 export type TNotificationFilter =
   (typeof NOTIFICATION_FILTERS)[keyof typeof NOTIFICATION_FILTERS];
+
+export const ASYNC_OPERATION_STATUSES = {
+  QUEUED: "queued",
+  PROCESSING: "processing",
+  COMPLETED: "completed",
+  FAILED: "failed",
+} as const;
+
+export const ASYNC_OPERATION_TYPES = {
+  AI_RESPONSE: "ai_response",
+  ASSET_COMPRESSION: "asset_compression",
+  VIDEO_THUMBNAIL: "video_thumbnail",
+  NOTIFICATION_DELIVERY: "notification_delivery",
+  PAYMENT_WEBHOOK: "payment_webhook",
+} as const;
+
+export type TAsyncOperationStatus =
+  (typeof ASYNC_OPERATION_STATUSES)[keyof typeof ASYNC_OPERATION_STATUSES];
+export type TAsyncOperationType =
+  (typeof ASYNC_OPERATION_TYPES)[keyof typeof ASYNC_OPERATION_TYPES];
 
 export const NOTIFICATION_SOCKET_TYPES = {
   PAYMENT_SUCCESS: "payment_success",
@@ -26,4 +56,9 @@ export const NOTIFICATION_SOCKET_TYPES = {
   ASSET_COMPRESSING: "asset_compressing",
   ASSET_THUMBNAIL_GENERATED: "asset_thumbnail_generated",
   ASSET_THUMBNAIL_FAILED: "asset_thumbnail_failed",
+  IAM_UPDATED: "iam_updated",
+  ACCESS_UPDATED: "access_updated",
+  ACCESS_REVOKED: "access_revoked",
+  SESSION_EXPIRED: "session_expired",
+  SESSION_INVALIDATED: "session_invalidated",
 } as const;

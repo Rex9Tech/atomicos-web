@@ -20,17 +20,13 @@ import {
   getPriorityBadgeVariant,
   StatusBadge,
 } from "../../../../design";
-import {
-  ButtonTypes,
-  ButtonVariants,
-} from "../../../../design/constants";
-import { formatAdminDate } from "../../../../helpers";
+import { ButtonTypes, ButtonVariants } from "../../../../design/constants";
+import { DateTime, DateTimeFormats } from "../../../../design";
 import type { IAdminFeedback } from "../types";
 import {
   AdminPagination,
   AdminState,
   AdminTable,
-  AdminTableActions,
   PageHeader,
   type IAdminTableColumn,
 } from "../../components";
@@ -145,9 +141,13 @@ export const AdminFeedbacksPage: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (!permissionsLoading) {
+    if (permissionsLoading) return;
+
+    const timeoutId = window.setTimeout(() => {
       void loadFeedbacks();
-    }
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [loadFeedbacks, permissionsLoading]);
 
   const columns: IAdminTableColumn<IAdminFeedback>[] = useMemo(
@@ -206,7 +206,7 @@ export const AdminFeedbacksPage: React.FC = () => {
                       if (!item.version_id) return;
                       navigate(
                         AppRoutes.withId(
-                          AppRoutes.client.protected.admin.VERSION_INSTALLS,
+                          AppRoutes.client.protected.admin.VERSION_DETAIL,
                           item.version_id,
                         ),
                       );
@@ -242,28 +242,8 @@ export const AdminFeedbacksPage: React.FC = () => {
         header: t(AppLocales.Admin.Common.Table.CreatedAt),
         sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
         className: "text-center",
-        render: (item) => formatAdminDate(item.created_at),
-      },
-      {
-        key: ADMIN_FEEDBACK_TABLE_KEYS.ACTIONS,
-        header: "",
-        className: "text-right",
         render: (item) => (
-          <AdminTableActions
-            resource={ADMIN_RESOURCES.FEEDBACKS}
-            actions={[
-              {
-                type: ADMIN_ACTIONS.REVIEW,
-                onClick: () =>
-                  navigate(
-                    AppRoutes.withId(
-                      AppRoutes.client.protected.admin.FEEDBACK_DETAIL,
-                      item.id,
-                    ),
-                  ),
-              },
-            ]}
-          />
+          <DateTime value={item.created_at} format={DateTimeFormats.ADMIN} />
         ),
       },
     ],
@@ -277,98 +257,100 @@ export const AdminFeedbacksPage: React.FC = () => {
         description={t(AppLocales.Admin.Feedback.Description)}
       />
 
-      {/* Dropdown Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <Dropdown
-          size={DropdownSizes.SM}
-          containerClassName="w-auto min-w-44"
-          value={statusFilter}
-          onValueChange={(val) => updateFilters({ status: val, page: 1 })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Feedback.Filters.AllStatuses),
-            },
-            {
-              value: ADMIN_FEEDBACK_STATUS.NEW,
-              label: t(AppLocales.Admin.Feedback.Filters.Open),
-            },
-            {
-              value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS,
-              label: t(AppLocales.Admin.Feedback.Filters.InReview),
-            },
-            {
-              value: ADMIN_FEEDBACK_STATUS.RESOLVED,
-              label: t(AppLocales.Admin.Feedback.Filters.Resolved),
-            },
-            {
-              value: ADMIN_FEEDBACK_STATUS.CLOSED,
-              label: t(AppLocales.Admin.Feedback.Filters.Closed),
-            },
-          ]}
-        />
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-48">
+          <Dropdown
+            size={DropdownSizes.MD}
+            value={statusFilter}
+            onValueChange={(val) => updateFilters({ status: val, page: 1 })}
+            options={[
+              {
+                value: "",
+                label: t(AppLocales.Admin.Feedback.Filters.AllStatuses),
+              },
+              {
+                value: ADMIN_FEEDBACK_STATUS.NEW,
+                label: t(AppLocales.Admin.Feedback.Filters.Open),
+              },
+              {
+                value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS,
+                label: t(AppLocales.Admin.Feedback.Filters.InReview),
+              },
+              {
+                value: ADMIN_FEEDBACK_STATUS.RESOLVED,
+                label: t(AppLocales.Admin.Feedback.Filters.Resolved),
+              },
+              {
+                value: ADMIN_FEEDBACK_STATUS.CLOSED,
+                label: t(AppLocales.Admin.Feedback.Filters.Closed),
+              },
+            ]}
+          />
+        </div>
 
-        <Dropdown
-          size={DropdownSizes.SM}
-          containerClassName="w-auto min-w-44"
-          value={categoryFilter}
-          onValueChange={(val) => updateFilters({ category: val, page: 1 })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Feedback.Filters.AllCategories),
-            },
-            {
-              value: ADMIN_FEEDBACK_CATEGORY.BUG,
-              label: t(AppLocales.Admin.Feedback.Filters.Bug),
-            },
-            {
-              value: ADMIN_FEEDBACK_CATEGORY.FEATURE_REQUEST,
-              label: t(AppLocales.Admin.Feedback.Filters.FeatureRequest),
-            },
-            {
-              value: ADMIN_FEEDBACK_CATEGORY.IMPROVEMENT,
-              label: t(AppLocales.Admin.Feedback.Filters.Improvement),
-            },
-            {
-              value: ADMIN_FEEDBACK_CATEGORY.GENERAL,
-              label: t(AppLocales.Admin.Feedback.Filters.General),
-            },
-          ]}
-        />
+        <div className="w-full sm:w-48">
+          <Dropdown
+            size={DropdownSizes.MD}
+            value={categoryFilter}
+            onValueChange={(val) => updateFilters({ category: val, page: 1 })}
+            options={[
+              {
+                value: "",
+                label: t(AppLocales.Admin.Feedback.Filters.AllCategories),
+              },
+              {
+                value: ADMIN_FEEDBACK_CATEGORY.BUG,
+                label: t(AppLocales.Admin.Feedback.Filters.Bug),
+              },
+              {
+                value: ADMIN_FEEDBACK_CATEGORY.FEATURE_REQUEST,
+                label: t(AppLocales.Admin.Feedback.Filters.FeatureRequest),
+              },
+              {
+                value: ADMIN_FEEDBACK_CATEGORY.IMPROVEMENT,
+                label: t(AppLocales.Admin.Feedback.Filters.Improvement),
+              },
+              {
+                value: ADMIN_FEEDBACK_CATEGORY.GENERAL,
+                label: t(AppLocales.Admin.Feedback.Filters.General),
+              },
+            ]}
+          />
+        </div>
 
-        <Dropdown
-          size={DropdownSizes.SM}
-          containerClassName="w-auto min-w-44"
-          value={priorityFilter}
-          onValueChange={(val) => updateFilters({ priority: val, page: 1 })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Feedback.Filters.AllPriorities),
-            },
-            {
-              value: ADMIN_FEEDBACK_PRIORITY.CRITICAL,
-              label: t(AppLocales.Admin.Feedback.Filters.Urgent),
-            },
-            {
-              value: ADMIN_FEEDBACK_PRIORITY.URGENT,
-              label: t(AppLocales.Admin.Feedback.Filters.Urgent),
-            },
-            {
-              value: ADMIN_FEEDBACK_PRIORITY.HIGH,
-              label: t(AppLocales.Admin.Feedback.Filters.High),
-            },
-            {
-              value: ADMIN_FEEDBACK_PRIORITY.MEDIUM,
-              label: t(AppLocales.Admin.Feedback.Filters.Normal),
-            },
-            {
-              value: ADMIN_FEEDBACK_PRIORITY.LOW,
-              label: t(AppLocales.Admin.Feedback.Filters.Low),
-            },
-          ]}
-        />
+        <div className="w-full sm:w-48">
+          <Dropdown
+            size={DropdownSizes.MD}
+            value={priorityFilter}
+            onValueChange={(val) => updateFilters({ priority: val, page: 1 })}
+            options={[
+              {
+                value: "",
+                label: t(AppLocales.Admin.Feedback.Filters.AllPriorities),
+              },
+              {
+                value: ADMIN_FEEDBACK_PRIORITY.CRITICAL,
+                label: t(AppLocales.Admin.Feedback.Filters.Urgent),
+              },
+              {
+                value: ADMIN_FEEDBACK_PRIORITY.URGENT,
+                label: t(AppLocales.Admin.Feedback.Filters.Urgent),
+              },
+              {
+                value: ADMIN_FEEDBACK_PRIORITY.HIGH,
+                label: t(AppLocales.Admin.Feedback.Filters.High),
+              },
+              {
+                value: ADMIN_FEEDBACK_PRIORITY.MEDIUM,
+                label: t(AppLocales.Admin.Feedback.Filters.Normal),
+              },
+              {
+                value: ADMIN_FEEDBACK_PRIORITY.LOW,
+                label: t(AppLocales.Admin.Feedback.Filters.Low),
+              },
+            ]}
+          />
+        </div>
       </div>
 
       {/* Table & States */}
@@ -393,6 +375,14 @@ export const AdminFeedbacksPage: React.FC = () => {
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={handleSort}
+            onRowClick={(item) =>
+              navigate(
+                AppRoutes.withId(
+                  AppRoutes.client.protected.admin.FEEDBACK_DETAIL,
+                  item.id,
+                ),
+              )
+            }
           />
           <AdminPagination
             pagination={pagination}

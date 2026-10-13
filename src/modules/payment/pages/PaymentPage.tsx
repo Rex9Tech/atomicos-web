@@ -1,45 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 import { useToast } from "../../../contexts/ToastContext";
-import { Button, Badge } from "../../../design/components";
+import { Badge, Button, DateTime, DateTimeFormats } from "../../../design/components";
 import { ConfirmDialog } from "../../../design/components/overlay";
 import {
   ButtonVariants,
   BadgeVariants,
   ComponentSizes,
 } from "../../../design/constants";
-import { IAccess, IProduct, ISubscription, ITransaction } from "..";
+import { IAccess, IProduct, ISubscription, IPurchase } from "..";
 import { PaymentController } from "..";
+import { CheckoutDialog } from "../components";
+import { AnalyticsService } from "../../../services";
+import { useTranslate, AppLocales } from "../../../locales";
+import { useAccess } from "../../../hooks";
 
 export const PaymentPage: React.FC = () => {
+  const t = useTranslate();
+  const { hasAccess: hasEntitlementAccess, refresh: refreshAccesses } = useAccess();
   const { setLoading } = useLoading();
   const { success, error } = useToast();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
-  const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [purchases, setPurchases] = useState<IPurchase[]>([]);
   const [accesses, setAccesses] = useState<IAccess[]>([]);
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
+  const [checkoutProduct, setCheckoutProduct] = useState<IProduct | null>(null);
+  const viewedProductIds = useRef(new Set<string>());
 
   const fetchData = React.useCallback(async () => {
     setLoading(true);
-    const [productsResult, subscriptionsResult, transactionsResult, accessesResult] =
+    const [productsResult, subscriptionsResult, purchasesResult, accessesResult] =
       await Promise.all([
         PaymentController.getProducts(),
         PaymentController.getSubscriptions(),
-        PaymentController.getTransactions(),
+        PaymentController.getPurchases(),
         PaymentController.getActiveAccesses(),
       ]);
 
     if (productsResult.success && productsResult.products) {
       setProducts(productsResult.products);
+      productsResult.products.forEach((product) => {
+        if (viewedProductIds.current.has(product.id)) return;
+        viewedProductIds.current.add(product.id);
+        void AnalyticsService.logViewProduct(product.id, product.name);
+      });
     }
 
     if (subscriptionsResult.success && subscriptionsResult.subscriptions) {
       setSubscriptions(subscriptionsResult.subscriptions);
     }
 
-    if (transactionsResult.success && transactionsResult.transactions) {
-      setTransactions(transactionsResult.transactions);
+    if (purchasesResult.success && purchasesResult.purchases) {
+      setPurchases(purchasesResult.purchases);
     }
 
     if (accessesResult.success && accessesResult.accesses) {
@@ -65,7 +78,7 @@ export const PaymentPage: React.FC = () => {
     if (result.success) {
       if (result.freeAccessGranted) {
         success("Free access claimed successfully! 🎉");
-        await fetchData();
+        await Promise.all([fetchData(), refreshAccesses()]);
         return;
       }
 
@@ -106,12 +119,15 @@ export const PaymentPage: React.FC = () => {
   };
 
   const getPurchaseCount = (productId: string) => {
-    return transactions.filter((t) => t.product_id === productId && t.paid)
+    return purchases.filter((t) => t.product_id === productId && t.paid)
       .length;
   };
 
   const hasActiveAccess = (productId: string) => {
-    return accesses.some((a) => a.product_id === productId && a.active);
+    return (
+      hasEntitlementAccess(productId) ||
+      accesses.some((a) => a.product_id === productId && a.active)
+    );
   };
 
   const getActiveSubscription = (productId: string) => {
@@ -137,7 +153,7 @@ export const PaymentPage: React.FC = () => {
   };
 
   const renderProductActions = (product: IProduct) => {
-    const isFree = product.free || product.price_unit_amount === 0;
+    const isFree = product.free || product.unit_amount === 0;
     const hasAccess = hasActiveAccess(product.id);
     const activeSub = getActiveSubscription(product.id);
     const canceledSub = getCanceledSubscription(product.id);
@@ -155,34 +171,44 @@ export const PaymentPage: React.FC = () => {
               </Badge>
             </div>
             <Button
-              variant={ButtonVariants.SECONDARY}
+              variant={ButtonVariants.PRIMARY}
               fullWidth
               size={ComponentSizes.MD}
-              disabled
+              onClick={() =>
+                success(
+                  `useAccess verified: Active entitlement confirmed for ${product.name}`,
+                )
+              }
             >
-              Claimed
+              Access Unlocked 🎉
             </Button>
           </div>
         );
       }
 
       return (
-        <Button
-          variant={ButtonVariants.PRIMARY}
-          fullWidth
-          size={ComponentSizes.MD}
-          onClick={() => handleCheckout(product.id)}
-        >
-          Claim Now
-        </Button>
+        <div className="space-y-2">
+          <Button
+            variant={ButtonVariants.PRIMARY}
+            fullWidth
+            size={ComponentSizes.MD}
+            onClick={() => handleCheckout(product.id)}
+          >
+            Claim Now
+          </Button>
+        </div>
       );
     }
 
     // Active subscription
     if (activeSub) {
-      const activeUntil = activeSub.current_period_end
-        ? new Date(activeSub.current_period_end).toLocaleDateString()
-        : "end of period";
+      const activeUntil = (
+        <DateTime
+          value={activeSub.current_period_end}
+          format={DateTimeFormats.DATE}
+          fallback="end of period"
+        />
+      );
 
       return (
         <div className="space-y-3">
@@ -191,6 +217,18 @@ export const PaymentPage: React.FC = () => {
               ✅ Active Subscription
             </Badge>
           </div>
+          <Button
+            variant={ButtonVariants.PRIMARY}
+            fullWidth
+            size={ComponentSizes.MD}
+            onClick={() =>
+              success(
+                `useAccess verified: Active subscription entitlement confirmed for ${product.name}`,
+              )
+            }
+          >
+            Access Unlocked 🎉
+          </Button>
           <p className="text-xs text-base-content/60">
             Next billing: {activeUntil}
           </p>
@@ -200,7 +238,7 @@ export const PaymentPage: React.FC = () => {
             size={ComponentSizes.SM}
             onClick={() => setCancelTargetId(activeSub.id)}
           >
-            Cancel Subscription
+            {t(AppLocales.Payment.CancelSubscription)}
           </Button>
         </div>
       );
@@ -208,9 +246,13 @@ export const PaymentPage: React.FC = () => {
 
     // Canceled but still active (scheduled for cancellation)
     if (canceledSub) {
-      const activeUntil = canceledSub.current_period_end
-        ? new Date(canceledSub.current_period_end).toLocaleDateString()
-        : "end of period";
+      const activeUntil = (
+        <DateTime
+          value={canceledSub.current_period_end}
+          format={DateTimeFormats.DATE}
+          fallback="end of period"
+        />
+      );
 
       return (
         <div className="space-y-3">
@@ -220,12 +262,24 @@ export const PaymentPage: React.FC = () => {
             </Badge>
           </div>
           <Button
+            variant={ButtonVariants.PRIMARY}
+            fullWidth
+            size={ComponentSizes.MD}
+            onClick={() =>
+              success(
+                `useAccess verified: Active entitlement confirmed for ${product.name}`,
+              )
+            }
+          >
+            Access Unlocked 🎉
+          </Button>
+          <Button
             variant={ButtonVariants.SECONDARY}
             fullWidth
             size={ComponentSizes.SM}
             onClick={() => handleResume(canceledSub.id)}
           >
-            Resume Subscription
+            {t(AppLocales.Payment.ResumeSubscription)}
           </Button>
         </div>
       );
@@ -244,9 +298,9 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() => setCheckoutProduct(product)}
           >
-            Subscribe Again
+            {t(AppLocales.Payment.SubscribeNow)}
           </Button>
         </div>
       );
@@ -265,7 +319,19 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() =>
+              success(
+                `useAccess verified: Lifetime entitlement confirmed for ${product.name}`,
+              )
+            }
+          >
+            Access Unlocked 🎉
+          </Button>
+          <Button
+            variant={ButtonVariants.SECONDARY}
+            fullWidth
+            size={ComponentSizes.SM}
+            onClick={() => setCheckoutProduct(product)}
           >
             Buy Again
           </Button>
@@ -286,7 +352,7 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() => setCheckoutProduct(product)}
           >
             Buy Again
           </Button>
@@ -299,14 +365,16 @@ export const PaymentPage: React.FC = () => {
 
     // Available for purchase
     return (
-      <Button
-        variant={ButtonVariants.PRIMARY}
-        fullWidth
-        size={ComponentSizes.MD}
-        onClick={() => handleCheckout(product.id)}
-      >
-        {product.recurring ? "Subscribe Now" : "Buy Now"}
-      </Button>
+      <div className="space-y-2">
+        <Button
+          variant={ButtonVariants.PRIMARY}
+          fullWidth
+          size={ComponentSizes.MD}
+          onClick={() => setCheckoutProduct(product)}
+        >
+          {product.recurring ? t(AppLocales.Payment.SubscribeNow) : "Buy Now"}
+        </Button>
+      </div>
     );
   };
 
@@ -334,6 +402,34 @@ export const PaymentPage: React.FC = () => {
               <p className="text-body-s text-base-content/70 mt-1">
                 {product.description}
               </p>
+
+              {/* Active Entitlement Banner (useAccess verification) */}
+              {hasActiveAccess(product.id) && (
+                <div className="mt-4 p-3 rounded-xl bg-success/10 border border-success/30 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-success text-base">✓</span>
+                    <div>
+                      <div className="text-xs font-bold text-success">
+                        Access Unlocked
+                      </div>
+                      <div className="text-[11px] text-base-content/60">
+                        Entitlement active via useAccess
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      success(
+                        `useAccess verified: Entitlement active for ${product.name}`,
+                      )
+                    }
+                    className="text-xs font-bold text-success hover:underline px-2.5 py-1 rounded bg-success/15 hover:bg-success/25 transition-colors cursor-pointer"
+                  >
+                    Verify
+                  </button>
+                </div>
+              )}
 
               <div className="mt-4 mb-6">
                 <span className="text-3xl font-extrabold text-base-content">
@@ -369,6 +465,13 @@ export const PaymentPage: React.FC = () => {
         confirmLabel="Cancel Subscription"
         cancelLabel="Keep Subscription"
         isDestructive={true}
+      />
+
+      <CheckoutDialog
+        isOpen={checkoutProduct !== null}
+        product={checkoutProduct}
+        onClose={() => setCheckoutProduct(null)}
+        onSuccess={() => void fetchData()}
       />
     </>
   );

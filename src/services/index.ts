@@ -1,9 +1,11 @@
 export {
   api,
   getApiError,
-  parsePaginatedResponse,
+  parseRecord,
+  parsePagyList,
 } from "./api.service";
 export { default as AtomService } from "./atom.service";
 export { default as SocketService } from "./socket.service";
 export type { ISocketMessage } from "../helpers/socket.helpers";
 export { queryClient, idbPersister } from "./queryClient";
+export { default as AnalyticsService } from "./analytics.service";

@@ -1,10 +1,10 @@
 // src/modules/admin/products/types.ts
 
-import { PRODUCT_CYCLE } from "./constants";
+import { PRODUCT_INTERVAL } from "./constants";
 import type { TSortOrder } from "../../../hooks/useSort";
 
-export type AdminProductCycle =
-  (typeof PRODUCT_CYCLE)[keyof typeof PRODUCT_CYCLE];
+export type AdminProductInterval =
+  (typeof PRODUCT_INTERVAL)[keyof typeof PRODUCT_INTERVAL];
 
 export interface IAdminProduct {
   id: string;
@@ -12,15 +12,19 @@ export interface IAdminProduct {
   name: string;
   description?: string | null;
   price: string;
-  price_unit_amount: number;
+  unit_amount: number;
   currency: string;
-  cycle: AdminProductCycle | null;
+  interval: AdminProductInterval | null;
   period_label: string;
   recurring: boolean;
   free: boolean;
   active: boolean;
-  stripe_product_id: string;
-  stripe_price_id: string;
+  stripe_product_id?: string | null;
+  stripe_price_id?: string | null;
+  google_play_product_id?: string | null;
+  app_store_product_id?: string | null;
+  in_app?: boolean;
+  supported_providers?: string[];
   thumbnail_url?: string | null;
   thumbnail_asset_id?: string | null;
   created_at?: Date;
@@ -33,16 +37,21 @@ export interface IAdminProductFormValues {
   code?: string;
   name: string;
   description: string;
-  price_unit_amount: number;
+  unit_amount: number;
   currency: string;
-  cycle?: AdminProductCycle;
+  interval?: AdminProductInterval;
   active: boolean;
+  stripe_product_id?: string | null;
+  stripe_price_id?: string | null;
+  google_play_product_id?: string | null;
+  app_store_product_id?: string | null;
   thumbnail_asset_id?: string | null;
 }
 
 export interface IAdminProductListParams {
   page?: number;
   limit?: number;
+  search?: string;
   sort_by?: string;
   sort_order?: TSortOrder;
 }

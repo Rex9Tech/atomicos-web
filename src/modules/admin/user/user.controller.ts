@@ -6,11 +6,7 @@ import {
   parseRecord,
 } from "../../../services/api.service";
 import UserService from "./user.service";
-import {
-  IAdminUser,
-  IAdminUserFormValues,
-  IAdminUserListParams,
-} from "./";
+import { IAdminUser, IAdminUserFormValues, IAdminUserListParams } from "./";
 import { IAdminRole } from "../role";
 
 class UserController {
@@ -50,7 +46,7 @@ class UserController {
     if (status?.success && data) {
       return {
         success: true,
-        user: parseRecord("user" in data ? data.user : data),
+        user: parseRecord<IAdminUser>(data),
       };
     }
 
@@ -94,13 +90,23 @@ class UserController {
     message?: string;
     error?: string;
   }> {
-    const response = await UserService.createUser(values);
+    const { role_ids: roleIds = [], ...userValues } = values;
+    const response = await UserService.createUser(userValues);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
+      const user = parseRecord<IAdminUser>(data);
+      const roleError = await this.syncRoles(
+        user.id,
+        user.iam?.roles.map((role) => role.id) ?? [],
+        roleIds,
+        translate(AppLocales.Admin.Users.Errors.CreateFailed),
+      );
+      if (roleError) return { success: false, error: roleError };
+
       return {
         success: true,
-        user: parseRecord("user" in data ? data.user : data),
+        user,
         message: status.message,
       };
     }
@@ -123,13 +129,23 @@ class UserController {
     message?: string;
     error?: string;
   }> {
-    const response = await UserService.updateUser(id, values);
+    const { role_ids: roleIds = [], ...userValues } = values;
+    const response = await UserService.updateUser(id, userValues);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
+      const user = parseRecord<IAdminUser>(data);
+      const roleError = await this.syncRoles(
+        id,
+        user.iam?.roles.map((role) => role.id) ?? [],
+        roleIds,
+        translate(AppLocales.Admin.Users.Errors.UpdateFailed),
+      );
+      if (roleError) return { success: false, error: roleError };
+
       return {
         success: true,
-        user: parseRecord("user" in data ? data.user : data),
+        user,
         message: status.message,
       };
     }
@@ -200,10 +216,9 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const roles = Array.isArray(data) ? data : data.roles;
       return {
         success: true,
-        roles: roles.map(parseRecord),
+        roles: data.map(parseRecord),
       };
     }
 
@@ -215,6 +230,34 @@ class UserController {
         translate(AppLocales.Admin.Users.Errors.LoadRolesFailed),
       ),
     };
+  }
+
+  private async syncRoles(
+    userId: string,
+    currentRoleIds: string[],
+    nextRoleIds: string[],
+    fallbackError: string,
+  ): Promise<string | null> {
+    const current = new Set(currentRoleIds);
+    const next = new Set(nextRoleIds);
+    const additions = nextRoleIds.filter((roleId) => !current.has(roleId));
+    const removals = currentRoleIds.filter((roleId) => !next.has(roleId));
+
+    for (const roleId of additions) {
+      const response = await UserService.assignRole(userId, roleId);
+      if (!response.data?.status?.success) {
+        return getApiError(response, fallbackError);
+      }
+    }
+
+    for (const roleId of removals) {
+      const response = await UserService.removeRole(userId, roleId);
+      if (!response.data?.status?.success) {
+        return getApiError(response, fallbackError);
+      }
+    }
+
+    return null;
   }
 }
 

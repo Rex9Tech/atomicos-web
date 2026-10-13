@@ -1,11 +1,16 @@
 // src/modules/admin/role/pages/AdminRoleForm.tsx
 import React, { useMemo, useState } from "react";
-import { isAdminRoleName } from "../constants";
+import {
+  ADMIN_ROLE_NAME_INVALID_CHARACTERS,
+  ADMIN_ROLE_NAME_PATTERN,
+  isAdminRoleName,
+} from "../constants";
 import {
   IAdminPermission,
   IAdminRole,
   IAdminRoleFormValues,
 } from "../types";
+import { DetailSection } from "../../../../design";
 import {
   AdminPermissionMatrix,
   FormActionRow,
@@ -75,7 +80,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
     const nextName = name.trim();
 
     if (shouldValidateAdminName && !isAdminRoleName(nextName)) {
-      setNameError(t(AppLocales.Admin.Roles.Form.KeyPlaceholder));
+      setNameError(t(AppLocales.Admin.Roles.Form.NameInvalid));
       return;
     }
 
@@ -95,6 +100,10 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
           label={t(AppLocales.Admin.Roles.Form.NameLabel)}
           placeholder={t(AppLocales.Admin.Roles.Form.NamePlaceholder)}
           value={name}
+          pattern={ADMIN_ROLE_NAME_PATTERN.source}
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           required
           disabled={role?.system}
           error={nameError}
@@ -104,7 +113,11 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
               : undefined
           }
           onChange={(event) => {
-            setName(event.target.value);
+            setName(
+              event.target.value
+                .toLowerCase()
+                .replace(ADMIN_ROLE_NAME_INVALID_CHARACTERS, ""),
+            );
             if (nameError) setNameError("");
           }}
         />
@@ -116,13 +129,9 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
         />
 
         <div className="md:col-span-2">
-          <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <h2 className="text-body-m font-semibold text-base-content">
-                {t(AppLocales.Admin.Roles.Form.PermissionsMatrixTitle)}
-              </h2>
-            </div>
-
+          <DetailSection
+            title={t(AppLocales.Admin.Roles.Form.PermissionsMatrixTitle)}
+          >
             <AdminPermissionMatrix
               permissions={permissionItems}
               selectedPermissionIds={selectedPermissionIds}
@@ -132,7 +141,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
               onSelectPermissions={selectPermissions}
               onClearPermissions={clearPermissions}
             />
-          </div>
+          </DetailSection>
         </div>
       </div>
 
@@ -148,4 +157,3 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
     </FormContainer>
   );
 };
-

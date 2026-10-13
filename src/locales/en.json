@@ -12,7 +12,9 @@
     "success": "Success",
     "not_found": "Page Not Found",
     "not_found_desc": "The page you are looking for does not exist.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "local_timezone": "Local timezone",
+    "not_available": "Not available"
   },
 
   "user": {
@@ -26,18 +28,25 @@
       "label": "Email",
       "helper": "Email cannot be changed."
     },
+    "danger_zone": "Danger Zone",
+    "delete_account": "Delete Account",
+    "delete_account_desc": "Permanently soft-delete your account and revoke active sessions.",
+    "delete_confirm_title": "Delete Account",
+    "delete_confirm_message": "Are you sure you want to delete your account? You cannot create a new account with the same email again. If you need assistance or wish to restore your account, contact {{support_email}}.",
     "errors": {
       "update": "Failed to update profile",
-      "upload_avatar": "Failed to upload profile photo"
+      "upload_avatar": "Failed to upload profile photo",
+      "delete": "Failed to delete account"
     },
     "toasts": {
-      "update_success": "Profile updated successfully"
+      "update_success": "Profile updated successfully",
+      "delete_success": "Account deleted successfully"
     }
   },
 
   "feedback": {
     "title": "Share Your Feedback",
-    "description": "We value your thoughts and ideas to help improve Rexone.",
+    "description": "We value your thoughts and ideas to help improve RexOne.",
     "rate_experience": "Rate your experience (1 - 10)",
     "tell_us_more": "What's on your mind?",
     "placeholder": "Tell us anything — bugs, suggestions, questions, or ideas. We triage automatically!",
@@ -45,10 +54,7 @@
     "submitting": "Submitting...",
     "success_message": "Thank you for your feedback!",
     "rating_label": "How was your experience? (1 - 10)",
-    "worst": "1 - Needs Work",
-    "best": "10 - Excellent",
     "content_label": "What's on your mind?",
-    "success": "Thank you for your feedback!",
     "error_empty": "Please enter your feedback.",
     "error_submit": "Failed to submit feedback. Please try again."
   },
@@ -98,7 +104,7 @@
   "payment": {
     "title": "Billing & Subscriptions",
     "subscriptions": "Subscriptions",
-    "transactions": "Transactions",
+    "purchases": "Purchases",
     "upgrade_plan": "Upgrade Plan",
     "active": "Active",
     "canceled": "Canceled",
@@ -115,8 +121,35 @@
       "load_subscriptions": "Failed to fetch subscriptions",
       "cancel_subscription": "Failed to cancel subscription",
       "resume_subscription": "Failed to resume subscription",
-      "load_transactions": "Failed to fetch transactions",
+      "load_purchases": "Failed to fetch purchases",
       "create_checkout": "Failed to create checkout session"
+    },
+    "checkout_dialog": {
+      "title": "Checkout & Activation",
+      "promo_code": "Promo Code",
+      "promo_code_placeholder": "ENTER CODE",
+      "apply": "Apply",
+      "remove": "Remove",
+      "applied": "Coupon Applied",
+      "order_summary": "Order Summary",
+      "original_price": "Original Price",
+      "discount": "Discount",
+      "total_due": "Total Due",
+      "free": "FREE",
+      "proceed": "Proceed to Checkout",
+      "claim_free": "Claim Free Access",
+      "free_claimed": "Free access claimed successfully!",
+      "redirecting": "Redirecting to checkout...",
+      "invalid_code": "Invalid coupon code",
+      "checking": "Checking...",
+      "processing": "Processing...",
+      "one_time": "One-time",
+      "per": "per",
+      "off": "OFF",
+      "subtotal": "Subtotal",
+      "total_due_today": "Total Due Today",
+      "too_many_attempts": "Too many attempts. Please wait {{seconds}}s before trying again.",
+      "attempts_remaining": "{{attempts}} attempt(s) remaining"
     }
   },
 
@@ -139,7 +172,7 @@
       "validation": { "passcode_length": "Passcode must be 6 digits" }
     },
     "initial": {
-      "title": "Welcome to Rexone",
+      "title": "Welcome to RexOne",
       "description": "Support dreams or make yours come true.",
       "continue_with_google": "Continue with Google",
       "or": "or",
@@ -221,7 +254,9 @@
         "label": "Confirm Passcode",
         "helper": "Enter the same 6 numbers again"
       },
-      "validation": { "passcodes_mismatch": "Passcodes do not match. Please try again." },
+      "validation": {
+        "passcodes_mismatch": "Passcodes do not match. Please try again."
+      },
       "errors": {
         "reset_failed": "Failed to reset passcode. Please try again.",
         "google_signin_failed": "Failed to complete Google sign-in."
@@ -252,13 +287,21 @@
         "username_length": "Username must be at least 3 characters.",
         "username_format": "Username can only contain lowercase letters, numbers, and underscores."
       },
-      "feedback": { "verification_sent": "Account created! Verification code sent to your email." },
-      "actions": { "creating_account": "Creating account...", "create_account": "Create Account" }
+      "feedback": {
+        "verification_sent": "Account created! Verification code sent to your email."
+      },
+      "actions": {
+        "creating_account": "Creating account...",
+        "create_account": "Create Account"
+      }
     },
     "confirm_email": {
       "title": "Verify Your Email",
       "description": "Enter the 6-digit code sent to your email.",
-      "field": { "label": "Verification Code", "helper": "Enter the 6-digit code sent to your email" },
+      "field": {
+        "label": "Verification Code",
+        "helper": "Enter the 6-digit code sent to your email"
+      },
       "prompt": "Verify your email",
       "sent_to": "We have sent a confirmation code to:",
       "inbox_instruction": "Check your inbox and enter the code to complete signup.",
@@ -293,6 +336,7 @@
         "overview": "Overview",
         "commerce": "Commerce",
         "communication": "Communication",
+        "ai": "AI Control Panel",
         "iam": "IAM",
         "support": "Support",
         "observability": "Observability",
@@ -302,10 +346,16 @@
       "items": {
         "analytics": "Analytics",
         "products": "Products",
+        "purchases": "Purchases",
+        "subscriptions": "Subscriptions",
+        "coupons": "Coupons",
         "accesses": "Access",
         "notifications": "Notifications",
+        "user_notifications": "User Notifications",
         "chat_rooms": "Chat Rooms",
         "chat_messages": "Chat Messages",
+        "ai_profiles": "AI Profiles",
+        "ai_runs": "AI Runs",
         "users": "Users",
         "roles": "Roles",
         "feedback": "Feedback Inbox",
@@ -316,6 +366,23 @@
       }
     },
     "common": {
+      "search_by": "Search by {{keys}}",
+      "detail": {
+        "admin": "Admin",
+        "details": "Details",
+        "name": "Name",
+        "email": "Email",
+        "description": "Description",
+        "type": "Type",
+        "status": "Status",
+        "created": "Created",
+        "updated": "Updated",
+        "source": "Source",
+        "format": "Format",
+        "size": "Size",
+        "metadata": "Metadata",
+        "provider": "Provider"
+      },
       "actions": {
         "create": "Create",
         "edit": "Edit",
@@ -332,12 +399,33 @@
         "close": "Close",
         "search": "Search",
         "view_details": "View Details",
+        "back": "Back",
         "select_all": "Select All",
         "deselect_all": "Deselect All",
         "clear_all": "Clear All",
         "apply_filter": "Apply Filter",
         "reset_filter": "Reset Filter",
-        "open_recycle_bin": "Open recycle bin"
+        "open_recycle_bin": "Open recycle bin",
+        "done": "Done"
+      },
+      "recycle_bin": {
+        "empty_button": "Empty Recycle Bin",
+        "empty_title": "Empty all items in the recycle bin",
+        "confirm_empty_title": "Empty Recycle Bin",
+        "confirm_empty_message": "Are you sure you want to empty the recycle bin? This action cannot be undone and will permanently delete all {{count}} discarded item(s) from storage."
+      },
+      "batch": {
+        "selected_count": "{{count}} item(s) selected",
+        "clear_selection": "Clear selection",
+        "discard_selected": "Discard Selected",
+        "restore_selected": "Restore Selected",
+        "destroy_selected": "Delete Permanently",
+        "confirm_discard_title": "Discard Selected Items",
+        "confirm_discard_message": "Are you sure you want to discard {{count}} selected item(s)? They will be moved to the recycle bin.",
+        "confirm_restore_title": "Restore Selected Items",
+        "confirm_restore_message": "Are you sure you want to restore {{count}} selected item(s)?",
+        "confirm_destroy_title": "Permanently Delete Selected Items",
+        "confirm_destroy_message": "Are you sure you want to permanently delete {{count}} selected item(s)? This action cannot be undone and will purge all files from storage."
       },
       "recycle_bin": {
         "empty_button": "Empty Recycle Bin",
@@ -412,6 +500,17 @@
       }
     },
     "users": {
+      "detail": {
+        "title": "User Details",
+        "description": "Account identity, status, and assigned access roles.",
+        "identity": "Identity",
+        "account": "Account details",
+        "roles": "Assigned roles",
+        "no_roles": "No roles assigned.",
+        "provider": "Provider",
+        "confirmed": "Confirmed",
+        "locked": "Locked"
+      },
       "title": "Users",
       "description": "Manage user accounts, roles, and administrative access permissions.",
       "recycle_title": "Discarded Users",
@@ -478,6 +577,15 @@
       }
     },
     "roles": {
+      "detail": {
+        "title": "Role Details",
+        "description": "Role identity and effective permission coverage.",
+        "information": "Role information",
+        "type": "Type",
+        "assigned_users": "Assigned users",
+        "permissions": "Permissions matrix",
+        "no_permissions": "No permissions assigned."
+      },
       "title": "Roles & Permissions",
       "description": "Define system roles, access policies, and permission grants across the platform.",
       "recycle_title": "Discarded Roles",
@@ -501,9 +609,10 @@
       },
       "form": {
         "name_label": "Role Name",
-        "name_placeholder": "e.g. Content Moderator",
+        "name_placeholder": "e.g. content_admin",
+        "name_invalid": "Use lowercase letters, numbers, and underscores only, ending with _admin.",
         "key_label": "Role Key",
-        "key_placeholder": "e.g. content_moderator",
+        "key_placeholder": "e.g. content_admin",
         "description_label": "Description",
         "description_placeholder": "Describe the responsibilities and scope of this role...",
         "permissions_matrix_title": "Permission Matrix",
@@ -528,7 +637,221 @@
         "delete": "Failed to delete role"
       }
     },
+    "purchases": {
+      "title": "Purchases",
+      "description": "Review one-time purchases, payment outcomes, and Stripe payment records.",
+      "search": "Search user, product, payment intent, or charge...",
+      "filters": { "all": "All statuses" },
+      "table": {
+        "purchase": "Purchase",
+        "user": "User",
+        "amount": "Amount",
+        "method": "Payment method"
+      },
+      "detail": {
+        "title": "Purchase Details",
+        "description": "Purchase, customer, payment method, and Stripe identifiers.",
+        "purchase": "Purchase summary",
+        "payment": "Payment details",
+        "product": "Product",
+        "product_code": "Product code",
+        "paid_at": "Paid",
+        "user": "Customer",
+        "payment_method": "Payment method",
+        "payment_intent": "Payment intent",
+        "charge": "Charge",
+        "transaction_id": "Transaction ID",
+        "order_id": "Order ID"
+      },
+      "errors": { "load": "Failed to load purchases" }
+    },
+    "subscriptions": {
+      "title": "Subscriptions",
+      "description": "Review recurring billing state, renewal periods, and cancellation schedules.",
+      "search": "Search user, product, or subscription ID...",
+      "scheduled": "Scheduled to cancel",
+      "filters": {
+        "all_statuses": "All statuses",
+        "all_intervals": "All intervals"
+      },
+      "table": {
+        "subscription": "Subscription",
+        "user": "User",
+        "amount": "Price",
+        "period_end": "Period ends",
+        "cancellation": "Cancellation"
+      },
+      "detail": {
+        "title": "Subscription Details",
+        "description": "Plan snapshot, customer, billing period, and Stripe identifiers.",
+        "plan": "Plan and customer",
+        "billing": "Billing lifecycle",
+        "product": "Product",
+        "quantity": "Quantity",
+        "subscription_id": "Subscription ID",
+        "period_start": "Period starts",
+        "started_at": "Started",
+        "payment_method": "Payment method"
+      },
+      "errors": { "load": "Failed to load subscriptions" }
+    },
+    "coupons": {
+      "title": "Promotions & Coupons",
+      "description": "Manage promotional codes, referral campaigns, and usage limits",
+      "recycle_title": "Discarded Coupons",
+      "recycle_description": "Inspect or restore archived promotional coupons.",
+      "create_title": "Create Promotion Coupon",
+      "create_description": "Configure promotional discounts, usage allowances, targeting restrictions, or batch generation.",
+      "detail_title": "Coupon Details",
+      "detail_description": "Inspect coupon configuration, redemption analytics, and targeted allowances.",
+      "ledger_button": "Redemption Ledger",
+      "create_button": "Create Coupon",
+      "tabs": {
+        "active": "Active Coupons",
+        "recycle_bin": "Recycle Bin"
+      },
+      "search_placeholder": "Search coupons by code, title, or referrer...",
+      "filter_all": "All Types",
+      "filter_percentage": "Percentage",
+      "filter_fixed": "Fixed Amount",
+      "table": {
+        "code": "Code",
+        "title": "Title & Details",
+        "discount": "Discount",
+        "usage": "Usage / Limit",
+        "expires": "Expires At",
+        "created": "Created",
+        "actions": "Actions",
+        "referral": "Referral",
+        "never": "Never",
+        "max_per_user": "Max {{count}}/user",
+        "off": "OFF"
+      },
+      "detail": {
+        "total_redemptions": "Total Redemptions",
+        "total_discounted": "Total Discounts",
+        "remaining_usage": "Remaining Usage",
+        "targeting_restrictions": "Targeting & Eligibility Restrictions",
+        "targeting_all_roles": "Applicable to all customer roles",
+        "targeting_all_users": "Applicable to all registered users",
+        "targeting_all_products": "Applicable to all product plans",
+        "target_roles": "Target Roles",
+        "target_users": "Target User Emails",
+        "target_products": "Target Product IDs",
+        "redemption_history": "Redemption History",
+        "no_redemptions": "No redemptions recorded yet",
+        "restricted_count": "{{count}} restricted",
+        "applied_coupon_title": "Applied Coupon & Discounts",
+        "coupon_code": "Coupon Code",
+        "original_price": "Original Price",
+        "discount_deducted": "Discount Deducted",
+        "net_amount_charged": "Net Amount Charged"
+      },
+      "form": {
+        "single_mode": "Single Coupon",
+        "batch_mode": "Batch Generator",
+        "title_label": "Coupon Title",
+        "title_placeholder": "e.g. Summer Promo 2026",
+        "description_label": "Description",
+        "description_placeholder": "Internal notes or customer-facing terms...",
+        "code_label": "Coupon Code",
+        "code_placeholder": "e.g. SUMMER20",
+        "code_helper": "Must be at least 6 characters (A-Z and 0-9 only, no hyphens or special characters).",
+        "code_invalid": "Coupon code must be at least 6 alphanumeric characters (A-Z and 0-9 only)",
+        "type_label": "Discount Type",
+        "type_percentage": "Percentage (%)",
+        "type_fixed": "Fixed Amount (Currency)",
+        "amount_label": "Discount Amount",
+        "percentage_placeholder": "20",
+        "fixed_placeholder": "10.00",
+        "currency_label": "Currency",
+        "max_usage_label": "Global Usage Limit",
+        "max_usage_placeholder": "0",
+        "max_usage_tooltip": "0 = Unlimited",
+        "max_usage_helper": "Set 0 for unlimited total redemptions.",
+        "max_per_user_label": "Usage Limit Per User",
+        "max_per_user_placeholder": "1",
+        "max_per_user_helper": "How many times each customer can redeem.",
+        "max_per_user_exceeds_max": "Usage limit per user cannot exceed global usage limit.",
+        "expires_label": "Expiration Date (Optional)",
+        "expires_helper": "Leave empty if this coupon never expires.",
+        "batch_count_label": "Number of Coupons to Generate",
+        "batch_prefix_label": "Code Prefix",
+        "batch_prefix_placeholder": "e.g. VIP",
+        "batch_helper": "Generates unique uppercase alphanumeric codes with the prefix (no hyphens or special characters).",
+        "target_users_placeholder": "e.g. user1@example.com, user2@example.com",
+        "target_users_helper": "Enter customer emails separated by commas, spaces, or newlines.",
+        "submit_single": "Create Coupon",
+        "submit_batch": "Generate Coupons"
+      },
+      "toasts": {
+        "create_success": "Coupon created successfully",
+        "batch_create_success": "Batch coupons generated successfully",
+        "discard_success": "Coupon moved to recycle bin",
+        "restore_success": "Coupon restored successfully",
+        "destroy_success": "Coupon permanently deleted successfully",
+        "batch_discard_success": "Selected coupons moved to recycle bin",
+        "batch_restore_success": "Selected coupons restored successfully",
+        "batch_destroy_success": "Selected coupons permanently deleted",
+        "recycle_bin_emptied": "Recycle bin emptied successfully"
+      },
+      "errors": {
+        "load_list": "Failed to load coupons",
+        "load_one": "Failed to load coupon details",
+        "create": "Failed to create coupon",
+        "discard": "Failed to discard coupon",
+        "restore": "Failed to restore coupon",
+        "destroy": "Failed to delete coupon",
+        "batch_discard": "Failed to batch discard coupons",
+        "batch_restore": "Failed to batch restore coupons",
+        "batch_destroy": "Failed to batch delete coupons",
+        "empty_recycle_bin": "Failed to empty recycle bin"
+      },
+      "status": {
+        "processing": "Processing",
+        "failed": "Failed",
+        "succeeded": "Succeeded",
+        "sync_failed_title": "Stripe Synchronization Failed",
+        "sync_failed_helper": "This coupon remains inactive and cannot be activated. Inspect the error and delete the coupon if necessary."
+      }
+    },
+    "user_coupons": {
+      "title": "Redemption Ledger",
+      "description": "Global audit log of coupon redemptions and applied discounts across all customers",
+      "search_placeholder": "Search by email, coupon code, or product name...",
+      "filter_all": "All Payment Types",
+      "filter_purchase": "One-Time Purchase",
+      "filter_subscription": "Subscription",
+      "free": "FREE",
+      "types": {
+        "purchase": "PURCHASE",
+        "subscription": "SUBSCRIPTION"
+      },
+      "table": {
+        "code": "Coupon Code",
+        "user": "Customer",
+        "product": "Product",
+        "type": "Payment Type",
+        "discount": "Discount Given",
+        "final": "Final Paid",
+        "date": "Redeemed At"
+      },
+      "empty": "No redemptions found",
+      "empty_description": "No coupon redemptions recorded yet.",
+      "errors": {
+        "load": "Failed to load redemptions ledger"
+      }
+    },
     "products": {
+      "detail": {
+        "title": "Product Details",
+        "description": "Catalogue identity, pricing, and availability.",
+        "product": "Product",
+        "pricing": "Pricing and availability",
+        "billing_interval": "Billing interval",
+        "recurring": "Recurring",
+        "availability": "Availability"
+      },
       "title": "Products & Pricing",
       "description": "Manage product catalogue, recurring subscriptions, Stripe synchronization, and pricing models.",
       "recycle_title": "Discarded Products",
@@ -536,7 +859,7 @@
       "create_title": "Create Product",
       "create_description": "Add a new digital product or recurring subscription plan.",
       "edit_title": "Edit Product",
-      "edit_description": "Update product details, pricing, or billing cycle.",
+      "edit_description": "Update product details, pricing, or billing interval.",
       "tabs": {
         "active_products": "Active Products",
         "recycle_bin": "Recycle Bin"
@@ -546,7 +869,7 @@
         "product": "Product",
         "code": "Code",
         "price": "Price",
-        "cycle": "Billing Cycle",
+        "interval": "Billing Interval",
         "stripe_sync": "Stripe Sync",
         "status": "Status",
         "created": "Created",
@@ -562,10 +885,12 @@
         "price_label": "Price Amount",
         "price_placeholder": "29.00",
         "currency_label": "Currency",
-        "cycle_label": "Billing Cycle",
-        "cycle_monthly": "Monthly",
-        "cycle_yearly": "Yearly",
-        "cycle_one_time": "One-Time",
+        "interval_label": "Billing Interval",
+        "interval_daily": "Daily",
+        "interval_weekly": "Weekly",
+        "interval_monthly": "Monthly",
+        "interval_yearly": "Yearly",
+        "interval_one_time": "One-Time",
         "active_for_purchase": "Active for Purchase",
         "thumbnail_label": "Product Thumbnail",
         "thumbnail_helper": "Assign an uploaded thumbnail asset to this product.",
@@ -573,7 +898,9 @@
         "remove_thumbnail": "Remove Thumbnail",
         "save_product": "Save Product",
         "create_product": "Create Product",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "min_price_helper": "Minimum {{amount}} minor units ({{formatted}}) required by Stripe.",
+        "min_price_error": "Price must be at least {{amount}} minor units ({{formatted}}) to satisfy Stripe minimum charge limits."
       },
       "toasts": {
         "create_success": "Product created successfully",
@@ -591,6 +918,17 @@
       }
     },
     "accesses": {
+      "detail": {
+        "title": "Access Details",
+        "description": "Access holder, product entitlement, and lifecycle.",
+        "holder": "Access holder",
+        "entitlement": "Entitlement",
+        "user_id": "User ID",
+        "granted": "Granted",
+        "expires": "Expires",
+        "never": "Never",
+        "remaining_days": "Remaining days"
+      },
       "title": "Access & Entitlements",
       "description": "Manage granted product access, expiration schedules, and access revocation for users.",
       "grant_button": "Grant Access",
@@ -646,6 +984,15 @@
       }
     },
     "chat": {
+      "message_detail": {
+        "title": "Chat Message Details",
+        "description": "Message content and conversation context.",
+        "context": "Message context",
+        "content": "Content",
+        "role": "Role",
+        "room_id": "Room ID",
+        "message_breadcrumb": "Message"
+      },
       "rooms_title": "Chat Rooms",
       "rooms_description": "Moderate chat rooms, inspect discussion threads, and manage community channels.",
       "rooms_recycle_title": "Discarded Chat Rooms",
@@ -724,10 +1071,118 @@
         "update_message": "Failed to update message"
       }
     },
+    "ai": {
+      "profiles_title": "AI Profiles",
+      "profiles_description": "Configure AI model profiles, parameters, and system prompts.",
+      "profiles_empty": "No AI profiles found",
+      "create_profile": "Create Profile",
+      "profile_create_title": "Create AI Profile",
+      "profile_create_description": "Define a new AI profile, execution limits, and instructions.",
+      "profile_edit_title": "Edit AI Profile",
+      "profile_edit_description": "Adjust execution parameters, context limits, and instructions.",
+      "profiles_table": {
+        "key": "Profile Key",
+        "name": "Name",
+        "provider": "Provider",
+        "model": "Model",
+        "temperature": "Temp",
+        "tokens": "Tokens (Out / Ctx)",
+        "status": "Status",
+        "created": "Created"
+      },
+      "filters": {
+        "all_statuses": "All Statuses",
+        "all_providers": "All Providers",
+        "all_models": "All Models",
+        "all_features": "All Features",
+        "search_profiles": "Search by name or key...",
+        "search_runs": "Search by model or feature..."
+      },
+      "custom_model": "Custom Model Identifier",
+      "custom_key": "Custom Profile Key",
+      "profile_detail": {
+        "title": "AI Profile Details",
+        "description": "View full profile configuration and parameters.",
+        "overview": "Profile Overview",
+        "parameters": "Execution Parameters",
+        "system_prompt": "System Prompt",
+        "no_system_prompt": "No system prompt configured for this profile.",
+        "settings": "Settings & Extra Config"
+      },
+      "profile_form": {
+        "key_label": "Profile Key",
+        "key_placeholder": "e.g. customer_support, code_assistant",
+        "provider_label": "Provider",
+        "name_label": "Profile Name",
+        "model_label": "Model Identifier",
+        "enabled_label": "Enabled",
+        "temperature_label": "Temperature",
+        "max_output_tokens_label": "Max Output Tokens",
+        "context_max_tokens_label": "Context Max Tokens",
+        "history_max_messages_label": "History Max Messages",
+        "timeout_seconds_label": "Timeout (seconds)",
+        "system_prompt_label": "System Prompt",
+        "system_prompt_placeholder": "Enter system instruction for this profile...",
+        "save_profile": "Save Profile",
+        "create_profile_submit": "Create Profile"
+      },
+      "runs_title": "AI Runs",
+      "runs_description": "Audit telemetry, execution performance, latency, and token consumption of AI runs.",
+      "runs_empty": "No AI runs found",
+      "runs_table": {
+        "id": "Run ID",
+        "feature": "Feature",
+        "profile": "Profile",
+        "provider": "Provider",
+        "model": "Model",
+        "status": "Status",
+        "tokens": "Tokens",
+        "latency": "Latency",
+        "created": "Created"
+      },
+      "run_detail": {
+        "title": "AI Run Diagnostics",
+        "description": "Detailed trace, execution metrics, and telemetry for this AI run.",
+        "overview": "Execution Overview",
+        "parameters": "Execution Parameters",
+        "diagnostics": "Performance & Tokens",
+        "user_id": "User ID",
+        "chat_message_id": "Chat Message ID",
+        "prompt_tokens": "Prompt Tokens",
+        "completion_tokens": "Completion Tokens",
+        "input_messages_count": "Input Messages Count",
+        "input_chars": "Input Characters",
+        "output_chars": "Output Characters",
+        "error": "Error Diagnostics",
+        "request_metadata": "Request Metadata"
+      },
+      "toasts": {
+        "profile_create_success": "AI profile created successfully",
+        "profile_update_success": "Profile updated successfully"
+      },
+      "errors": {
+        "load_profiles": "Failed to load AI profiles",
+        "load_profile": "Failed to load AI profile",
+        "create_profile": "Failed to create AI profile",
+        "update_profile": "Failed to update AI profile",
+        "load_runs": "Failed to load AI runs",
+        "load_run": "Failed to load AI run"
+      }
+    },
     "feedback": {
       "title": "Feedback Inbox",
       "description": "Review user ratings, feedback submissions, automated categorizations, and device telemetry.",
       "search_placeholder": "Search feedback by content, user or email...",
+      "detail": {
+        "description": "Inspect user feedback submission and manage triage status.",
+        "submission_info": "Submission information",
+        "anonymous": "Anonymous",
+        "none": "None",
+        "platform": "Platform",
+        "device_telemetry": "Device telemetry",
+        "admin_notes": "Admin moderation notes",
+        "admin_notes_placeholder": "Enter internal moderation and resolution notes..."
+      },
       "filters": {
         "all_categories": "All Categories",
         "bug": "Bug Report",
@@ -784,6 +1239,17 @@
       "description": "Monitor client runtime exceptions, inspect stack traces, and manage crash reports across Web and Mobile.",
       "recycle_title": "Discarded Logs",
       "recycle_description": "Purge or restore discarded telemetry reports.",
+      "detail": {
+        "description": "Detailed telemetry diagnostic report and stack trace analysis.",
+        "summary": "Telemetry summary",
+        "severity": "Severity",
+        "status": "Status",
+        "resolved_at": "Resolved at",
+        "device_spec": "Device specification",
+        "not_available": "N/A",
+        "load_failed": "Failed to load log details",
+        "update_failed": "Failed to update log status"
+      },
       "tabs": {
         "active_logs": "Active Logs",
         "recycle_bin": "Recycle Bin"
@@ -851,14 +1317,22 @@
         "all": "All",
         "all_users": "All users",
         "audience": "Audience",
+        "channel_not_configured": "This template has no content configured for this channel.",
+        "cta_text": "CTA Button Text",
+        "cta_text_placeholder": "e.g. Open RexOne, Verify Email, Continue",
+        "cta_text_tooltip": "Custom label for the call-to-action button in emails and in-app cards (e.g. Verify Email, Open Dashboard). Defaults to 'Open RexOne' if blank.",
         "delivery": "Delivery Channels",
         "email": "Email",
         "event": "Notification Event",
         "in_app": "In-App",
+        "include_transactional": "Include Transactional / System Events",
+        "include_transactional_tooltip": "Transactional events (e.g. payment confirmations, invoices) rely on dynamic objects from webhooks. Manual broadcasts without these payloads may send incomplete copy.",
+        "not_configured_badge": "Not configured",
         "push": "Push",
         "recipients": "Recipients",
         "selected_roles": "Selected roles",
-        "selected_users": "Selected users"
+        "selected_users": "Selected users",
+        "template_no_channels": "This template does not have any delivery channels configured."
       },
       "actions": {
         "clear_all_roles": "Clear all roles",
@@ -874,7 +1348,23 @@
         "subject": "Email Subject",
         "body": "Preview Body",
         "channels": "Active Channels",
-        "recipients_count": "Target Recipients: {{count}}"
+        "recipients_count": "Target Recipients: {{count}}",
+        "in_app": "In-App",
+        "push": "Mobile Push",
+        "email": "Email",
+        "active_in_dispatch": "Active in broadcast",
+        "disabled_in_dispatch": "Not included in broadcast",
+        "not_configured": "Not configured in template",
+        "just_now": "Just now",
+        "select_template_prompt": "Select a template to view the live dispatch preview.",
+        "no_body_specified": "No message body specified.",
+        "target": "Target",
+        "tap_to_open": "Tap to open in RexOne",
+        "email_from": "From",
+        "email_to": "To",
+        "email_footer": "RexOne Ecosystem • This is a system notification sent to your registered email address.",
+        "onesignal_template": "OneSignal Template",
+        "brevo_template": "Brevo Template"
       },
       "validation": {
         "delivery_channel_required": "Select at least one delivery channel.",
@@ -926,41 +1416,147 @@
           "general_info": "General Information",
           "event_label": "Event Key",
           "event_placeholder": "e.g. promotional_campaign_fall",
+          "event_tooltip": "Unique identifier in snake_case used by backend code to trigger this event.",
           "name_label": "Display Name",
           "name_placeholder": "e.g. Fall Discount Campaign",
+          "name_tooltip": "Internal human-readable name to identify this template.",
           "desc_label": "Description (Internal)",
           "desc_placeholder": "Brief context on who receives this and when",
+          "desc_tooltip": "Internal notes explaining when, why, and to whom this notification is sent.",
           "category_label": "Category",
+          "category_tooltip": "Grouping for this template: Marketing (campaigns), Broadcast (announcements), or System (transactional alerts).",
           "link_label": "Redirect Link (Optional)",
-          "link_placeholder": "/payment or https://...",
+          "link_tooltip": "Destination route or external URL users will navigate to when tapping the notification.",
+          "link_options": {
+            "none": "No destination",
+            "home": "Home",
+            "profile": "Profile",
+            "payment": "Payments",
+            "ai": "AI chat",
+            "external": "External website"
+          },
+          "external_url_label": "External HTTPS URL",
+          "external_url_placeholder": "https://example.com/page",
+          "external_url_tooltip": "Must be a secure https:// web address.",
           "admin_only": "Admin Broadcast Only",
+          "admin_only_tooltip": "When enabled, this template appears in the Dispatch picker for manual admin announcements. Automated backend events should leave this unchecked.",
+          "admin_only_helper": "Enables this template in the Dispatch Notification screen for manual broadcasts.",
+          "clients_label": "In-app clients",
+          "clients_tooltip": "Select which client platforms (Web, Mobile) will receive and display in-app notifications.",
+          "clients_helper": "Select the target client applications where in-app notifications will be delivered.",
+          "client_web": "Web",
+          "client_mobile": "Mobile",
+          "client_required": "Select at least one in-app client.",
           "channel_content": "Channel Content & Templates",
-          "variables_hint": "Variables: {{user_name}}, {{user_email}}",
+          "variables_hint": "Variables: {{user_name}}, {{user_email}}, {{link}}",
+          "variables_title": "Dynamic Variables",
+          "variables_badge": "Auto-Resolved",
+          "variables_description": "No declaration needed! Variables are automatically populated for each recipient upon dispatch. Click any variable chip below to copy it.",
+          "variables_click_to_copy": "Click variable to copy",
+          "variables_copied": "Copied",
+          "variables_user_name_desc": "Recipient name",
+          "variables_user_email_desc": "Recipient email",
+          "variables_link_desc": "Destination link",
           "in_app_tab": "In-App (Socket)",
           "push_tab": "Push Notification",
           "email_tab": "Email",
           "in_app_title": "In-App Notification Title",
-          "in_app_title_placeholder": "e.g. Announcement: {{title}}",
-          "in_app_body": "In-App Message Body",
-          "in_app_body_placeholder": "e.g. Hello {{user_name}}, we have a special announcement...",
+          "in_app_title_placeholder": "e.g. Welcome aboard!",
+          "in_app_title_tooltip": "Header text shown at the top of the in-app notification card.",
+          "in_app_body": "In-App Notification Body",
+          "in_app_body_placeholder": "e.g. Hey {{user_name}}, thanks for joining RexOne!",
+          "in_app_body_tooltip": "Message content displayed in the notification center. Supports dynamic variables.",
           "push_title": "Push Notification Title",
           "push_title_placeholder": "e.g. New Announcement",
+          "push_title_tooltip": "Headline shown on mobile push banners and lock screen notifications.",
           "push_body": "Push Notification Body",
           "push_body_placeholder": "e.g. Check out our latest features...",
+          "push_body_tooltip": "Message content displayed in the mobile push notification banner.",
           "push_template_id": "Provider Push Template ID (Optional)",
           "push_template_id_placeholder": "e.g. push_template_uuid",
+          "push_template_id_tooltip": "Optional remote push provider template identifier (e.g. Firebase or APNS).",
           "push_template_id_helper": "If using an external provider-managed push layout",
           "email_subject": "Email Subject Line",
           "email_subject_placeholder": "e.g. Important news for {{user_name}}",
-          "email_body": "Email Body (HTML / Text)",
-          "email_body_placeholder": "<p>Dear {{user_name}},</p><p>We are excited to share...</p>",
-          "email_template_id": "Provider Email Template ID (Optional)",
-          "email_template_id_placeholder": "e.g. d-1234567890abcdef",
+          "email_subject_tooltip": "Subject line displayed in the user's email inbox.",
+          "email_body": "Email Body (Master Shell)",
+          "email_body_placeholder": "Hi {{user_name}},\n\nWe are excited to share our latest update with you...",
+          "email_body_tooltip": "Email message body formatted inside the Master Shell. Supports variables.",
+          "email_template_id": "Email Template ID (Optional)",
+          "email_template_id_placeholder": "e.g. welcome, or provider template ID (leave blank for Master Shell)",
+          "email_template_id_tooltip": "Optional custom email template ID. Leave blank to use the default Master Shell.",
           "cancel": "Cancel",
           "save": "Save Changes",
           "create": "Create Template",
           "event_required": "Event identifier is required",
-          "name_required": "Template name is required"
+          "event_invalid": "Event key must start with a lowercase letter and contain only lowercase letters, numbers, and underscores (e.g. promotional_campaign_fall).",
+          "name_required": "Template name is required."
+        }
+      },
+      "user_notifications": {
+        "title": "User Notifications",
+        "recycle_title": "User Notifications Recycle Bin",
+        "description": "Inspect and manage in-app notifications dispatched across all registered users.",
+        "recycle_description": "Restore or permanently delete discarded user notifications.",
+        "search_placeholder": "Search notifications by title, message, or user email...",
+        "tabs": {
+          "active": "Active Notifications",
+          "recycle_bin": "Recycle Bin"
+        },
+        "filters": {
+          "client": "Platform",
+          "all_clients": "All Platforms",
+          "status": "Status",
+          "all_statuses": "All Statuses",
+          "unread": "Unread",
+          "read": "Read"
+        },
+        "columns": {
+          "recipient": "Recipient",
+          "notification": "Notification",
+          "platforms": "Platforms",
+          "status": "Status",
+          "sent_at": "Sent Date",
+          "discarded_at": "Discarded Date",
+          "actions": "Actions"
+        },
+        "empty_title": "No user notifications found",
+        "empty_desc": "Delivered user notifications will appear here once dispatched.",
+        "loading": "Loading user notifications...",
+        "delete_title": "Delete User Notification",
+        "delete_message": "Are you sure you want to permanently delete this notification? This action cannot be undone.",
+        "discard_title": "Move to Recycle Bin",
+        "discard_message": "Are you sure you want to move this notification to the recycle bin?",
+        "restore_title": "Restore User Notification",
+        "restore_message": "Are you sure you want to restore this notification?",
+        "toasts": {
+          "discard_success": "Notification moved to recycle bin",
+          "restore_success": "Notification restored successfully",
+          "destroy_success": "Notification permanently deleted",
+          "batch_discard_success": "{{count}} notifications moved to recycle bin",
+          "batch_restore_success": "{{count}} notifications restored successfully",
+          "batch_destroy_success": "{{count}} notifications permanently deleted",
+          "recycle_bin_emptied": "Recycle bin emptied successfully"
+        },
+        "detail": {
+          "title": "User Notification Details",
+          "description": "Inspect recipient, message content, async telemetry, and payload metadata.",
+          "recipient_section": "Recipient & Delivery",
+          "content_section": "Notification Content",
+          "operation_section": "Async Operation",
+          "metadata_section": "Payload Metadata (JSON)",
+          "recipient": "Recipient User",
+          "recipient_name": "Full Name",
+          "notification_title": "Title",
+          "notification_message": "Message Body",
+          "target_link": "Target Link",
+          "read_status": "Read Status",
+          "platforms": "Target Platforms",
+          "sent_at": "Sent Date",
+          "discarded_at": "Discarded Date",
+          "operation_id": "Operation ID",
+          "operation_type": "Operation Type",
+          "operation_status": "Operation Status"
         }
       }
     },
@@ -1007,10 +1603,21 @@
       },
       "cache": {
         "live_db": "Live DB",
-        "redis_cache": "Redis Cache"
+        "solid_cache": "Solid Cache"
       }
     },
     "assets": {
+      "detail": {
+        "title": "Asset Details",
+        "description": "Media preview, ownership, and storage metadata.",
+        "preview": "Preview",
+        "metadata": "Asset metadata",
+        "status": "Status",
+        "duration": "Duration",
+        "storage_key": "Storage key",
+        "children": "Child assets",
+        "no_children": "No child assets attached."
+      },
       "title": "Assets",
       "description": "Manage media assets",
       "recycle_title": "Discarded Assets",
@@ -1026,11 +1633,16 @@
       "filters": {
         "all_types": "All Types",
         "all_formats": "All Formats",
-        "all_sources": "All Sources"
+        "all_sources": "All Sources",
+        "parent_assets": "Parent Assets",
+        "child_assets": "Child Assets",
+        "all_assets": "All Assets"
       },
       "table": {
         "preview": "Preview",
         "name": "Name",
+        "title": "Title",
+        "description": "Description",
         "type": "Type",
         "format": "Format",
         "size": "Size",
@@ -1039,9 +1651,24 @@
         "discarded": "Discarded",
         "actions": "Actions"
       },
+      "form": {
+        "parent_asset_label": "Parent Asset",
+        "parent_asset_placeholder": "Select parent asset...",
+        "parent_asset_search_placeholder": "Search parent assets by title or name...",
+        "parent_asset_required": "Parent asset is required for thumbnails and subtitles",
+        "parent_asset_loading": "Loading parent assets...",
+        "parent_asset_none": "No parent assets found",
+        "parent_asset_already_has_thumbnail": "Already has thumbnail",
+        "replace_thumbnail_title": "Replace Existing Thumbnail?",
+        "replace_thumbnail_message": "Parent asset \"{{parentTitle}}\" already has a thumbnail ({{existingThumbnail}}). Are you sure you want to replace it?",
+        "replace_thumbnail_confirm": "Yes, Replace Thumbnail",
+        "replace_thumbnail_cancel": "Cancel"
+      },
       "upload_dialog": {
         "title": "Upload Assets",
         "type_label": "Asset Type",
+        "title_label": "Title",
+        "description_label": "Description",
         "file_label": "Select Files",
         "choose_files": "Choose Files (Up to {{count}})",
         "upload_button": "Upload",
@@ -1080,6 +1707,16 @@
         "queued": "Thumbnail regeneration queued",
         "replaced": "Thumbnail replaced successfully",
         "failed": "Failed to update thumbnail"
+      },
+      "subtitle": {
+        "label": "Subtitle",
+        "view": "View subtitle",
+        "upload": "Add subtitle",
+        "uploading": "Uploading subtitle...",
+        "replaced": "Subtitle uploaded successfully",
+        "failed": "Failed to upload subtitle",
+        "invalid_type": "Subtitle must be an SRT file",
+        "too_large": "Subtitle must be under {{size}}MB"
       },
       "picker": {
         "title": "Select Asset",
@@ -1149,6 +1786,18 @@
       "recycle_description": "Restore discarded app versions. Versions are never permanently destroyed.",
       "create_title": "Create Version",
       "edit_title": "Edit Version",
+      "detail": {
+        "title": "Version Details",
+        "description": "Release information, platform builds, and current installations.",
+        "release": "Release information",
+        "builds": "Platform builds",
+        "installs": "Current installations",
+        "version_number": "Version number",
+        "force_update": "Force update",
+        "ios_build": "iOS build",
+        "android_build": "Android build",
+        "released": "Released"
+      },
       "tabs": {
         "active_versions": "Active Versions",
         "recycle_bin": "Recycle Bin"
@@ -1266,6 +1915,8 @@
     "loading": "Loading notifications...",
     "delete": "Delete notification",
     "delete_success": "Notification deleted",
-    "mark_read_success": "Marked as read"
+    "mark_read_success": "Marked as read",
+    "open_link": "Open link",
+    "read_more": "Read more"
   }
 }

@@ -12,6 +12,7 @@ import {
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
 import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
+import { ANALYTICS_COLORS } from "../constants";
 
 interface IRevenueChartProps {
   data: IAnalyticsTimeSeriesPoint[];
@@ -27,7 +28,7 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-body-m font-semibold text-base-content">
-            Revenue & Paid Transactions
+            Revenue & Paid Purchases
           </h3>
           <p className="text-caption text-base-content opacity-60">
             Gross revenue generated over the selected time range
@@ -43,8 +44,8 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
           >
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ff5757" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#ff5757" stopOpacity={0.0} />
+                <stop offset="5%" stopColor={ANALYTICS_COLORS.PRIMARY} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={ANALYTICS_COLORS.PRIMARY} stopOpacity={0.0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -82,9 +83,14 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
                       <p className="mt-1 text-body-m font-bold text-primary">
                         ${item.revenue.toFixed(2)} USD
                       </p>
+                      {typeof item.discounts === "number" && item.discounts > 0 ? (
+                        <p className="text-caption text-emerald-500 font-medium">
+                          -${item.discounts.toFixed(2)} in discounts
+                        </p>
+                      ) : null}
                       <p className="text-caption text-base-content opacity-70">
-                        {item.transactions} transaction
-                        {item.transactions === 1 ? "" : "s"}
+                        {item.purchases} purchase
+                        {item.purchases === 1 ? "" : "s"}
                       </p>
                     </div>
                   );
@@ -95,7 +101,7 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
             <Area
               type="monotone"
               dataKey="revenue"
-              stroke="#ff5757"
+              stroke={ANALYTICS_COLORS.PRIMARY}
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#revenueGradient)"

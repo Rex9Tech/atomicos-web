@@ -1,7 +1,7 @@
 // src/design/elements/font.ts
 
 /**
- * Rexone Design System - Typography Tokens
+ * RexOne Design System - Typography Tokens
  *
  * Primary UI: Quicksand
  * Display: Clip
@@ -13,6 +13,7 @@ export const font = {
     primary: '"Quicksand", sans-serif',
     display: '"Clip", cursive, sans-serif',
     handwritten: '"Storytime", cursive',
+    mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   },
 
   fontWeight: {

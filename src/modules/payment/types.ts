@@ -1,8 +1,10 @@
 import type {
   TAccessStatus,
-  TProductCycle,
+  TBillingInterval,
+  TCouponType,
+  TPaymentType,
+  TPurchaseStatus,
   TSubscriptionStatus,
-  TTransactionStatus,
 } from "./constants";
 
 export interface IProduct {
@@ -10,32 +12,47 @@ export interface IProduct {
   name: string;
   description: string;
   price: string;
-  price_unit_amount: number;
+  unit_amount: number;
   currency: string;
-  cycle: TProductCycle | string | null;
+  interval: TBillingInterval | null;
   period_label: string;
   recurring: boolean;
   active: boolean;
   free?: boolean;
+  stripe_product_id?: string | null;
+  stripe_price_id?: string | null;
+  google_play_product_id?: string | null;
+  app_store_product_id?: string | null;
+  in_app?: boolean;
+  supported_providers?: string[];
 }
 
 export interface ISubscription {
   id: string;
-  stripe_subscription_id: string;
-  stripe_customer_id: string;
+  provider: string;
+  provider_subscription_id: string;
+  provider_subscription_item_id?: string | null;
+  provider_customer_id?: string | null;
+  provider_price_id: string;
 
   status: TSubscriptionStatus;
-  cycle: TProductCycle | string;
+  currency: string;
+  unit_amount: number;
+  quantity: number;
+  interval: TBillingInterval;
+  interval_count: number;
 
   payment_method_id: string | null;
   payment_method_type: string | null;
 
-  current_period_start: string | null;
-  current_period_end: string | null;
+  current_period_start: string;
+  current_period_end: string;
 
   started_at: string;
   ended_at: string | null;
   canceled_at: string | null;
+  cancel_at: string | null;
+  cancel_at_period_end: boolean;
 
   created_at: string;
   updated_at: string;
@@ -50,9 +67,12 @@ export interface ISubscription {
   ended: boolean;
   expired: boolean;
   scheduled_for_cancellation: boolean;
+  cancelable: boolean;
 
   // Renewal
+  renewing: boolean;
   days_until_renewal: number | null;
+  days_until_period_end: number | null;
 
   // Payment method display
   payment_method_display: string | null;
@@ -64,21 +84,37 @@ export interface ISubscription {
   product_name: string | null;
   price: string | null;
   period_label: string | null;
+
+  // Coupon & discounts
+  coupon?: IPurchaseCoupon | null;
 }
 
-export interface ITransaction {
+export interface IPurchaseCoupon {
+  id?: string;
+  code: string;
+  title?: string;
+  coupon_type: string | number;
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+  currency: string;
+}
+
+export interface IPurchase {
   id: string;
 
-  stripe_payment_intent_id: string;
-  stripe_charge_id: string | null;
-  stripe_customer_id: string;
+  provider: string;
+  provider_payment_id: string;
+  provider_charge_id?: string | null;
+  provider_customer_id?: string | null;
 
-  status: TTransactionStatus;
+  status: TPurchaseStatus;
 
   payment_method_id: string | null;
   payment_method_type: string | null;
 
-  price_unit_amount: number;
+  unit_amount: number;
+  price: string;
   currency: string;
   client_secret: string | null;
 
@@ -98,7 +134,6 @@ export interface ITransaction {
 
   // Status helpers
   paid: boolean;
-  refunded: boolean;
   pending: boolean;
   failed: boolean;
   requires_action: boolean;
@@ -111,6 +146,9 @@ export interface ITransaction {
 
   // Product details
   product_name: string | null;
+
+  // Coupon & discounts
+  coupon?: IPurchaseCoupon | null;
 }
 
 export interface IAccess {
@@ -134,4 +172,65 @@ export interface ICheckoutResponse {
   free_access_granted?: boolean;
   product_id?: string;
   access_id?: string;
+  coupon_code?: string;
+  discount_amount?: number;
+}
+
+export type { TCouponType } from "./constants";
+
+export interface ICoupon {
+  id: string;
+  title: string;
+  description: string | null;
+  code: string;
+  coupon_type: TCouponType;
+  amount: number;
+  currency: string | null;
+  max_usage: number;
+  max_usage_per_user: number;
+  used_count: number;
+  expires_at: string | null;
+  referrer_id: string | null;
+  target_role_ids: string[];
+  target_user_ids: string[];
+  target_user_emails?: string[];
+  target_product_ids: string[];
+  active: boolean;
+  expired: boolean;
+  exhausted: boolean;
+  created_at: string;
+  updated_at: string;
+  discarded_at?: string | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export type { TPaymentType } from "./constants";
+
+export interface IUserCoupon {
+  id: string;
+  coupon_id: string;
+  coupon_code?: string;
+  coupon_title?: string;
+  user_id: string;
+  user_name?: string;
+  user_email?: string;
+  product_id: string;
+  product_name?: string;
+  payment_id: string;
+  payment_type: TPaymentType;
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+  currency: string;
+  created_at: string;
+}
+
+export interface ICouponValidationResult {
+  valid: boolean;
+  error?: string;
+  coupon?: ICoupon;
+  original_amount?: number;
+  discount_amount?: number;
+  final_amount?: number;
+  currency?: string;
 }

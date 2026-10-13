@@ -1,0 +1,115 @@
+import React from "react";
+import { useParams } from "react-router-dom";
+import AppRoutes from "../../../../AppRoutes";
+import { iconsLib } from "../../../../assets";
+import {
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
+import { AdminState } from "../../components";
+import { useAdminDetail } from "../../hooks/useAdminDetail";
+import { AppLocales, useTranslate } from "../../../../locales";
+import AccessController from "../access.controller";
+import type { IAdminAccess } from "../types";
+
+const loadAccess = async (id: string) => {
+  const result = await AccessController.getAccess(id);
+  return { ...result, record: result.access };
+};
+export const AdminAccessDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const t = useTranslate();
+  const { record: access, error } = useAdminDetail<IAdminAccess>(
+    id,
+    loadAccess,
+  );
+  const listPath = AppRoutes.client.protected.admin.ACCESSES;
+  return (
+    <div className="space-y-6">
+      <DetailHeader
+        breadcrumbs={[
+          { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
+          { label: t(AppLocales.Admin.Accesses.Title), to: listPath },
+          { label: access?.user_name || access?.user_email || t(AppLocales.Admin.Common.Detail.Details) },
+        ]}
+        title={access?.user_name || access?.product_name || t(AppLocales.Admin.Accesses.Detail.Title)}
+        description={access?.user_email || t(AppLocales.Admin.Accesses.Detail.Description)}
+        backTo={listPath}
+        icon={iconsLib.shieldCheck}
+        statusBadge={access ? <StatusBadge status={access.status} /> : undefined}
+        entityId={access?.id}
+      />
+      {error ? (
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
+      ) : access ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <DetailSection title={t(AppLocales.Admin.Accesses.Detail.Holder)} icon={iconsLib.user}>
+            <DetailGrid columns={2}>
+              <DetailField
+                label={t(AppLocales.Admin.Common.Detail.Name)}
+                value={access.user_name || access.username}
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Common.Detail.Email)}
+                value={access.user_email}
+                copyable
+                mono
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Accesses.Detail.UserId)}
+                value={access.user_id}
+                copyable
+                mono
+                className="sm:col-span-2"
+              />
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection title={t(AppLocales.Admin.Accesses.Detail.Entitlement)} icon={iconsLib.shieldCheck}>
+            <DetailGrid className="xl:grid-cols-2">
+              <DetailField
+                label={t(AppLocales.Admin.Products.Detail.Product)}
+                value={access.product_name || access.product_code}
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Common.Detail.Status)}
+                value={<StatusBadge status={access.status} />}
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Accesses.Detail.Granted)}
+                value={
+                  access.granted_at ? <DateTime value={access.granted_at} format={DateTimeFormats.ADMIN} /> : "—"
+                }
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Accesses.Detail.Expires)}
+                value={
+                  access.expires_at
+                    ? <DateTime value={access.expires_at} format={DateTimeFormats.ADMIN} />
+                    : t(AppLocales.Admin.Accesses.Detail.Never)
+                }
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Accesses.Detail.RemainingDays)}
+                value={access.remaining_days}
+              />
+              <DetailField
+                label={t(AppLocales.Admin.Common.Detail.Updated)}
+                value={
+                  <DateTime
+                    value={access.updated_at}
+                    format={DateTimeFormats.ADMIN}
+                  />
+                }
+              />
+            </DetailGrid>
+          </DetailSection>
+        </div>
+      ) : null}
+    </div>
+  );
+};

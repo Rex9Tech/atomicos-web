@@ -2,7 +2,9 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { getSocketToast, SOCKET_MESSAGE_TYPES } from "../helpers/socket.helpers";
+import { getUtcNowIso } from "../helpers";
 import SocketService, { ISocketMessage } from "../services/socket.service";
+import { NOTIFICATION_SOCKET_TYPES } from "../modules/notification";
 import { ToastTypes } from "../constants";
 
 export interface INotification {
@@ -13,8 +15,8 @@ export interface INotification {
 }
 
 export const useSocket = () => {
-  const { token, isAuthenticated } = useAuth();
-  const { success, error, info } = useToast();
+  const { token, isAuthenticated, refreshCurrentUser, signout } = useAuth();
+  const { success, error, info, warning } = useToast();
   const [notifications, setNotifications] = useState<INotification[]>([]);
 
   useEffect(() => {
@@ -25,6 +27,31 @@ export const useSocket = () => {
     }
 
     const handleNotification = (data: ISocketMessage) => {
+      const payloadType = (data.data?.type as string) || data.type;
+
+      // When IAM roles or access entitlements are revoked or changed, sign out so the user re-authenticates fresh
+      if (
+        payloadType === NOTIFICATION_SOCKET_TYPES.IAM_UPDATED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.ACCESS_REVOKED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.ACCESS_UPDATED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SESSION_EXPIRED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SESSION_INVALIDATED
+      ) {
+        signout();
+        warning(data.message || "Your access has changed. Please sign in again.");
+        return;
+      }
+
+      const isEntitlementEvent =
+        payloadType === NOTIFICATION_SOCKET_TYPES.PAYMENT_SUCCESS ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CREATED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_RESUMED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CANCELED;
+
+      if (isEntitlementEvent) {
+        void refreshCurrentUser();
+      }
+
       const toast = getSocketToast(data);
       if (!toast) {
         return;
@@ -36,7 +63,7 @@ export const useSocket = () => {
           id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
           message: data.message,
           data: data.data || {},
-          created_at: data.created_at || new Date().toISOString(),
+          created_at: data.created_at || getUtcNowIso(),
         };
         setNotifications((prev) => {
           if (prev.some((n) => n.id === notif.id)) return prev;
@@ -54,6 +81,11 @@ export const useSocket = () => {
         return;
       }
 
+      if (toast.kind === ToastTypes.WARNING) {
+        warning(toast.message);
+        return;
+      }
+
       info(toast.message);
     };
 
@@ -63,7 +95,7 @@ export const useSocket = () => {
       SocketService.removeListener(handleNotification);
       // Don't disconnect here - let the effect handle it
     };
-  }, [token, isAuthenticated, success, error, info]);
+  }, [token, isAuthenticated, success, error, info, warning]);
 
   const sendMessage = useCallback(
     (channel: string, message: string, data: Record<string, unknown> = {}) => {

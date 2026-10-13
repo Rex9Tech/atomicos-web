@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import AppConfig from "../../../AppConfig";
 import AppRoutes from "../../../AppRoutes";
 import { icons, iconsLib } from "../../../assets";
 import { FeedbackDialog } from "../../../modules/feedback";
@@ -11,6 +12,7 @@ import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../constants";
 import { cn } from "../../helpers";
 import ProfileAvatar from "./ProfileAvatar";
 import { NotificationCenter } from "./NotificationCenter";
+import { TimeZoneIndicator } from "./TimeZoneIndicator";
 
 export interface HeadNavbarProps {
   children?: React.ReactNode;
@@ -48,19 +50,19 @@ export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
         "flex min-w-0 items-center gap-3 select-none no-underline transition-opacity hover:opacity-90",
         className,
       )}
-      aria-label="Rexone Home"
+      aria-label={`${AppConfig.APP_NAME} Home`}
     >
       <Asset
         asset={icons.logo}
         className={cn(
           "h-9 w-9 shrink-0 select-none transition-transform duration-300 hover:scale-105",
-          isAdmin && "drop-shadow-[0_0_10px_rgba(225,29,72,0.5)]",
+          isAdmin && "drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]",
         )}
       />
       {showText && (
         <div className="min-w-0">
           <div className="truncate text-body-m font-bold tracking-wide text-base-content font-display">
-            Rexone
+            {AppConfig.APP_NAME}
           </div>
           {isAdmin && (
             <div className="truncate text-caption font-medium uppercase tracking-wider text-base-content/60">
@@ -77,11 +79,15 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   actions,
   children,
   className,
+  isAdmin = false,
   leading,
   showNotifications = true,
   showFeedback = true,
 }) => {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  const resolvedLeading =
+    leading !== undefined ? leading : !isAdmin ? <HeadNavbarBrand /> : null;
 
   return (
     <>
@@ -94,9 +100,10 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
         {children ?? (
           <>
             <div className="flex min-w-0 items-center gap-3">
-              {leading ?? <HeadNavbarBrand />}
+              {resolvedLeading}
             </div>
             <div className="flex items-center gap-2">
+              <TimeZoneIndicator />
               {showFeedback && (
                 <Button
                   type={ButtonTypes.BUTTON}

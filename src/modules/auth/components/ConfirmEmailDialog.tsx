@@ -10,11 +10,13 @@ import {
 } from "../../../design/components";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { useAuth, useToast, useLoading } from "../../../contexts";
 import { useCountdown, useTranslate } from "../../../hooks";
 import { AppLocales } from "../../../locales";
+import { AnalyticsService } from "../../../services";
+import { ANALYTICS_AUTH_METHODS } from "../../../constants";
+import { navigateContinueURL } from "../helpers";
 
 interface IConfirmEmailDialogProps {
   email: string;
@@ -58,8 +60,11 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
       setMessage(result.message || "");
       success(t(AppLocales.Auth.ConfirmEmail.Verified));
       signin(result.token, result.user);
-      navigate(AppRoutes.client.protected.HOME);
+      void AnalyticsService.logCompleteOnboarding(ANALYTICS_AUTH_METHODS.EMAIL);
+      navigateContinueURL(navigate);
     } else {
+      setOtp("");
+      updateUrl({ otp: null });
       setError(result.error || "Failed to confirm email code.");
     }
   };
@@ -168,9 +173,6 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
 
         {message && (
           <p className="text-caption text-success text-center">{message}</p>
-        )}
-        {error && (
-          <p className="text-caption text-error text-center">{error}</p>
         )}
       </div>
     </Dialog>

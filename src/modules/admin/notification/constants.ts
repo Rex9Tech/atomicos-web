@@ -1,6 +1,10 @@
 import AppRoutes from "../../../AppRoutes";
 import { AppLocales } from "../../../locales";
 import { IAdminPageMeta } from "../constants";
+export {
+  DEFAULT_NOTIFICATION_CLIENTS,
+  NOTIFICATION_CLIENTS,
+} from "../../notification";
 
 export const ADMIN_NOTIFICATION_PAGE_TITLES = {
   LIST: "Notifications",
@@ -69,9 +73,39 @@ export const NOTIFICATION_CATEGORIES = {
   BROADCAST: "broadcast",
 } as const;
 
+export const NOTIFICATION_TEMPLATE_LINKS = {
+  NONE: "",
+  EXTERNAL: "external",
+  HOME: AppRoutes.client.protected.HOME,
+  PROFILE: AppRoutes.client.protected.PROFILE,
+  PAYMENT: AppRoutes.client.protected.PAYMENT,
+  AI: AppRoutes.client.protected.AI,
+} as const;
+
 export const NOTIFICATION_ADMIN_TABS = {
   BROADCAST: "broadcast",
   TEMPLATES: "templates",
+  USER_NOTIFICATIONS: "user_notifications",
+} as const;
+
+export const ADMIN_USER_NOTIFICATION_SORT_KEYS = {
+  CREATED_AT: "created_at",
+  READ_AT: "read_at",
+  TITLE: "title",
+  DISCARDED_AT: "discarded_at",
+  RECIPIENT: "user_email",
+} as const;
+
+export const ADMIN_USER_NOTIFICATION_STATUS_FILTERS = {
+  ALL: "all",
+  UNREAD: "unread",
+  READ: "read",
+} as const;
+
+export const ADMIN_USER_NOTIFICATION_CLIENT_FILTERS = {
+  ALL: "all",
+  WEB: "web",
+  MOBILE: "mobile",
 } as const;
 
 export type TNotificationAdminTab =

@@ -1,7 +1,13 @@
 import { PaymentService } from ".";
 import { AppLocales, translate } from "../../locales";
-import { getApiError, parsePagyList } from "../../services/api.service";
-import { IAccess, IProduct, ISubscription, ITransaction } from "./types";
+import { getApiError, parsePagyList, parseRecord } from "../../services/api.service";
+import {
+  IAccess,
+  ICouponValidationResult,
+  IProduct,
+  IPurchase,
+  ISubscription,
+} from "./types";
 import { IApiPagination } from "../../models";
 
 class PaymentController {
@@ -120,7 +126,7 @@ class PaymentController {
     if (status?.success && data) {
       return {
         success: true,
-        subscription: data,
+        subscription: parseRecord<ISubscription>(data),
         message: status.message || "Subscription canceled successfully",
       };
     }
@@ -146,7 +152,7 @@ class PaymentController {
     if (status?.success && data) {
       return {
         success: true,
-        subscription: data,
+        subscription: parseRecord<ISubscription>(data),
         message: status.message || "Subscription resumed successfully",
       };
     }
@@ -160,40 +166,81 @@ class PaymentController {
     };
   }
 
-  // ===== TRANSACTIONS =====
-  async getTransactions(params?: { page?: number; limit?: number }): Promise<{
+  // ===== PURCHASES =====
+  async getPurchases(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
-    transactions: ITransaction[];
+    purchases: IPurchase[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await PaymentService.getTransactions(params);
+    const response = await PaymentService.getPurchases(params);
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } = parsePagyList<ITransaction>(response);
-      return { success: true, transactions: records, pagination };
+      const { records, pagination } = parsePagyList<IPurchase>(response);
+      return { success: true, purchases: records, pagination };
     }
 
     return {
       success: false,
-      transactions: [],
+      purchases: [],
       pagination: null,
       error: getApiError(
         response,
-        translate(AppLocales.Payment.Errors.LoadTransactions),
+        translate(AppLocales.Payment.Errors.LoadPurchases),
       ),
     };
   }
 
-  // ===== CHECKOUT =====
-  async createCheckout(productId: string): Promise<{
+  // ===== CHECKOUT & COUPONS =====
+  async validateCoupon(
+    code: string,
+    productId: string,
+  ): Promise<{
+    success: boolean;
+    data?: ICouponValidationResult;
+    error?: string;
+    remaining_attempts?: number;
+    cooldown_remaining?: number;
+  }> {
+    const response = await PaymentService.validateCoupon(code, productId);
+    const { status, data, meta } = response.data || {};
+
+    if (status?.success && data?.valid) {
+      return {
+        success: true,
+        data,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.CheckoutDialog.InvalidCode),
+      ),
+      remaining_attempts: meta?.remaining_attempts,
+      cooldown_remaining: meta?.cooldown_remaining,
+    };
+  }
+
+  async createCheckout(
+    productId: string,
+    couponCode?: string,
+  ): Promise<{
     success: boolean;
     checkoutUrl?: string;
     freeAccessGranted?: boolean;
+    couponCode?: string;
+    discountAmount?: number;
     error?: string;
   }> {
-    const response = await PaymentService.createCheckout(productId);
+    const response = await PaymentService.createCheckout(
+      productId,
+      undefined,
+      undefined,
+      couponCode,
+    );
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -201,6 +248,8 @@ class PaymentController {
         return {
           success: true,
           freeAccessGranted: true,
+          couponCode: data.coupon_code,
+          discountAmount: data.discount_amount,
         };
       }
 
@@ -208,6 +257,8 @@ class PaymentController {
         return {
           success: true,
           checkoutUrl: data.checkout_url,
+          couponCode: data.coupon_code,
+          discountAmount: data.discount_amount,
         };
       }
     }
@@ -218,6 +269,29 @@ class PaymentController {
         response,
         translate(AppLocales.Payment.Errors.CreateCheckout),
       ),
+    };
+  }
+
+  async getSessionStatus(sessionId: string): Promise<{
+    success: boolean;
+    status?: string;
+    paymentStatus?: string;
+    error?: string;
+  }> {
+    const response = await PaymentService.getSessionStatus(sessionId);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      return {
+        success: true,
+        status: data.status,
+        paymentStatus: data.payment_status,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to verify payment session"),
     };
   }
 }

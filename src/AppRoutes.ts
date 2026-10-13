@@ -27,12 +27,16 @@ class AppRoutes {
       FORGOT_PASSWORD: "/password/forgot",
       RESET_PASSWORD: "/password/reset",
       ANAPANA: "/anapana",
+      PRIVACY_POLICY: "/privacy",
+      TERMS_AND_CONDITIONS: "/terms",
+      VS: "/vs",
       ROOT: "/",
     },
 
     protected: {
       SIGN_OUT: "/signout",
       HOME: "/home",
+      TEST: "/test",
       PROFILE: "/profile",
       PAYMENT: "/payment",
       PAYMENT_SUCCESS: "/payment/success",
@@ -44,25 +48,45 @@ class AppRoutes {
         HOME: AppRoutes.admin("/"),
         ANALYTICS: AppRoutes.admin("/analytics"),
         USERS: AppRoutes.admin("/users"),
+        USER_DETAIL: AppRoutes.admin("/users/:id"),
         USERS_RECYCLE_BIN: AppRoutes.admin("/users/bin"),
         USER_CREATE: AppRoutes.admin("/users/create"),
         USER_EDIT: AppRoutes.admin("/users/:id/edit"),
         ROLES: AppRoutes.admin("/roles"),
+        ROLE_DETAIL: AppRoutes.admin("/roles/:id"),
         ROLES_RECYCLE_BIN: AppRoutes.admin("/roles/bin"),
         ROLE_CREATE: AppRoutes.admin("/roles/create"),
         ROLE_EDIT: AppRoutes.admin("/roles/:id/edit"),
         NOTIFICATIONS: AppRoutes.admin("/notifications"),
         NOTIFICATION_CREATE: AppRoutes.admin("/notifications/create"),
         NOTIFICATION_EDIT: AppRoutes.admin("/notifications/:id/edit"),
+        USER_NOTIFICATIONS: AppRoutes.admin("/user-notifications"),
+        USER_NOTIFICATION_DETAIL: AppRoutes.admin("/user-notifications/:id"),
+        USER_NOTIFICATIONS_RECYCLE_BIN: AppRoutes.admin(
+          "/user-notifications/bin",
+        ),
         PRODUCTS: AppRoutes.admin("/products"),
+        PRODUCT_DETAIL: AppRoutes.admin("/products/:id"),
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
         PRODUCT_CREATE: AppRoutes.admin("/products/create"),
         PRODUCT_EDIT: AppRoutes.admin("/products/:id/edit"),
+        PURCHASES: AppRoutes.admin("/purchases"),
+        PURCHASE_DETAIL: AppRoutes.admin("/purchases/:id"),
+        SUBSCRIPTIONS: AppRoutes.admin("/subscriptions"),
+        SUBSCRIPTION_DETAIL: AppRoutes.admin("/subscriptions/:id"),
+        COUPONS: AppRoutes.admin("/coupons"),
+        COUPON_CREATE: AppRoutes.admin("/coupons/create"),
+        COUPON_EDIT: AppRoutes.admin("/coupons/:id/edit"),
+        COUPON_DETAIL: AppRoutes.admin("/coupons/:id"),
+        COUPONS_RECYCLE_BIN: AppRoutes.admin("/coupons/bin"),
+        USER_COUPONS: AppRoutes.admin("/user-coupons"),
         ASSETS: AppRoutes.admin("/assets"),
+        ASSET_DETAIL: AppRoutes.admin("/assets/:id"),
         ASSETS_RECYCLE_BIN: AppRoutes.admin("/assets/bin"),
         ASSET_CREATE: AppRoutes.admin("/assets/create"),
         ASSET_EDIT: AppRoutes.admin("/assets/:id/edit"),
         ACCESSES: AppRoutes.admin("/accesses"),
+        ACCESS_DETAIL: AppRoutes.admin("/accesses/:id"),
         ACCESS_CREATE: AppRoutes.admin("/accesses/create"),
         ACCESS_EDIT: AppRoutes.admin("/accesses/:id/edit"),
         FEEDBACK: AppRoutes.admin("/feedback"),
@@ -74,14 +98,21 @@ class AppRoutes {
         CHAT_ROOMS_RECYCLE_BIN: AppRoutes.admin("/chat/rooms/bin"),
         CHAT_ROOM_EDIT: AppRoutes.admin("/chat/rooms/:id/edit"),
         CHAT_MESSAGES: AppRoutes.admin("/chat/messages"),
+        CHAT_MESSAGE_DETAIL: AppRoutes.admin("/chat/messages/:id"),
         CHAT_MESSAGES_RECYCLE_BIN: AppRoutes.admin("/chat/messages/bin"),
         CHAT_MESSAGE_EDIT: AppRoutes.admin("/chat/messages/:id/edit"),
         VERSIONS: AppRoutes.admin("/versions"),
         VERSIONS_RECYCLE_BIN: AppRoutes.admin("/versions/bin"),
         VERSION_CREATE: AppRoutes.admin("/versions/create"),
         VERSION_EDIT: AppRoutes.admin("/versions/:id/edit"),
-        VERSION_INSTALLS: AppRoutes.admin("/versions/:id/user-versions"),
+        VERSION_DETAIL: AppRoutes.admin("/versions/:id"),
         USER_VERSIONS: AppRoutes.admin("/user-versions"),
+        AI_PROFILES: AppRoutes.admin("/ai/profiles"),
+        AI_PROFILE_CREATE: AppRoutes.admin("/ai/profiles/create"),
+        AI_PROFILE_DETAIL: AppRoutes.admin("/ai/profiles/:id"),
+        AI_PROFILE_EDIT: AppRoutes.admin("/ai/profiles/:id/edit"),
+        AI_RUNS: AppRoutes.admin("/ai/runs"),
+        AI_RUN_DETAIL: AppRoutes.admin("/ai/runs/:id"),
       },
     },
   };
@@ -123,7 +154,8 @@ class AppRoutes {
       IAM_ROLES: AppRoutes.api("/iam/roles/current"), // GET
 
       // Media
-      UPLOAD_ASSET: AppRoutes.api("/media/upload"), // POST
+      UPLOAD_ASSET: AppRoutes.api("/assets/upload"), // POST
+      ASSET_PLAYBACK: AppRoutes.api("/assets/:id/playback"), // GET
 
       // Accesses
       ACCESSES: AppRoutes.api("/accesses"), // GET
@@ -132,6 +164,7 @@ class AppRoutes {
 
       // Payments
       PAYMENT_SESSION: AppRoutes.api("/payment/session"), // POST
+      PAYMENT_SESSION_STATUS: AppRoutes.api("/payment/session/:id"), // GET
       PAYMENT_PRODUCTS: AppRoutes.api("/payment/products"), // GET
       PAYMENT_SUBSCRIPTIONS: AppRoutes.api("/payment/subscriptions"), // GET, POST
       PAYMENT_SUBSCRIPTION_CANCEL: AppRoutes.api(
@@ -140,18 +173,21 @@ class AppRoutes {
       PAYMENT_SUBSCRIPTION_RESUME: AppRoutes.api(
         "/payment/subscriptions/:id/resume",
       ), // POST
-      PAYMENT_TRANSACTIONS: AppRoutes.api("/payment/transactions"), // GET
+      PAYMENT_PURCHASES: AppRoutes.api("/payment/purchases"), // GET
+      PAYMENT_COUPONS_VALIDATE: AppRoutes.api("/payment/coupons/validate"), // POST
 
-      // AI
-      AI_CHAT: AppRoutes.api("/ai/chat"), // POST
-      AI_HISTORY: AppRoutes.api("/ai/history"), // GET
-      AI_CLEAR: AppRoutes.api("/ai/clear"), // DELETE
-      AI_RENAME: AppRoutes.api("/ai/rename"), // PUT
-      AI_ROOMS: AppRoutes.api("/ai/rooms"), // GET, POST
-      AI_DELETE_ROOM: AppRoutes.api("/ai/rooms/:id"), // DELETE
-      AI_SUMMARIZE: AppRoutes.api("/ai/summarize"), // POST
-      AI_TRANSLATE: AppRoutes.api("/ai/translate"), // POST
-      AI_ANALYZE: AppRoutes.api("/ai/analyze"), // POST
+      // Chat
+      AI_CHAT: AppRoutes.api("/chat/messages"), // POST
+      AI_HISTORY: AppRoutes.api("/chat/messages"), // GET
+      AI_CLEAR: AppRoutes.api("/chat/messages/destroy_all"), // DELETE
+      AI_ROOMS: AppRoutes.api("/chat/rooms"), // GET, POST
+      AI_ROOM: AppRoutes.api("/chat/rooms/:id"), // GET, PUT, DELETE
+      AI_RENAME: AppRoutes.api("/chat/rooms/:id"), // PUT
+      AI_DELETE_ROOM: AppRoutes.api("/chat/rooms/:id"), // DELETE
+
+      // Speech
+      SPEECH_TTS: AppRoutes.api("/speech/tts"), // POST
+      SPEECH_STT: AppRoutes.api("/speech/stt"), // POST
 
       // Speech
       SPEECH_TTS: AppRoutes.api("/speech/tts"), // POST
@@ -172,7 +208,6 @@ class AppRoutes {
         USERS: AppRoutes.adminApi("/users"), // GET, POST
         USER_ROLES: AppRoutes.adminApi("/iam/roles"), // GET
         USER_DETAIL: AppRoutes.adminApi("/users/:id"), // GET, PUT
-        DISCARDED_USERS: AppRoutes.adminApi("/users/discarded"), // GET
         USER_DISCARD: AppRoutes.adminApi("/users/:id/discard"), // POST
         USER_UNDISCARD: AppRoutes.adminApi("/users/:id/undiscard"), // POST
         IAM_ROLES: AppRoutes.adminApi("/iam/roles"), // GET, POST
@@ -182,18 +217,41 @@ class AppRoutes {
         IAM_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET, POST
         IAM_PERMISSION_DETAIL: AppRoutes.adminApi("/iam/permissions/:id"), // GET, PUT, DELETE
         IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET
+        IAM_USER_ROLES: AppRoutes.adminApi("/iam/users/:user_id/roles"), // GET, POST
+        IAM_USER_ROLE: AppRoutes.adminApi("/iam/users/:user_id/roles/:role_id"), // DELETE
+        IAM_ROLE_USERS: AppRoutes.adminApi("/iam/roles/:role_id/users"), // GET, POST
+        IAM_ROLE_USER: AppRoutes.adminApi("/iam/roles/:role_id/users/:user_id"), // DELETE
         NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // GET, POST
         NOTIFICATION_DETAIL: AppRoutes.adminApi("/notifications/:id"), // GET, PUT, DELETE
-        NOTIFICATION_UNDISCARD: AppRoutes.adminApi("/notifications/:id/undiscard"), // POST
+        NOTIFICATION_UNDISCARD: AppRoutes.adminApi(
+          "/notifications/:id/undiscard",
+        ), // POST
         NOTIFICATION_DISPATCH: AppRoutes.adminApi("/notifications/dispatch"), // POST
         NOTIFICATION_TEMPLATES: AppRoutes.adminApi("/notifications"), // GET, POST
         NOTIFICATION_TEMPLATE_DETAIL: AppRoutes.adminApi("/notifications/:id"), // GET, PUT, DELETE
         NOTIFICATION_TEMPLATE_DISCARD: AppRoutes.adminApi("/notifications/:id"), // DELETE
-        NOTIFICATION_TEMPLATE_UNDISCARD: AppRoutes.adminApi("/notifications/:id/undiscard"), // POST
+        NOTIFICATION_TEMPLATE_UNDISCARD: AppRoutes.adminApi(
+          "/notifications/:id/undiscard",
+        ), // POST
+        USER_NOTIFICATIONS: AppRoutes.adminApi("/user_notifications"), // GET
+        USER_NOTIFICATION_DETAIL: AppRoutes.adminApi("/user_notifications/:id"), // GET, DELETE
+        USER_NOTIFICATION_DISCARD: AppRoutes.adminApi(
+          "/user_notifications/:id/discard",
+        ), // POST
+        USER_NOTIFICATION_UNDISCARD: AppRoutes.adminApi(
+          "/user_notifications/:id/undiscard",
+        ), // POST
+        USER_NOTIFICATIONS_BIN: AppRoutes.adminApi("/user_notifications/bin"), // DELETE
+        USER_NOTIFICATIONS_DISCARD_BATCH: AppRoutes.adminApi(
+          "/user_notifications/discard_batch",
+        ), // POST
+        USER_NOTIFICATIONS_UNDISCARD_BATCH: AppRoutes.adminApi(
+          "/user_notifications/undiscard_batch",
+        ), // POST
+        USER_NOTIFICATIONS_DESTROY_BATCH: AppRoutes.adminApi(
+          "/user_notifications/destroy_batch",
+        ), // POST
         PAYMENT_PRODUCTS: AppRoutes.adminApi("/payment/products"), // GET, POST
-        DISCARDED_PAYMENT_PRODUCTS: AppRoutes.adminApi(
-          "/payment/products/discarded",
-        ), // GET
         PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PUT, DELETE
         PAYMENT_PRODUCT_DISCARD: AppRoutes.adminApi(
           "/payment/products/:id/discard",
@@ -201,9 +259,37 @@ class AppRoutes {
         PAYMENT_PRODUCT_UNDISCARD: AppRoutes.adminApi(
           "/payment/products/:id/undiscard",
         ), // POST
+        PAYMENT_PURCHASES: AppRoutes.adminApi("/payment/purchases"), // GET
+        PAYMENT_PURCHASE_DETAIL: AppRoutes.adminApi("/payment/purchases/:id"), // GET
+        PAYMENT_SUBSCRIPTIONS: AppRoutes.adminApi("/payment/subscriptions"), // GET
+        PAYMENT_SUBSCRIPTION_DETAIL: AppRoutes.adminApi(
+          "/payment/subscriptions/:id",
+        ), // GET
+        PAYMENT_COUPONS: AppRoutes.adminApi("/payment/coupons"), // GET, POST
+        PAYMENT_COUPON_DETAIL: AppRoutes.adminApi("/payment/coupons/:id"), // GET, PUT, DELETE
+        PAYMENT_COUPON_DISCARD: AppRoutes.adminApi(
+          "/payment/coupons/:id/discard",
+        ), // POST
+        PAYMENT_COUPON_UNDISCARD: AppRoutes.adminApi(
+          "/payment/coupons/:id/undiscard",
+        ), // POST
+        PAYMENT_COUPONS_BATCH: AppRoutes.adminApi("/payment/coupons/batch"), // POST
+        PAYMENT_COUPONS_BIN: AppRoutes.adminApi("/payment/coupons/bin"), // DELETE
+        PAYMENT_COUPONS_DISCARD_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/discard_batch",
+        ), // POST
+        PAYMENT_COUPONS_UNDISCARD_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/undiscard_batch",
+        ), // POST
+        PAYMENT_COUPONS_DESTROY_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/destroy_batch",
+        ), // POST
+        PAYMENT_COUPON_REDEMPTIONS: AppRoutes.adminApi(
+          "/payment/coupons/:id/redemptions",
+        ), // GET
+        PAYMENT_USER_COUPONS: AppRoutes.adminApi("/payment/user_coupons"), // GET
         ASSETS: AppRoutes.adminApi("/assets"), // GET
         ASSET_DETAIL: AppRoutes.adminApi("/assets/:id"), // GET, PUT, DELETE
-        DISCARDED_ASSETS: AppRoutes.adminApi("/assets/discarded"), // GET
         ASSET_UPLOAD: AppRoutes.adminApi("/assets/upload"), // POST
         ASSET_DISCARD: AppRoutes.adminApi("/assets/:id/discard"), // POST
         ASSET_UNDISCARD: AppRoutes.adminApi("/assets/:id/undiscard"), // POST
@@ -214,6 +300,9 @@ class AppRoutes {
         ), // POST
         ASSET_THUMBNAIL_UPLOAD: AppRoutes.adminApi(
           "/assets/:id/thumbnail/upload",
+        ), // POST
+        ASSET_SUBTITLE_UPLOAD: AppRoutes.adminApi(
+          "/assets/:id/subtitle/upload",
         ), // POST
         ASSET_STORAGE_STATS: AppRoutes.adminApi("/assets/storage_stats"), // GET
         ASSET_EMPTY_RECYCLE_BIN: AppRoutes.adminApi("/assets/bin"), // DELETE
@@ -230,6 +319,10 @@ class AppRoutes {
         CHAT_MESSAGE_UNDISCARD: AppRoutes.adminApi(
           "/chat/messages/:id/undiscard",
         ), // POST
+        AI_PROFILES: AppRoutes.adminApi("/ai/profiles"), // GET
+        AI_PROFILE_DETAIL: AppRoutes.adminApi("/ai/profiles/:id"), // GET, PUT
+        AI_RUNS: AppRoutes.adminApi("/ai/runs"), // GET
+        AI_RUN_DETAIL: AppRoutes.adminApi("/ai/runs/:id"), // GET
         FEEDBACKS: AppRoutes.adminApi("/feedbacks"), // GET
         FEEDBACK_DETAIL: AppRoutes.adminApi("/feedbacks/:id"), // GET, PUT, DELETE
         ACCESSES: AppRoutes.adminApi("/accesses"), // GET, POST
@@ -242,11 +335,14 @@ class AppRoutes {
         LOG_UNRESOLVE: AppRoutes.api("/client/logs/:id/unresolve"), // PUT
         ANALYTICS_OVERVIEW: AppRoutes.adminApi("/analytics/overview"), // GET
         APP_VERSIONS: AppRoutes.adminApi("/client/versions"), // GET, POST
-        DISCARDED_APP_VERSIONS: AppRoutes.adminApi("/client/versions/discarded"), // GET
         APP_VERSION_DETAIL: AppRoutes.adminApi("/client/versions/:id"), // GET, PUT
         APP_VERSION_DISCARD: AppRoutes.adminApi("/client/versions/:id/discard"), // POST
-        APP_VERSION_UNDISCARD: AppRoutes.adminApi("/client/versions/:id/undiscard"), // POST
-        APP_VERSION_INSTALLS: AppRoutes.adminApi("/client/versions/:id/user_versions"), // GET
+        APP_VERSION_UNDISCARD: AppRoutes.adminApi(
+          "/client/versions/:id/undiscard",
+        ), // POST
+        APP_VERSION_INSTALLS: AppRoutes.adminApi(
+          "/client/versions/:id/user_versions",
+        ), // GET
         APP_INSTALLS: AppRoutes.adminApi("/client/versions/user_versions"), // GET
       },
     },
@@ -266,6 +362,25 @@ class AppRoutes {
     }
 
     return `${AppRoutes.client.public.ROOT}?${searchParams.toString()}`;
+  }
+
+  // Authentication endpoints that do not require or must not send Authorization headers
+  static readonly AUTH_ENDPOINTS: readonly string[] = [
+    AppRoutes.server.public.PEEK_USER,
+    AppRoutes.server.public.SIGN_UP,
+    AppRoutes.server.public.SIGN_IN_EMAIL,
+    AppRoutes.server.public.SIGN_IN_TOKEN,
+    AppRoutes.server.public.SIGN_IN_GOOGLE,
+    AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE,
+    AppRoutes.server.public.SEND_EMAIL_CODE,
+    AppRoutes.server.public.CONFIRM_CODE,
+    AppRoutes.server.public.FORGOT_PASSWORD,
+    AppRoutes.server.public.RESET_PASSWORD,
+  ];
+
+  static isAuthEndpoint(url?: string): boolean {
+    if (!url) return false;
+    return AppRoutes.AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
   }
 }
 

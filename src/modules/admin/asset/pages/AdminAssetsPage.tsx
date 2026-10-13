@@ -48,14 +48,18 @@ import {
 } from "../../constants";
 import {
   ADMIN_ASSET_COLUMNS,
+  ADMIN_ASSET_FILTERS,
+  ASSET_RECORD_SCOPE_OPTIONS,
+  ASSET_RECORD_SCOPES,
   ASSET_TYPE_OPTIONS,
   ASSET_FORMAT_OPTIONS,
   ASSET_STATUSES,
   ASSET_STATUS_OPTIONS,
   formatAssetFileSize,
+  getAssetThumbnail,
   isImageAsset,
 } from "../constants";
-import { formatAdminDate } from "../../../../helpers";
+import { DateTime, DateTimeFormats } from "../../../../design";
 import { usePermissions } from "../../../../hooks/usePermissions";
 import { AdminAssetStorageStats } from "../components";
 import { Admin } from "../..";
@@ -83,9 +87,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const searchQuery = searchParams.get("search") || "";
-  const typeFilter = searchParams.get("type") || "";
-  const formatFilter = searchParams.get("format") || "";
-  const statusFilter = searchParams.get("status") || "";
+  const typeFilter = searchParams.get(ADMIN_ASSET_FILTERS.TYPE) || "";
+  const formatFilter = searchParams.get(ADMIN_ASSET_FILTERS.FORMAT) || "";
+  const statusFilter = searchParams.get(ADMIN_ASSET_FILTERS.STATUS) || "";
+  const recordScopeFilter =
+    searchParams.get(ADMIN_ASSET_FILTERS.RECORD_SCOPE) ||
+    (isActive ? ASSET_RECORD_SCOPES.PARENTS : ASSET_RECORD_SCOPES.ALL);
 
   const { sortBy, sortOrder, handleSort } = useSort({
     defaultSortBy: isActive
@@ -97,7 +104,6 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
 
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [assets, setAssets] = useState<IAdminAsset[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
 
@@ -106,7 +112,6 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const [assetToDiscard, setAssetToDiscard] = useState<IAdminAsset | null>(
     null,
   );
-  const [isDiscarding, setIsDiscarding] = useState(false);
   const [compressingId, setCompressingId] = useState<string | null>(null);
   const pendingSocketUpdates = useRef<
     Map<
@@ -115,76 +120,76 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         status: string;
         size_bytes?: number;
         url?: string;
-        thumbnail?: IAsset["thumbnail"];
+        thumbnail?: NonNullable<IAsset["children"]>["thumbnail"];
       }
     >
   >(new Map());
 
   // Discarded view state
-  const [isRestoreOpen, setIsRestoreOpen] = useState(false);
-  const [assetToRestore, setAssetToRestore] = useState<IAdminAsset | null>(
+  const [isUndiscardOpen, setIsUndiscardOpen] = useState(false);
+  const [assetToUndiscard, setAssetToUndiscard] = useState<IAdminAsset | null>(
     null,
   );
-  const [isRestoring, setIsRestoring] = useState(false);
   const [isDestroyOpen, setIsDestroyOpen] = useState(false);
   const [assetToDestroy, setAssetToDestroy] = useState<IAdminAsset | null>(
     null,
   );
-  const [isDestroying, setIsDestroying] = useState(false);
 
   // Selection & Batch state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBatchDiscardOpen, setIsBatchDiscardOpen] = useState(false);
-  const [isBatchDiscarding, setIsBatchDiscarding] = useState(false);
-  const [isBatchRestoreOpen, setIsBatchRestoreOpen] = useState(false);
-  const [isBatchRestoring, setIsBatchRestoring] = useState(false);
+  const [isBatchUndiscardOpen, setIsBatchUndiscardOpen] = useState(false);
   const [isBatchDestroyOpen, setIsBatchDestroyOpen] = useState(false);
-  const [isBatchDestroying, setIsBatchDestroying] = useState(false);
 
-  const fetchAssets = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params: Record<string, string | number> = {
-        page,
-        limit: ADMIN_PAGE_SIZE,
-      };
+  const fetchAssets = useCallback(
+    async (options?: { silent?: boolean }) => {
+      const silent = Boolean(options?.silent);
+      if (!silent) setLoading(true);
+      try {
+        const params: Record<string, string | number> = {
+          page,
+          limit: ADMIN_PAGE_SIZE,
+        };
 
-      if (sortBy) params.sort_by = sortBy;
-      if (sortOrder) params.sort_order = sortOrder;
-      if (searchQuery) params.search = searchQuery;
-      if (typeFilter) params.type = typeFilter;
-      if (formatFilter) params.format = formatFilter;
-      if (statusFilter) params.status = statusFilter;
+        if (sortBy) params.sort_by = sortBy;
+        if (sortOrder) params.sort_order = sortOrder;
+        if (searchQuery) params.search = searchQuery;
+        if (typeFilter) params.type = typeFilter;
+        if (formatFilter) params.format = formatFilter;
+        if (statusFilter) params.status = statusFilter;
+        if (recordScopeFilter) params.record_scope = recordScopeFilter;
 
-      const result = isActive
-        ? await Admin.AssetController.getAssets(params)
-        : await Admin.AssetController.getDiscardedAssets(params);
+        const result = isActive
+          ? await Admin.AssetController.getAssets(params)
+          : await Admin.AssetController.getDiscardedAssets(params);
 
-      if (result.success) {
-        setAssets(result.assets);
-        setPagination(result.pagination);
-      } else {
-        toast.error(
-          result.error || t(AppLocales.Admin.Assets.Errors.LoadFailed),
-        );
+        if (result.success) {
+          setAssets(result.assets);
+          setPagination(result.pagination);
+        } else if (!silent) {
+          toast.error(
+            result.error || t(AppLocales.Admin.Assets.Errors.LoadFailed),
+          );
+        }
+      } finally {
+        if (!silent) setLoading(false);
       }
-    } finally {
-      setLoading(false);
-      setHasLoadedOnce(true);
-    }
-  }, [
-    page,
-    sortBy,
-    sortOrder,
-    searchQuery,
-    typeFilter,
-    formatFilter,
-    statusFilter,
-    isActive,
-    setLoading,
-    toast,
-    t,
-  ]);
+    },
+    [
+      page,
+      sortBy,
+      sortOrder,
+      searchQuery,
+      typeFilter,
+      formatFilter,
+      statusFilter,
+      recordScopeFilter,
+      isActive,
+      setLoading,
+      toast,
+      t,
+    ],
+  );
 
   useEffect(() => {
     fetchAssets();
@@ -195,11 +200,15 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       if (event.type !== "notification") return;
       const eventType =
         typeof event.data?.type === "string" ? event.data.type : "";
+      if (eventType === NOTIFICATION_SOCKET_TYPES.ASSET_THUMBNAIL_GENERATED) {
+        void fetchAssets({ silent: true });
+        return;
+      }
+
       if (
         eventType !== NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSED &&
         eventType !== NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSION_FAILED &&
-        eventType !== NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSING &&
-        eventType !== NOTIFICATION_SOCKET_TYPES.ASSET_THUMBNAIL_GENERATED
+        eventType !== NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSING
       ) {
         return;
       }
@@ -218,7 +227,9 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         typeof event.data?.url === "string" ? event.data.url : undefined;
       const thumbnail =
         event.data?.thumbnail && typeof event.data.thumbnail === "object"
-          ? (event.data.thumbnail as IAsset["thumbnail"])
+          ? (event.data.thumbnail as NonNullable<
+              IAsset["children"]
+            >["thumbnail"])
           : undefined;
 
       setAssets((prevAssets) => {
@@ -231,7 +242,11 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               status: (status as IAsset["status"]) || a.status,
               size_bytes: sizeBytes !== undefined ? sizeBytes : a.size_bytes,
               url: url !== undefined ? url : a.url,
-              thumbnail: thumbnail !== undefined ? thumbnail : a.thumbnail,
+              children: {
+                subtitles: a.children?.subtitles ?? [],
+                thumbnail:
+                  thumbnail !== undefined ? thumbnail : a.children?.thumbnail,
+              },
             };
           }
           return a;
@@ -255,7 +270,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     return () => {
       SocketService.removeListener(handleSocketMessage);
     };
-  }, []);
+  }, [fetchAssets]);
 
   const updateSearchParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -285,7 +300,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const handleDiscard = async () => {
     if (!assetToDiscard) return;
 
-    setIsDiscarding(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.discardAsset(
         assetToDiscard.id,
@@ -303,25 +318,25 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsDiscarding(false);
+      setLoading(false, { overlay: false });
     }
   };
 
   // Discarded view actions
-  const handleRestore = async () => {
-    if (!assetToRestore) return;
+  const handleUndiscard = async () => {
+    if (!assetToUndiscard) return;
 
-    setIsRestoring(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.undiscardAsset(
-        assetToRestore.id,
+        assetToUndiscard.id,
       );
       if (result.success) {
         toast.success(
           result.message || t(AppLocales.Admin.Assets.Toasts.RestoreSuccess),
         );
-        setIsRestoreOpen(false);
-        setAssetToRestore(null);
+        setIsUndiscardOpen(false);
+        setAssetToUndiscard(null);
         fetchAssets();
       } else {
         toast.error(
@@ -329,14 +344,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsRestoring(false);
+      setLoading(false, { overlay: false });
     }
   };
 
   const handleDestroy = async () => {
     if (!assetToDestroy) return;
 
-    setIsDestroying(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.destroyAsset(
         assetToDestroy.id,
@@ -354,7 +369,159 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsDestroying(false);
+      setLoading(false, { overlay: false });
+    }
+  };
+
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ASSETS);
+  const canUpdate = can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.ASSETS);
+  const canDelete = can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ASSETS);
+
+  const handleBatchDiscard = async () => {
+    if (selectedIds.length === 0) return;
+    setLoading(true, { overlay: false });
+    try {
+      const result = await Admin.AssetController.discardBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchDiscardSuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchDiscardOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.DiscardFailed),
+        );
+      }
+    } finally {
+      setLoading(false, { overlay: false });
+    }
+  };
+
+  const handleBatchUndiscard = async () => {
+    if (selectedIds.length === 0) return;
+    setLoading(true, { overlay: false });
+    try {
+      const result = await Admin.AssetController.undiscardBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchRestoreSuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchUndiscardOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.RestoreFailed),
+        );
+      }
+    } finally {
+      setLoading(false, { overlay: false });
+    }
+  };
+
+  const handleBatchDestroy = async () => {
+    if (selectedIds.length === 0) return;
+    setLoading(true, { overlay: false });
+    try {
+      const result = await Admin.AssetController.destroyBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchDestroySuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchDestroyOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.DestroyFailed),
+        );
+      }
+    } finally {
+      setLoading(false, { overlay: false });
+    }
+  };
+
+  const handleEmptyRecycleBin = async () => {
+    const result = await Admin.AssetController.emptyRecycleBin();
+    if (result.success) {
+      toast.success(
+        result.message || t(AppLocales.Admin.Assets.Toasts.RecycleBinEmptied),
+      );
+      setSelectedIds([]);
+      fetchAssets();
+    } else {
+      toast.error(
+        result.error || t(AppLocales.Admin.Assets.Errors.DestroyFailed),
+      );
+    }
+  };
+
+  const batchActions = useMemo(() => {
+    if (isActive) {
+      return [
+        {
+          key: "batch-discard",
+          label: t(AppLocales.Admin.Common.Batch.DiscardSelected),
+          icon: iconsLib.trash,
+          isDestructive: true,
+          onClick: () => setIsBatchDiscardOpen(true),
+        },
+      ];
+    }
+    return [
+      {
+        key: "batch-restore",
+        label: t(AppLocales.Admin.Common.Batch.RestoreSelected),
+        icon: iconsLib.arrowPath,
+        variant: ButtonVariants.SECONDARY,
+        onClick: () => setIsBatchUndiscardOpen(true),
+      },
+      {
+        key: "batch-destroy",
+        label: t(AppLocales.Admin.Common.Batch.DestroySelected),
+        icon: iconsLib.trash,
+        isDestructive: true,
+        onClick: () => setIsBatchDestroyOpen(true),
+      },
+    ];
+  }, [isActive, t]);
+
+  const handleCompress = async (asset: IAdminAsset) => {
+    setCompressingId(asset.id);
+    try {
+      const result = await Admin.AssetController.compressAsset(asset.id);
+      if (result.success) {
+        toast.info(result.message || "Compression enqueued successfully");
+        setAssets((prevAssets) =>
+          prevAssets.map((a) =>
+            a.id === asset.id ? { ...a, status: ASSET_STATUSES.PROCESSING } : a,
+          ),
+        );
+      } else if (result.isOptimal) {
+        toast.info(
+          result.error || t(AppLocales.Admin.Assets.Compression.AtMinSize),
+        );
+        setAssets((prevAssets) =>
+          prevAssets.map((a) =>
+            a.id === asset.id ? { ...a, status: ASSET_STATUSES.OPTIMAL } : a,
+          ),
+        );
+      } else {
+        toast.error(result.error || "Failed to trigger compression");
+      }
+    } finally {
+      setCompressingId(null);
     }
   };
 
@@ -518,7 +685,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         className: "w-14",
         render: (asset) => {
           const isImg = isImageAsset(asset);
-          const previewUrl = asset.thumbnail?.url || (isImg ? asset.url : null);
+          const previewUrl =
+            getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
 
           return (
             <div className="w-10 h-10 rounded overflow-hidden bg-base-200 flex items-center justify-center">
@@ -540,24 +708,26 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         },
       },
       {
-        key: ADMIN_ASSET_COLUMNS.NAME,
-        header: t(AppLocales.Admin.Assets.Table.Name),
-        sortKey: ADMIN_ASSET_COLUMNS.NAME,
-        className: "w-56 max-w-[220px] sm:max-w-[260px]",
+        key: ADMIN_ASSET_COLUMNS.TITLE,
+        header: t(AppLocales.Admin.Assets.Table.Title),
+        sortKey: ADMIN_ASSET_COLUMNS.TITLE,
+        className: "w-56 max-w-55 sm:max-w-65",
         render: (asset) => (
           <div className="flex flex-col min-w-0 max-w-55 sm:max-w-65">
             <span
               className="font-medium text-base-content truncate"
-              title={asset.name}
+              title={asset.title || asset.name}
             >
-              {asset.name}
+              {asset.title || asset.name}
             </span>
-            <span
-              className="text-xs text-base-content/60 font-mono truncate"
-              title={asset.id}
-            >
-              {asset.id}
-            </span>
+            {asset.title && (
+              <span
+                className="text-xs text-base-content/70 truncate"
+                title={asset.name}
+              >
+                {asset.name}
+              </span>
+            )}
           </div>
         ),
       },
@@ -576,12 +746,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Format),
           sortKey: ADMIN_ASSET_COLUMNS.FORMAT,
           render: (asset) => (
-            <span className="text-sm uppercase">{asset.format || "N/A"}</span>
+            <span className="text-sm uppercase">
+              {asset.format || t(AppLocales.Common.NotAvailable)}
+            </span>
           ),
         },
         {
           key: ADMIN_ASSET_COLUMNS.STATUS,
-          header: "Status",
+          header: t(AppLocales.Admin.Common.Table.Status),
           sortKey: ADMIN_ASSET_COLUMNS.STATUS,
           render: (asset) => <StatusBadge status={asset.status || "pending"} />,
         },
@@ -600,11 +772,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Created),
           sortKey: ADMIN_ASSET_COLUMNS.CREATED_AT,
           className: "text-center",
-          render: (asset) => formatAdminDate(asset.created_at),
+          render: (asset) => (
+            <DateTime value={asset.created_at} format={DateTimeFormats.ADMIN} />
+          ),
         },
         {
-          key: "actions",
-          header: "",
+          key: ADMIN_ASSET_COLUMNS.ACTIONS,
+          header: t(AppLocales.Admin.Common.Table.Actions),
           className: "text-right whitespace-nowrap",
           render: (asset) => (
             <div className="flex items-center gap-1 justify-end">
@@ -673,11 +847,16 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Discarded),
           sortKey: ADMIN_ASSET_COLUMNS.DISCARDED_AT,
           className: "text-center",
-          render: (asset) => formatAdminDate(asset.discarded_at),
+          render: (asset) => (
+            <DateTime
+              value={asset.discarded_at}
+              format={DateTimeFormats.ADMIN}
+            />
+          ),
         },
         {
-          key: "actions",
-          header: "",
+          key: ADMIN_ASSET_COLUMNS.ACTIONS,
+          header: t(AppLocales.Admin.Common.Table.Actions),
           className: "text-right whitespace-nowrap",
           render: (asset) => (
             <AdminTableActions
@@ -686,8 +865,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 {
                   type: ADMIN_ACTIONS.UNDISCARD,
                   onClick: () => {
-                    setAssetToRestore(asset);
-                    setIsRestoreOpen(true);
+                    setAssetToUndiscard(asset);
+                    setIsUndiscardOpen(true);
                   },
                 },
                 {
@@ -756,11 +935,19 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 value: ADMIN_VIEW_MODES.ACTIVE,
                 label: t(AppLocales.Admin.Assets.Tabs.ActiveAssets),
                 icon: iconsLib.photo,
+                count:
+                  view === ADMIN_VIEW_MODES.ACTIVE
+                    ? pagination?.total_count
+                    : undefined,
               },
               {
                 value: ADMIN_VIEW_MODES.DISCARDED,
                 label: t(AppLocales.Admin.Assets.Tabs.RecycleBin),
                 icon: iconsLib.trash,
+                count:
+                  view === ADMIN_VIEW_MODES.DISCARDED
+                    ? pagination?.total_count
+                    : undefined,
               },
             ]}
           />
@@ -774,6 +961,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           <div className="w-full sm:w-64">
             <SearchInput
               placeholder={t(AppLocales.Admin.Assets.SearchPlaceholder)}
+              searchableKeys={[
+                t(AppLocales.Admin.Common.Detail.Name),
+                t(AppLocales.Admin.Common.Detail.Type),
+                t(AppLocales.Admin.Common.Detail.Format),
+                t(AppLocales.Admin.Common.Detail.Source),
+              ]}
               value={searchQuery}
               onChange={handleSearch}
             />
@@ -786,7 +979,10 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 label: o.label,
               }))}
               onValueChange={(val) =>
-                updateSearchParams({ type: val || null, page: "1" })
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.TYPE]: val || null,
+                  page: "1",
+                })
               }
             />
           </div>
@@ -798,7 +994,44 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 label: o.label,
               }))}
               onValueChange={(val) =>
-                updateSearchParams({ format: val || null, page: "1" })
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.FORMAT]: val || null,
+                  page: "1",
+                })
+              }
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <Dropdown
+              value={recordScopeFilter}
+              options={ASSET_RECORD_SCOPE_OPTIONS.map((o) => ({
+                value: o.value,
+                label: t(o.labelKey),
+              }))}
+              onValueChange={(val) =>
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.RECORD_SCOPE]:
+                    val ||
+                    (isActive
+                      ? ASSET_RECORD_SCOPES.PARENTS
+                      : ASSET_RECORD_SCOPES.ALL),
+                  page: "1",
+                })
+              }
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <Dropdown
+              value={statusFilter}
+              options={ASSET_STATUS_OPTIONS.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
+              onValueChange={(val) =>
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.STATUS]: val || null,
+                  page: "1",
+                })
               }
             />
           </div>
@@ -825,60 +1058,62 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         />
       )}
 
-      <div className="bg-base-100 rounded-xl border border-base-200 overflow-hidden">
-        {assets.length > 0 ? (
-          <>
-            <AdminTable
-              columns={columns}
-              records={assets}
-              getRowKey={(asset) => asset.id}
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSort={handleSort}
-              selectable={canDelete}
-              selectedRowKeys={selectedIds}
-              onSelectRow={(id, selected) => {
-                setSelectedIds((prev) =>
-                  selected ? [...prev, id] : prev.filter((item) => item !== id),
-                );
-              }}
-              onSelectAll={(selected) => {
-                setSelectedIds(selected ? assets.map((a) => a.id) : []);
-              }}
-            />
-            {pagination && (
-              <AdminPagination
-                pagination={pagination}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </>
-        ) : hasLoadedOnce && !isLoading ? (
-          <AdminState
-            title={
-              isActive
-                ? t(AppLocales.Admin.Assets.State.EmptyTitle)
-                : t(AppLocales.Admin.Assets.State.RecycleEmptyTitle)
-            }
-            message={
-              isActive
-                ? t(AppLocales.Admin.Assets.State.EmptyDesc)
-                : t(AppLocales.Admin.Assets.State.RecycleEmptyDesc)
-            }
-            icon={
-              isActive ? (
-                <iconsLib.photo className="w-12 h-12" />
-              ) : (
-                <iconsLib.trash className="w-12 h-12" />
+      {!isLoading && assets.length === 0 ? (
+        <AdminState
+          title={
+            isActive
+              ? t(AppLocales.Admin.Assets.State.EmptyTitle)
+              : t(AppLocales.Admin.Assets.State.RecycleEmptyTitle)
+          }
+          message={
+            isActive
+              ? t(AppLocales.Admin.Assets.State.EmptyDesc)
+              : t(AppLocales.Admin.Assets.State.RecycleEmptyDesc)
+          }
+          icon={
+            isActive ? (
+              <iconsLib.photo className="w-12 h-12" />
+            ) : (
+              <iconsLib.trash className="w-12 h-12" />
+            )
+          }
+        />
+      ) : (
+        <>
+          <AdminTable
+            columns={columns}
+            records={assets}
+            getRowKey={(asset) => asset.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            onRowClick={(asset) =>
+              navigate(
+                AppRoutes.withId(
+                  AppRoutes.client.protected.admin.ASSET_DETAIL,
+                  asset.id,
+                ),
               )
             }
+            selectable={canDelete}
+            selectedRowKeys={selectedIds}
+            onSelectRow={(id, selected) => {
+              setSelectedIds((prev) =>
+                selected ? [...prev, id] : prev.filter((item) => item !== id),
+              );
+            }}
+            onSelectAll={(selected) => {
+              setSelectedIds(selected ? assets.map((a) => a.id) : []);
+            }}
           />
-        ) : (
-          <div className="py-16 flex items-center justify-center text-base-content/40">
-            <span className="loading loading-spinner loading-lg text-primary" />
-          </div>
-        )}
-      </div>
+          {pagination && (
+            <AdminPagination
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      )}
 
       {/* Active view dialogs */}
       {isActive && (
@@ -894,7 +1129,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               setIsDiscardOpen(false);
               setAssetToDiscard(null);
             }}
-            isLoading={isDiscarding}
+            isLoading={isLoading}
             isDestructive
           />
         </>
@@ -904,17 +1139,17 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       {!isActive && (
         <>
           <ConfirmDialog
-            isOpen={isRestoreOpen}
+            isOpen={isUndiscardOpen}
             title={t(AppLocales.Admin.Assets.Confirm.RestoreTitle)}
             message={t(AppLocales.Admin.Assets.Confirm.RestoreMessage)}
             confirmLabel={t(AppLocales.Admin.Common.Actions.Restore)}
             cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
-            onConfirm={handleRestore}
+            onConfirm={handleUndiscard}
             onClose={() => {
-              setIsRestoreOpen(false);
-              setAssetToRestore(null);
+              setIsUndiscardOpen(false);
+              setAssetToUndiscard(null);
             }}
-            isLoading={isRestoring}
+            isLoading={isLoading}
           />
 
           <ConfirmDialog
@@ -928,7 +1163,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               setIsDestroyOpen(false);
               setAssetToDestroy(null);
             }}
-            isLoading={isDestroying}
+            isLoading={isLoading}
             isDestructive
           />
         </>
@@ -945,21 +1180,21 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchDiscard}
         onClose={() => setIsBatchDiscardOpen(false)}
-        isLoading={isBatchDiscarding}
+        isLoading={isLoading}
         isDestructive
       />
 
       <ConfirmDialog
-        isOpen={isBatchRestoreOpen}
+        isOpen={isBatchUndiscardOpen}
         title={t(AppLocales.Admin.Common.Batch.ConfirmRestoreTitle)}
         message={t(AppLocales.Admin.Common.Batch.ConfirmRestoreMessage, {
           count: String(selectedIds.length),
         })}
         confirmLabel={t(AppLocales.Admin.Common.Batch.RestoreSelected)}
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
-        onConfirm={handleBatchRestore}
-        onClose={() => setIsBatchRestoreOpen(false)}
-        isLoading={isBatchRestoring}
+        onConfirm={handleBatchUndiscard}
+        onClose={() => setIsBatchUndiscardOpen(false)}
+        isLoading={isLoading}
       />
 
       <ConfirmDialog
@@ -972,7 +1207,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchDestroy}
         onClose={() => setIsBatchDestroyOpen(false)}
-        isLoading={isBatchDestroying}
+        isLoading={isLoading}
         isDestructive
       />
     </div>

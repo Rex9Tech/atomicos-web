@@ -14,6 +14,9 @@ vi.mock("./asset.service", () => ({
     restoreAsset: vi.fn(),
     destroyAsset: vi.fn(),
     compressAsset: vi.fn(),
+    regenerateThumbnail: vi.fn(),
+    uploadThumbnail: vi.fn(),
+    uploadSubtitle: vi.fn(),
     getStorageStats: vi.fn(),
     emptyRecycleBin: vi.fn(),
     discardBatch: vi.fn(),
@@ -123,12 +126,10 @@ describe("AdminAssetController", () => {
         data: {
           status: { code: 200, success: true, message: "OK" },
           data: {
-            asset: {
-              id: "a1",
-              name: "dev/admin/avatar.png",
-              url: "https://example.com/avatar.png",
-              type: "avatar",
-            },
+            id: "a1",
+            name: "dev/admin/avatar.png",
+            url: "https://example.com/avatar.png",
+            type: "avatar",
           },
         },
       };
@@ -208,6 +209,90 @@ describe("AdminAssetController", () => {
     });
   });
 
+  describe("uploadSubtitle", () => {
+    it("uploads an srt file and returns the parsed asset", async () => {
+      const file = new File(["1\n00:00:00,000 --> 00:00:01,000\nHi\n"], "captions.srt", {
+        type: "application/x-subrip",
+      });
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Subtitle uploaded" },
+          data: {
+            id: "a-video",
+            name: "lesson.mp4",
+            type: "video",
+            format: "video",
+            children: {
+              subtitles: [
+                {
+                  id: "a-sub",
+                  name: "captions.srt",
+                  url: "https://example.com/captions.srt",
+                  type: "subtitle",
+                  format: "subtitle",
+                  status: "ready",
+                  size_bytes: 128,
+                  created_at: "2026-09-15T00:00:00Z",
+                  updated_at: "2026-09-15T00:00:00Z",
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.uploadSubtitle).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.uploadSubtitle("a-video", file);
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Subtitle uploaded");
+      expect(result.asset?.id).toBe("a-video");
+      expect(result.asset?.children?.subtitles).toEqual([
+        {
+          id: "a-sub",
+          name: "captions.srt",
+          url: "https://example.com/captions.srt",
+          type: "subtitle",
+          format: "subtitle",
+          status: "ready",
+          size_bytes: 128,
+          created_at: "2026-09-15T00:00:00Z",
+          updated_at: "2026-09-15T00:00:00Z",
+        },
+      ]);
+      expect(AdminAssetService.uploadSubtitle).toHaveBeenCalledWith(
+        "a-video",
+        file,
+      );
+    });
+
+    it("handles failure response", async () => {
+      const file = new File(["bad"], "notes.txt", { type: "text/plain" });
+      const mockResponse = {
+        data: {
+          status: {
+            code: 422,
+            success: false,
+            message: "Subtitle must be an SRT file",
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.uploadSubtitle).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.uploadSubtitle("a-video", file);
+
+      expect(result.success).toBe(false);
+      expect(result.asset).toBeUndefined();
+      expect(result.error).toBe("Subtitle must be an SRT file");
+    });
+  });
+
   describe("compressAsset", () => {
     it("calls service and returns parsed asset and message", async () => {
       const mockResponse = {
@@ -270,11 +355,9 @@ describe("AdminAssetController", () => {
             message: "Asset is already at optimal compression size.",
           },
           data: {
-            asset: {
-              id: "a5",
-              name: "icon.png",
-              status: "optimal",
-            },
+            id: "a5",
+            name: "icon.png",
+            status: "optimal",
           },
         },
       };
@@ -324,7 +407,7 @@ describe("AdminAssetController", () => {
             success: true,
             message: "Storage statistics retrieved successfully",
           },
-          data: { stats: mockStats },
+          data: mockStats,
         },
       };
 

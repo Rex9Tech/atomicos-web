@@ -44,7 +44,7 @@ import {
 import { useTranslate, AppLocales } from "../../../../locales";
 
 import { DropdownSizes } from "../../../../design/constants";
-import { formatAdminDate } from "../../../../helpers";
+import { DateTime, DateTimeFormats } from "../../../../design";
 
 export const AdminAccessesPage: React.FC = () => {
   const t = useTranslate();
@@ -222,7 +222,7 @@ export const AdminAccessesPage: React.FC = () => {
       header: t(AppLocales.Admin.Accesses.Table.GrantedAt),
       sortKey: ADMIN_ACCESS_SORT_KEYS.CREATED_AT,
       className: "text-center",
-      render: (access) => formatAdminDate(access.granted_at),
+      render: (access) => <DateTime value={access.granted_at} format={DateTimeFormats.ADMIN} />,
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.EXPIRES_AT,
@@ -238,7 +238,7 @@ export const AdminAccessesPage: React.FC = () => {
           );
         return (
           <div className="flex flex-col items-center justify-center text-center">
-            {formatAdminDate(access.expires_at)}
+            <DateTime value={access.expires_at} format={DateTimeFormats.ADMIN} />
             {access.remaining_days !== undefined &&
               access.remaining_days !== null &&
               access.remaining_days > 0 && (
@@ -325,11 +325,23 @@ export const AdminAccessesPage: React.FC = () => {
       />
 
       {/* Filters & Search Controls */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
+          <SearchInput
+            placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}
+            searchableKeys={[
+              t(AppLocales.Admin.Accesses.Table.User),
+              t(AppLocales.Admin.Accesses.Table.Product),
+              t(AppLocales.Admin.Common.Detail.Email),
+            ]}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onClear={() => setSearchInput("")}
+          />
+        </div>
+        <div className="w-full sm:w-48">
           <Dropdown
-            size={DropdownSizes.SM}
-            containerClassName="w-auto min-w-44"
+            size={DropdownSizes.MD}
             value={statusFilter}
             onValueChange={(val) => updateFilters({ status: val, page: 1 })}
             options={[
@@ -350,16 +362,6 @@ export const AdminAccessesPage: React.FC = () => {
                 label: t(AppLocales.Admin.Common.Status.Expired),
               },
             ]}
-          />
-        </div>
-
-        {/* Search */}
-        <div className="w-full sm:w-72">
-          <SearchInput
-            placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onClear={() => setSearchInput("")}
           />
         </div>
       </div>
@@ -386,6 +388,7 @@ export const AdminAccessesPage: React.FC = () => {
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={handleSort}
+            onRowClick={(record) => navigate(AppRoutes.withId(AppRoutes.client.protected.admin.ACCESS_DETAIL, record.id))}
           />
           <AdminPagination
             pagination={pagination}

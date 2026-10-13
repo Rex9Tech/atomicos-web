@@ -11,11 +11,13 @@ import {
   FormContainer,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales } from "../../../locales/app_locales";
 import { ButtonVariants } from "../../../design";
+import { AnalyticsService } from "../../../services";
+import { ANALYTICS_AUTH_METHODS } from "../../../constants";
+import { navigateContinueURL } from "../helpers";
 
 interface ISigninPasswordDialogProps {
   email: string;
@@ -72,13 +74,14 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
 
     if (result.success && result.token && result.user) {
       signin(result.token, result.user);
+      void AnalyticsService.logSignIn(ANALYTICS_AUTH_METHODS.EMAIL);
       success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
       cooldown.clear();
       setRemainingAttempts(3);
       setHasFailureHistory(false);
       setPassword("");
       setError("");
-      navigate(AppRoutes.client.protected.HOME);
+      navigateContinueURL(navigate);
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });

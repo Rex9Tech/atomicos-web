@@ -94,7 +94,11 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
   const t = useTranslate();
 
   return (
-    <div className="flex items-center justify-end gap-1.5">
+    <div
+      className="flex items-center justify-end gap-1.5"
+      onClick={(e) => e.stopPropagation()}
+      data-row-click-ignore="true"
+    >
       {actions.map(({ disabled, type, onClick }) => {
         const config = ADMIN_TABLE_ACTION_CONFIG[type] ?? {
           action: ADMIN_ACTIONS.UPDATE,
@@ -109,7 +113,7 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
 
         const categoryStyles: Record<TAdminActionCategory, string> = {
           [ADMIN_ACTION_CATEGORIES.NEUTRAL]:
-            "border border-base-300 bg-base-100 text-base-content/70 hover:text-base-content hover:bg-base-200 hover:border-base-400 active:bg-base-300",
+            "border border-base-300 bg-base-100 text-base-content/70 hover:text-base-content hover:bg-base-200 hover:border-primary active:bg-base-300",
           [ADMIN_ACTION_CATEGORIES.DANGER]:
             "border border-error/30 bg-error/5 text-error hover:bg-error/15 hover:border-error active:bg-error/25",
           [ADMIN_ACTION_CATEGORIES.SUCCESS]:
@@ -132,7 +136,11 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
             aria-label={label}
             title={label}
             disabled={disabled}
-            onClick={onClick}
+            data-row-click-ignore="true"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
           >
             {Icon ? <Icon className="w-4 h-4 shrink-0" /> : label}
           </AdminActionButton>

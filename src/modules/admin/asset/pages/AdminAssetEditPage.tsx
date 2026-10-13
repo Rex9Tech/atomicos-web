@@ -11,6 +11,7 @@ import { Button } from "../../../../design";
 import { ButtonVariants, ButtonSizes } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import type { IAdminAsset } from "../types";
+import type { IAssetChild } from "../../../../models";
 import SocketService, {
   ISocketMessage,
 } from "../../../../services/socket.service";
@@ -38,6 +39,7 @@ export const AdminAssetEditPage: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompressing, setIsCompressing] = useState(false);
   const [isUpdatingThumbnail, setIsUpdatingThumbnail] = useState(false);
+  const [isUpdatingSubtitle, setIsUpdatingSubtitle] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -74,14 +76,17 @@ export const AdminAssetEditPage: React.FC = () => {
         const thumbnail =
           eventType === NOTIFICATION_SOCKET_TYPES.ASSET_THUMBNAIL_GENERATED &&
           event.data?.thumbnail
-            ? (event.data.thumbnail as IAdminAsset["thumbnail"])
-            : prev.thumbnail;
+            ? (event.data.thumbnail as NonNullable<IAdminAsset["children"]>["thumbnail"])
+            : prev.children?.thumbnail;
         return {
           ...prev,
           status: status || prev.status,
           size_bytes: sizeBytes !== undefined ? sizeBytes : prev.size_bytes,
           url: url !== undefined ? url : prev.url,
-          thumbnail,
+          children: {
+            subtitles: prev.children?.subtitles ?? [],
+            thumbnail,
+          },
         };
       });
       if (eventType.startsWith("asset_thumbnail_")) {
@@ -127,6 +132,9 @@ export const AdminAssetEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
+    setAsset(null);
+    setError("");
+
     const loadAsset = async () => {
       setLoading(true);
       const result = await Admin.AssetController.getAsset(id);
@@ -151,7 +159,10 @@ export const AdminAssetEditPage: React.FC = () => {
 
     const result = await Admin.AssetController.updateAsset(id, {
       name: values.name,
+      title: values.title,
+      description: values.description,
       type: values.type,
+      parent_asset_id: values.parent_asset_id,
     });
     setLoading(false, { overlay: false });
 
@@ -171,9 +182,8 @@ export const AdminAssetEditPage: React.FC = () => {
     navigate(AppRoutes.client.protected.admin.ASSETS);
   };
 
-  const handleDownload = async () => {
-    if (!id) return;
-    const result = await Admin.AssetController.getDownloadUrl(id);
+  const downloadAsset = async (assetId: string) => {
+    const result = await Admin.AssetController.getDownloadUrl(assetId);
     if (!result.success || !result.url) {
       toast.error(result.error || t(AppLocales.Admin.Assets.Download.Failed));
       return;
@@ -182,6 +192,21 @@ export const AdminAssetEditPage: React.FC = () => {
     link.href = result.url;
     link.rel = "noopener";
     link.click();
+  };
+
+  const handleDownload = async () => {
+    if (!id) return;
+    await downloadAsset(id);
+  };
+
+  const handleDownloadChild = async (child: IAssetChild) => {
+    await downloadAsset(child.id);
+  };
+
+  const handleEditChild = (child: IAssetChild) => {
+    navigate(
+      AppRoutes.withId(AppRoutes.client.protected.admin.ASSET_EDIT, child.id),
+    );
   };
 
   const handleRegenerateThumbnail = async () => {
@@ -209,6 +234,21 @@ export const AdminAssetEditPage: React.FC = () => {
       );
     } else {
       toast.error(result.error || t(AppLocales.Admin.Assets.Thumbnail.Failed));
+    }
+  };
+
+  const handleUploadSubtitle = async (file: File) => {
+    if (!id) return;
+    setIsUpdatingSubtitle(true);
+    const result = await Admin.AssetController.uploadSubtitle(id, file);
+    setIsUpdatingSubtitle(false);
+    if (result.success) {
+      if (result.asset) setAsset(result.asset);
+      toast.success(
+        result.message || t(AppLocales.Admin.Assets.Subtitle.Replaced),
+      );
+    } else {
+      toast.error(result.error || t(AppLocales.Admin.Assets.Subtitle.Failed));
     }
   };
 
@@ -242,15 +282,20 @@ export const AdminAssetEditPage: React.FC = () => {
         />
       ) : asset ? (
         <AdminAssetForm
+          key={asset.id}
           mode={ADMIN_ACTIONS.EDIT}
           asset={asset}
           onSubmitEdit={handleSubmitEdit}
           onCompress={handleCompress}
           onDownload={handleDownload}
+          onDownloadChild={handleDownloadChild}
+          onEditChild={handleEditChild}
           onRegenerateThumbnail={handleRegenerateThumbnail}
           onUploadThumbnail={handleUploadThumbnail}
+          onUploadSubtitle={handleUploadSubtitle}
           isCompressing={isCompressing}
           isUpdatingThumbnail={isUpdatingThumbnail}
+          isUpdatingSubtitle={isUpdatingSubtitle}
           onCancel={handleCancel}
         />
       ) : null}

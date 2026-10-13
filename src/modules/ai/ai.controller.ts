@@ -1,15 +1,21 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { getApiError, parsePagyList } from "../../services/api.service";
-import { IMessage, IRoom } from "./types";
-import SocketService, { ISocketMessage } from "../../services/socket.service";
-import { IApiPagination } from "../../models";
-import { AppLocales, translate } from "../../locales";
 import {
-  AI_DEFAULTS,
-  AI_MESSAGE_STATUS,
-  AI_SOCKET_EVENTS,
-} from "./constants";
+  getApiError,
+  parsePagyList,
+  parseRecord,
+} from "../../services/api.service";
+import { IChatRequest, IChatResult, IMessage, IRoom } from "./types";
+import SocketService, { ISocketMessage } from "../../services/socket.service";
+import {
+  IApiEnvelope,
+  IApiPagination,
+  IApiResponse,
+  IApiResponseStatus,
+  IJsonApiResource,
+} from "../../models";
+import { AppLocales, translate } from "../../locales";
+import { AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
 import { SpeechController } from "../speech";
 
 const AI_SOCKET_EVENT_TYPES: readonly string[] = [
@@ -36,9 +42,7 @@ class AiController {
     return this.currentRoomId;
   }
 
-  subscribeToAiMessages(
-    callback: (eventType: string) => void,
-  ): () => void {
+  subscribeToAiMessages(callback: (eventType: string) => void): () => void {
     const handleAiMessage = (event: ISocketMessage) => {
       const eventType =
         typeof event.data?.type === "string" ? event.data.type : "";
@@ -80,11 +84,27 @@ class AiController {
     const response = await AiService.getRooms(params);
     const { status, data, meta } = response.data || {};
 
-    if (status?.success && data?.rooms) {
+    if (status?.success) {
+      if (
+        data &&
+        "rooms" in data &&
+        Array.isArray((data as { rooms: IRoom[] }).rooms)
+      ) {
+        return {
+          success: true,
+          rooms: (data as { rooms: IRoom[] }).rooms,
+          pagination: meta?.pagination,
+        };
+      }
+      const { records, pagination } = parsePagyList<IRoom>(
+        response as unknown as IApiResponse<
+          IApiEnvelope<IJsonApiResource<IRoom>[]>
+        >,
+      );
       return {
         success: true,
-        rooms: data.rooms,
-        pagination: meta?.pagination,
+        rooms: records,
+        pagination: pagination ?? meta?.pagination,
       };
     }
 
@@ -104,11 +124,18 @@ class AiController {
     const response = await AiService.createRoom(title);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.room) {
-      this.currentRoomId = data.room.id;
+    if (status?.success && data) {
+      const roomRaw =
+        "room" in data && typeof data.room === "object" && data.room !== null
+          ? data.room
+          : data;
+      const parsedRoom = parseRecord<IRoom>(
+        roomRaw as IJsonApiResource<IRoom> | IRoom,
+      );
+      this.currentRoomId = parsedRoom.id;
       return {
         success: true,
-        room: data.room,
+        room: parsedRoom,
       };
     }
 
@@ -164,32 +191,73 @@ class AiController {
   async chat(
     message: string,
     roomId: string | null = null,
-  ): Promise<{
-    success: boolean;
-    message?: IMessage;
-    roomId?: string;
-    error?: string;
-  }> {
-    const response = await AiService.chat({
-      message,
-      room_id: roomId || this.currentRoomId || undefined,
-      temperature: AI_DEFAULTS.TEMPERATURE,
-      max_tokens: AI_DEFAULTS.MAX_TOKENS,
-    });
+  ): Promise<IChatResult> {
+    const request: IChatRequest = { message };
+    const activeRoomId = roomId || this.currentRoomId;
+    if (activeRoomId) {
+      request.room_id = activeRoomId;
+    }
 
-    const { status, data } = response.data || {};
+    const response = await AiService.chat(request);
+    const envelope = response.data || {};
+    const { status, data, meta } = envelope as {
+      status?: IApiResponseStatus;
+      data?: any;
+      meta?: any;
+    };
 
-    if (status?.success && data?.message) {
-      this.currentRoomId = data.room_id;
-      return {
-        success: true,
-        message: data.message,
-        roomId: data.room_id,
-      };
+    if (status?.success && data) {
+      const envelopeAny = envelope as Record<string, any>;
+      const rawList =
+        data.messages ||
+        meta?.messages ||
+        data.meta?.messages ||
+        envelopeAny.messages;
+      let parsedMessages: IMessage[] = [];
+
+      if (Array.isArray(rawList) && rawList.length > 0) {
+        parsedMessages = rawList.map((m: any) => parseRecord<IMessage>(m));
+      } else if (Array.isArray(data)) {
+        parsedMessages = data.map((m: any) => parseRecord<IMessage>(m));
+      } else if (data.data) {
+        const single = parseRecord<IMessage>(data.data);
+        if (single) {
+          parsedMessages = [single];
+        }
+      } else {
+        const single = parseRecord<IMessage>(data);
+        if (single) {
+          parsedMessages = [single];
+        }
+      }
+
+      const resolvedRoomId =
+        meta?.room_id ||
+        data.meta?.room_id ||
+        data.room_id ||
+        envelopeAny.room_id ||
+        parsedMessages[0]?.room_id ||
+        roomId ||
+        this.currentRoomId ||
+        "";
+
+      if (resolvedRoomId) {
+        this.currentRoomId = resolvedRoomId;
+      }
+
+      if (parsedMessages.length > 0) {
+        return {
+          success: true,
+          messages: parsedMessages,
+          roomId: resolvedRoomId,
+          notice: status.message || undefined,
+        };
+      }
     }
 
     return {
       success: false,
+      messages: [],
       error: getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)),
     };
   }
@@ -209,7 +277,10 @@ class AiController {
 
     return {
       success: false,
-      error: getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)),
+      error: getApiError(
+        response,
+        translate(AppLocales.Ai.Errors.ClearHistory),
+      ),
     };
   }
 
@@ -224,10 +295,18 @@ class AiController {
     const response = await AiService.renameRoom(roomId, title);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.title) {
+    if (status?.success && data) {
+      const dataAny = data as Record<string, unknown>;
+      const resolvedTitle =
+        typeof dataAny.title === "string"
+          ? dataAny.title
+          : typeof (dataAny.attributes as Record<string, unknown> | undefined)
+                ?.title === "string"
+            ? ((dataAny.attributes as Record<string, unknown>).title as string)
+            : title;
       return {
         success: true,
-        title: data.title,
+        title: resolvedTitle,
       };
     }
 

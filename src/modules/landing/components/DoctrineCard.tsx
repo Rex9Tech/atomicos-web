@@ -1,0 +1,239 @@
+// src/modules/landing/components/DoctrineCard.tsx
+
+import React from "react";
+import { iconsLib } from "../../../assets";
+
+export interface IDoctrineTag {
+  label: string;
+  sublabel?: string;
+}
+
+export interface IFoundationPillar {
+  icon: keyof typeof iconsLib;
+  title: string;
+  description: string;
+}
+
+export interface IDoctrineCardProps {
+  pillText?: string;
+  pillIcon?: React.ReactNode;
+  quote?: string;
+  description?: string;
+  tags?: IDoctrineTag[];
+  className?: string;
+}
+
+const DEFAULT_TAGS: IDoctrineTag[] = [
+  { label: "RexOne Core", sublabel: "Rails 8 API" },
+  { label: "RexOne Web", sublabel: "React 19 Client" },
+  { label: "RexOne Mobile", sublabel: "Flutter Vanguard" },
+];
+
+const FOUNDATION_PILLARS: IFoundationPillar[] = [
+  {
+    icon: "key",
+    title: "Identity & Hierarchical RBAC",
+    description:
+      "Devise JWT authentication with atomic JTI revocation lists, 23 canonical resources, and 5 granular actions.",
+  },
+  {
+    icon: "banknotes",
+    title: "Stripe Billing & Subscriptions",
+    description:
+      "Subscription tiers, one-time checkout, promotional/referral coupons, and automated webhook state machines.",
+  },
+  {
+    icon: "archiveBox",
+    title: "Universal Object Storage",
+    description:
+      "Self-hosted Garage S3 (port 3100) or AWS S3, pre-signed upload tickets, and polymorphic asset tracking.",
+  },
+  {
+    icon: "arrowPath",
+    title: "Real-Time WebSockets",
+    description:
+      "ActionCable & Solid Cable bi-directional events, live notification toasts, and instant client synchronization.",
+  },
+  {
+    icon: "bell",
+    title: "Multi-Channel Notifications",
+    description:
+      "Unified pipeline routing to In-App modals, OneSignal push notifications, and branded transactional emails.",
+  },
+  {
+    icon: "sparkles",
+    title: "Glass-Box Telemetry & AI",
+    description:
+      "Rails Pulse APM metrics, Rails Error Dashboard, Solid Queue job workers, and multi-model LLM chat profiles.",
+  },
+];
+
+export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
+  pillText = "Discipline-Driven Development (DDD)",
+  pillIcon,
+  quote = "“Start from One. Not from Zero.”",
+  description = "Pioneering Discipline-Driven Development (DDD). Whether launching an ambitious product without burning months rebuilding foundation plumbing, or learning professional full-stack craftsmanship with the cleanest engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested architectural foundation forged under Constitutional Law with zero technical debt.",
+  tags = DEFAULT_TAGS,
+  className = "",
+}) => {
+  return (
+    <article
+      className={`relative rounded-3xl bg-glass-card/85 backdrop-blur-xl border border-glass-border p-6 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] text-center overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(var(--color-primary-rgb),0.3)] ${className}`}
+    >
+      {/* Ambient Background Glows */}
+      <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-primary-dark/25 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 max-w-4xl mx-auto space-y-6">
+        {/* Doctrine Pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/40 bg-primary/15 text-primary-light backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)] transition-all duration-300">
+          {pillIcon || (
+            <iconsLib.sparkles className="w-4 h-4 text-primary animate-pulse drop-shadow-[0_0_6px_var(--color-primary)]" />
+          )}
+          <span className="text-xs sm:text-sm font-bold tracking-wider uppercase text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_15px_rgba(var(--color-primary-rgb),0.85)]">
+            {pillText}
+          </span>
+        </div>
+
+        {/* The Heart Quote */}
+        <blockquote className="font-display text-2xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)] py-1">
+          {quote}
+        </blockquote>
+
+        {/* Glowing Gradient Accent Line */}
+        <div className="w-24 h-0.5 mx-auto bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]" />
+
+        {/* Philosophy Explanation */}
+        <p className="text-sm sm:text-base text-base-content/80 leading-relaxed font-primary max-w-2xl mx-auto">
+          {description}
+        </p>
+
+        {/* Tri-Platform Repository Tags */}
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-1">
+            {tags.map((tag, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-base-content/90 shadow-sm"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span>
+                  {tag.label}
+                  {tag.sublabel ? ` • ${tag.sublabel}` : ""}
+                </span>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* The 9-Month Plumbing Delusion vs Day-One Velocity */}
+        <div className="pt-6 border-t border-glass-border/60">
+          <div className="rounded-2xl border border-glass-border bg-glass-card/90 backdrop-blur-xl p-5 sm:p-7 text-left relative overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-4 border-b border-glass-border/40">
+              <div>
+                <span className="text-xs uppercase tracking-widest font-bold text-primary block mb-0.5">
+                  The Unvarnished Timeline Truth
+                </span>
+                <h4 className="text-base sm:text-xl font-bold text-white tracking-wide">
+                  The 9-Month Plumbing Delusion vs. Day-One Velocity
+                </h4>
+              </div>
+              <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold bg-primary/20 text-primary border border-primary/40 whitespace-nowrap shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)]">
+                ⚡ 9 Months Eradicated
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {/* The 9-Month Scratch Trap */}
+              <div className="p-4 sm:p-5 rounded-xl border border-red-500/30 bg-red-950/15 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2 text-red-400 font-bold text-sm">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    Starting from Zero (8 – 12 Months Burn)
+                  </div>
+                  <p className="text-xs text-base-content/80 leading-relaxed mb-3">
+                    Teams burn $150k–$300k reinventing generic plumbing: auth flows, Stripe webhook race conditions, CRUD admin panels, Redis broker bills, and broken cross-platform JSON payloads.
+                  </p>
+                </div>
+                <div className="text-[11px] text-red-300/90 font-mono space-y-1.5 bg-red-950/40 p-3 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-red-400">✗</span> Month 1–3: Auth, IAM, Postgres & S3 uploads
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-red-400">✗</span> Month 4–6: Stripe billing, webhooks & coupons
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-red-400">✗</span> Month 7–9: Admin dashboard & mobile sync
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-red-400">✗</span> Month 10+: Refactoring paralysis (0 tests)
+                  </div>
+                </div>
+              </div>
+
+              {/* The RexOne Day-One Reality */}
+              <div className="p-4 sm:p-5 rounded-xl border border-primary/40 bg-primary/10 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2 text-primary font-bold text-sm">
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                    Starting from RexOne (1 – 3 Weeks to Launch)
+                  </div>
+                  <p className="text-xs text-base-content/80 leading-relaxed mb-3">
+                    Every foundation problem solved on Day One: Rails 8 core, React 19 SPA, Flutter 3 native mobile, self-hosted Garage S3, and Solid Queue—governed under Constitutional Law.
+                  </p>
+                </div>
+                <div className="text-[11px] text-primary-light font-mono space-y-1.5 bg-primary/15 p-3 rounded-lg border border-primary/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-primary">✓</span> 1,785+ automated tests across all 3 platforms
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-primary">✓</span> Idempotent Stripe billing (subscriptions & purchases)
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-primary">✓</span> Full Admin Portal & glass-box APM telemetry
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-primary">✓</span> 100% Free, open-source & self-hostable (0 SaaS tax)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Foundation Fundamentals Grid (Never Rebuild from Scratch) */}
+        <div className="pt-6 border-t border-glass-border/60">
+          <h3 className="text-xs uppercase tracking-widest font-bold text-primary mb-4">
+            Foundational Fundamentals Delivered on Day One • Full-Stack
+            Masterclass Reference
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-left">
+            {FOUNDATION_PILLARS.map((pillar, idx) => {
+              const IconComponent = iconsLib[pillar.icon] || iconsLib.cube;
+              return (
+                <div
+                  key={idx}
+                  className="p-3.5 rounded-xl border border-glass-border bg-glass-card/90 backdrop-blur-xl hover:border-primary/50 hover:bg-glass-card-hover hover:shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.25)] transition-all duration-300 group"
+                >
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:scale-105 transition-transform duration-300">
+                      <IconComponent className="w-4 h-4" />
+                    </div>
+                    <h4 className="font-semibold text-sm text-base-content group-hover:text-primary-light transition-colors">
+                      {pillar.title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-base-content/70 leading-relaxed">
+                    {pillar.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+};

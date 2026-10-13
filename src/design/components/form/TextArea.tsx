@@ -1,16 +1,18 @@
 /**
- * Rexone Design System - TextArea Molecule
+ * RexOne Design System - TextArea Molecule
  *
  * Auto-expanding textarea with same visual language as input fields.
  * Supports Ctrl+Enter and Cmd+Enter to submit forms or focus next inputs.
  */
 
 import React, { useRef, useEffect, useId } from "react";
+import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
 import { InputVariant, InputVariants } from "../../constants";
 
 export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
+  tooltip?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
@@ -23,6 +25,7 @@ export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAre
 
 export const TextArea: React.FC<ITextAreaProps> = ({
   label,
+  tooltip,
   helperText,
   error,
   fullWidth = true,
@@ -87,15 +90,22 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   return (
     <div className={cn("flex flex-col gap-1", fullWidth && "w-full")}>
       {label && (
-        <label
-          htmlFor={inputId}
-          className={cn(
-            "text-sm font-medium",
-            isGlass ? "text-glow-white" : "text-base-content",
+        <div className="flex items-center gap-1.5 mb-1">
+          <label
+            htmlFor={inputId}
+            className="text-sm font-medium text-base-content"
+          >
+            {label}
+          </label>
+          {tooltip && (
+            <div
+              className="tooltip tooltip-top flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+              data-tip={tooltip}
+            >
+              <iconsLib.info className="h-3.5 w-3.5" />
+            </div>
           )}
-        >
-          {label}
-        </label>
+        </div>
       )}
 
       <textarea
@@ -110,7 +120,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
         className={cn(
           "w-full transition-all duration-200 ease-out focus:outline-none",
           isGlass
-            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
+            ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-base-content/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
             : "rounded-md px-4 py-3 text-base border bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-transparent",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           disabled && !isGlass && "disabled:bg-base-200",
@@ -118,7 +128,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
             ? isGlass
               ? "border-b-error focus:border-b-error"
               : "border-error focus:ring-error"
-            : !isGlass && "border-base-300 hover:border-base-400",
+            : !isGlass && "border-base-300 hover:border-primary",
           className,
         )}
       />

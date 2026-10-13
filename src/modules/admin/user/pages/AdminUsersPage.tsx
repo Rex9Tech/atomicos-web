@@ -17,6 +17,7 @@ import {
   Button,
   Badge,
   SearchInput,
+  StatusBadge,
   getRoleBadgeVariant,
 } from "../../../../design";
 import UserController from "../user.controller";
@@ -44,11 +45,10 @@ import {
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { BadgeSizes } from "../../../../design/constants";
-import { formatAdminDate } from "../../../../helpers";
+import { DateTime, DateTimeFormats } from "../../../../design";
 
 const renderUserRoles = (user: IAdminUser, unassignedLabel: string) => {
-  const roles: string[] =
-    user.role_names ?? user.roles ?? (user.role ? [user.role] : []);
+  const roles = user.iam?.roles.map((role) => role.attributes.name) ?? [];
   if (!roles.length) {
     return (
       <span className="text-caption text-base-content opacity-50">
@@ -104,7 +104,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
 
   const [searchInput, setSearchInput] = useState(searchQuery);
   const toast = useToast();
-  const { can, isLoading: permissionsLoading } = usePermissions();
+  const { can, isLoading: permissionsLoading, isSuperAdmin } = usePermissions();
   const { isLoading, setLoading } = useLoading();
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
@@ -137,7 +137,8 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
 
   // Keep local search input in sync if URL search param changes externally
   useEffect(() => {
-    setSearchInput(searchQuery);
+    const timeoutId = window.setTimeout(() => setSearchInput(searchQuery), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [searchQuery]);
 
   // Debounce search input by 300ms before updating URL and querying API
@@ -180,9 +181,13 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   }, [can, page, searchQuery, setLoading, sortBy, sortOrder, t, view]);
 
   useEffect(() => {
-    if (!permissionsLoading) {
+    if (permissionsLoading) return;
+
+    const timeoutId = window.setTimeout(() => {
       void loadUsers();
-    }
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [loadUsers, permissionsLoading]);
 
   const openLifecycleDialog = (
@@ -230,6 +235,16 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         render: (user) => renderUserRoles(user, "Unassigned"),
       },
       {
+        key: ADMIN_USER_TABLE_KEYS.CONFIRMED,
+        header: t(AppLocales.Admin.Users.Table.Confirmed),
+        className: "text-center",
+        render: (user) => (
+          <StatusBadge
+            status={user.confirmed ? "confirmed" : "unconfirmed"}
+          />
+        ),
+      },
+      {
         key: ADMIN_USER_TABLE_KEYS.LIFECYCLE_DATE,
         header:
           view === ADMIN_VIEW_MODES.ACTIVE
@@ -240,12 +255,16 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
             ? ADMIN_USER_SORT_KEYS.CREATED_AT
             : ADMIN_USER_SORT_KEYS.DISCARDED_AT,
         className: "text-center",
-        render: (user) =>
-          formatAdminDate(
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? user.created_at
-              : user.discarded_at,
-          ),
+        render: (user) => (
+          <DateTime
+            value={
+              view === ADMIN_VIEW_MODES.ACTIVE
+                ? user.created_at
+                : user.discarded_at
+            }
+            format={DateTimeFormats.ADMIN}
+          />
+        ),
       },
       {
         key: ADMIN_USER_TABLE_KEYS.ACTIONS,
@@ -325,7 +344,8 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     }
   };
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.USERS);
+  const canCreate =
+    isSuperAdmin && can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.USERS);
 
   return (
     <div className="space-y-6">
@@ -354,7 +374,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.USERS) && (
+          {isSuperAdmin && can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.USERS) && (
             <Tabs
               value={view}
               onChange={(tab) => {
@@ -366,14 +386,35 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
                 updateFilters({ page: 1 });
               }}
               items={[
-                { value: ADMIN_VIEW_MODES.ACTIVE, label: t(AppLocales.Admin.Users.Tabs.ActiveUsers) },
-                { value: ADMIN_VIEW_MODES.DISCARDED, label: t(AppLocales.Admin.Users.Tabs.RecycleBin) },
+                {
+                  value: ADMIN_VIEW_MODES.ACTIVE,
+                  label: t(AppLocales.Admin.Users.Tabs.ActiveUsers),
+                  icon: iconsLib.user,
+                  count:
+                    view === ADMIN_VIEW_MODES.ACTIVE
+                      ? pagination?.total_count
+                      : undefined,
+                },
+                {
+                  value: ADMIN_VIEW_MODES.DISCARDED,
+                  label: t(AppLocales.Admin.Users.Tabs.RecycleBin),
+                  icon: iconsLib.trash,
+                  count:
+                    view === ADMIN_VIEW_MODES.DISCARDED
+                      ? pagination?.total_count
+                      : undefined,
+                },
               ]}
             />
           )}
           <div className="w-full sm:w-72">
             <SearchInput
               placeholder={t(AppLocales.Admin.Users.SearchPlaceholder)}
+              searchableKeys={[
+                t(AppLocales.Admin.Common.Detail.Name),
+                t(AppLocales.Admin.Users.Table.Username),
+                t(AppLocales.Admin.Users.Table.Email),
+              ]}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onClear={() => setSearchInput("")}
@@ -404,6 +445,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={handleSort}
+            onRowClick={(user) => navigate(AppRoutes.withId(AppRoutes.client.protected.admin.USER_DETAIL, user.id))}
           />
           <AdminPagination
             pagination={pagination}
@@ -439,4 +481,3 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     </div>
   );
 };
-

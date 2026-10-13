@@ -9,6 +9,8 @@ import {
   IAdminNotificationTemplate,
   IAdminNotificationTemplateFormValues,
   IAdminTemplateListParams,
+  IAdminUserNotification,
+  IAdminUserNotificationListParams,
 } from "./types";
 import {
   NOTIFICATION_AUDIENCE_TYPES,
@@ -48,7 +50,7 @@ class NotificationService {
   > {
     return api.post<IJsonApiResource<IAdminNotificationTemplate>>(
       AppRoutes.server.protected.admin.NOTIFICATIONS,
-      { notification: values },
+      { notification: { ...values, link: values.link || null } },
     );
   }
 
@@ -63,7 +65,14 @@ class NotificationService {
         AppRoutes.server.protected.admin.NOTIFICATION_DETAIL,
         id,
       ),
-      { notification: values },
+      {
+        notification: {
+          ...values,
+          ...(values.link !== undefined
+            ? { link: values.link || null }
+            : {}),
+        },
+      },
     );
   }
 
@@ -120,6 +129,100 @@ class NotificationService {
     }
 
     return { type: NOTIFICATION_AUDIENCE_TYPES.USERS, user_ids: values.user_ids };
+  }
+
+  // ===== USER NOTIFICATIONS (LIFECYCLE & INSPECTION) =====
+
+  async getUserNotifications(
+    params?: IAdminUserNotificationListParams,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUserNotification>[]>>
+  > {
+    return api.get<IJsonApiResource<IAdminUserNotification>[]>(
+      AppRoutes.server.protected.admin.USER_NOTIFICATIONS,
+      params,
+    );
+  }
+
+  async getUserNotification(
+    id: string,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUserNotification>>>
+  > {
+    return api.get<IJsonApiResource<IAdminUserNotification>>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.USER_NOTIFICATION_DETAIL,
+        id,
+      ),
+    );
+  }
+
+  async discardUserNotification(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.post<null>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.USER_NOTIFICATION_DISCARD,
+        id,
+      ),
+    );
+  }
+
+  async undiscardUserNotification(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.post<null>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.USER_NOTIFICATION_UNDISCARD,
+        id,
+      ),
+    );
+  }
+
+  async destroyUserNotification(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.delete<null>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.USER_NOTIFICATION_DETAIL,
+        id,
+      ),
+    );
+  }
+
+  async emptyUserNotificationsBin(): Promise<
+    IApiResponse<IApiEnvelope<{ count: number }>>
+  > {
+    return api.delete<{ count: number }>(
+      AppRoutes.server.protected.admin.USER_NOTIFICATIONS_BIN,
+    );
+  }
+
+  async batchDiscardUserNotifications(
+    ids: string[],
+  ): Promise<IApiResponse<IApiEnvelope<{ count: number }>>> {
+    return api.post<{ count: number }>(
+      AppRoutes.server.protected.admin.USER_NOTIFICATIONS_DISCARD_BATCH,
+      { ids },
+    );
+  }
+
+  async batchUndiscardUserNotifications(
+    ids: string[],
+  ): Promise<IApiResponse<IApiEnvelope<{ count: number }>>> {
+    return api.post<{ count: number }>(
+      AppRoutes.server.protected.admin.USER_NOTIFICATIONS_UNDISCARD_BATCH,
+      { ids },
+    );
+  }
+
+  async batchDestroyUserNotifications(
+    ids: string[],
+  ): Promise<IApiResponse<IApiEnvelope<{ count: number }>>> {
+    return api.post<{ count: number }>(
+      AppRoutes.server.protected.admin.USER_NOTIFICATIONS_DESTROY_BATCH,
+      { ids },
+    );
   }
 }
 

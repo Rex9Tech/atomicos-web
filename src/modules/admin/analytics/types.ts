@@ -10,8 +10,8 @@ export interface IAnalyticsKpis {
   period_revenue: number;
   revenue_delta_pct: number;
 
-  period_transactions: number;
-  transactions_delta_pct: number;
+  period_purchases: number;
+  purchases_delta_pct: number;
 
   active_subscriptions: number;
 
@@ -23,22 +23,29 @@ export interface IAnalyticsKpis {
   unresolved_errors: number;
   period_errors: number;
   period_feedbacks: number;
+
+  coupons_used?: number;
+  coupons_delta_pct?: number;
+  period_discounts?: number;
+  discounts_delta_pct?: number;
 }
 
 export interface IAnalyticsTimeSeriesPoint {
   date: string;
   key: string;
   revenue: number;
-  transactions: number;
+  discounts?: number;
+  purchases: number;
   new_users: number;
   user_messages: number;
   ai_messages: number;
 }
 
 export interface IAnalyticsBreakdowns {
-  subscriptions_by_cycle: Record<string, number>;
+  subscriptions_by_interval: Record<string, number>;
   feedback_ratings: Record<string, number>;
   errors_by_platform: Record<string, number>;
+  coupons_by_type?: Record<string, number>;
 }
 
 export interface IAnalyticsOverview {

@@ -21,6 +21,7 @@ import twitterSvg from "./design/twitter.svg";
 import instagramIcon from "./icons/instagram.svg";
 import googleIcon from "./icons/google.svg";
 import rexoneLogoSvg from "./icons/rexone-logo.svg";
+import quoteIcon from "./icons/quote.svg";
 
 // Projects Images (RexOne Repos Only)
 import rexoneCoreImg from "./images/rexone-core.jpg";
@@ -55,6 +56,7 @@ import {
   KeyIcon,
   UserGroupIcon,
   ArchiveBoxIcon,
+  DocumentDuplicateIcon,
   ChatBubbleBottomCenterTextIcon,
   ChevronDownIcon,
   ChevronUpIcon,
@@ -86,6 +88,7 @@ import {
   PhotoIcon,
   TagIcon,
   DevicePhoneMobileIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -99,7 +102,7 @@ import noteSound from "./sounds/note.mp3";
 // ============================================================
 
 export const images = {
-  banner: { src: banner, alt: "Banner image", title: "Rexone Banner" },
+  banner: { src: banner, alt: "Banner image", title: "RexOne Banner" },
   darkBrickWall: {
     src: darkBrickWall,
     alt: "Dark Brick Wall",
@@ -133,8 +136,8 @@ export const projectImages = {
 // ============================================================
 
 export const icons = {
-  logo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
-  rexoneLogo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
+  logo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
+  rexoneLogo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
   google: { src: googleIcon, alt: "Google icon", title: "Google" },
   github: { src: githubSvg, alt: "GitHub", title: "GitHub" },
@@ -143,6 +146,7 @@ export const icons = {
   medium: { src: mediumSvg, alt: "Medium", title: "Medium" },
   twitter: { src: twitterSvg, alt: "Twitter / X", title: "Twitter / X" },
   facebook: { src: facebookSvg, alt: "Facebook", title: "Facebook" },
+  quote: { src: quoteIcon, alt: "Quote", title: "Quote" },
 } as const;
 
 // ============================================================
@@ -223,5 +227,7 @@ export const iconsLib = {
   play: PlayIcon,
   photo: PhotoIcon,
   tag: TagIcon,
+  copy: DocumentDuplicateIcon,
   devicePhoneMobile: DevicePhoneMobileIcon,
+  externalLink: ArrowTopRightOnSquareIcon,
 } as const;

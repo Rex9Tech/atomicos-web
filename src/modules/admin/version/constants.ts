@@ -17,10 +17,20 @@ export const VERSION_SEMVER_PATTERN = /^\d+\.\d+\.\d+$/;
 export const ADMIN_VERSION_PAGE_TITLES = {
   CREATE: "Create Version",
   EDIT: "Edit Version",
+  DETAIL: "Version Details",
   LIST: "Versions",
   RECYCLE_BIN: "Version Recycle Bin",
   USER_VERSIONS: "User Versions",
 } as const;
+
+export const ADMIN_VERSION_TABS = {
+  ACTIVE: "active",
+  USER_VERSIONS: "user_versions",
+  DISCARDED: "discarded",
+} as const;
+
+export type TAdminVersionTab =
+  (typeof ADMIN_VERSION_TABS)[keyof typeof ADMIN_VERSION_TABS];
 
 export const ADMIN_VERSION_TABLE_KEYS = {
   NUMBER: "number",
@@ -78,7 +88,7 @@ export const ADMIN_VERSION_PAGE_META: Record<string, IAdminPageMeta> = {
   [AppRoutes.client.protected.admin.USER_VERSIONS]: {
     title: ADMIN_VERSION_PAGE_TITLES.USER_VERSIONS,
   },
-  [AppRoutes.client.protected.admin.VERSION_INSTALLS]: {
-    title: ADMIN_VERSION_PAGE_TITLES.USER_VERSIONS,
+  [AppRoutes.client.protected.admin.VERSION_DETAIL]: {
+    title: ADMIN_VERSION_PAGE_TITLES.DETAIL,
   },
 };

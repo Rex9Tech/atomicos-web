@@ -10,7 +10,7 @@ import {
   IApiResponse,
   IJsonApiResource,
 } from "../models";
-import { DialogAuthSteps, DialogParams } from "../modules/auth";
+import { AUTH_HEADERS, DialogAuthSteps, DialogParams } from "../modules/auth";
 import { HTTP_METHODS } from "../modules/log";
 
 const PLATFORM_HEADER_VALUE = Platform.WEB;
@@ -38,6 +38,11 @@ const handleUnauthorized = () => {
   localStorage.removeItem(StorageKeys.TOKEN);
   localStorage.removeItem(StorageKeys.USER);
 
+  // If already interacting with an auth or modal dialog, do not violently navigate away
+  if (window.location.search.includes(DialogParams.DIALOG)) {
+    return;
+  }
+
   const nextUrl = new URL(
     window.location.origin + AppRoutes.client.public.ROOT,
   );
@@ -63,21 +68,21 @@ axiosInstance.interceptors.request.use(
     const headers = AxiosHeaders.from(config.headers);
 
     // Always send platform so backend can enforce one active session per platform
-    headers.set("X-Platform", PLATFORM_HEADER_VALUE);
+    headers.set(AUTH_HEADERS.PLATFORM, PLATFORM_HEADER_VALUE);
 
-    // Rexone Core locale
-    headers.set("X-Locale", getApiLocale());
+    // RexOne Core locale
+    headers.set(AUTH_HEADERS.LOCALE, getApiLocale());
 
     if (config.data instanceof FormData) {
-      headers.delete("Content-Type");
-      headers.set("Content-Type", "multipart/form-data");
+      headers.delete(AUTH_HEADERS.CONTENT_TYPE);
+      headers.set(AUTH_HEADERS.CONTENT_TYPE, "multipart/form-data");
     } else if (config.data && typeof config.data === "object") {
-      headers.set("Content-Type", "application/json");
+      headers.set(AUTH_HEADERS.CONTENT_TYPE, "application/json");
     }
 
     const token = getStoredToken();
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+    if (token && !AppRoutes.isAuthEndpoint(config.url)) {
+      headers.set(AUTH_HEADERS.AUTHORIZATION, `Bearer ${token}`);
     }
 
     config.headers = headers;
@@ -91,10 +96,13 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error?.response?.status === 401) {
-      const token = getStoredToken();
-      // If we had a stored token that the backend rejected as 401, automatically log out and redirect
-      if (token) {
-        handleUnauthorized();
+      const url = error.config?.url || "";
+      if (!AppRoutes.isAuthEndpoint(url)) {
+        const token = getStoredToken();
+        // If we had a stored token that the backend rejected as 401, automatically log out and redirect
+        if (token) {
+          handleUnauthorized();
+        }
       }
     }
     return Promise.reject(error);
@@ -213,6 +221,8 @@ export const parseRecord = <T extends object>(
   record: IJsonApiResource<T> | T,
 ): T & { id: string } => {
   if (
+    record &&
+    typeof record === "object" &&
     "attributes" in record &&
     "type" in record &&
     typeof record.attributes === "object" &&
@@ -239,5 +249,3 @@ export const parsePagyList = <T extends object>(
     pagination: envelope?.meta?.pagination ?? null,
   };
 };
-
-export const parsePaginatedResponse = parsePagyList;

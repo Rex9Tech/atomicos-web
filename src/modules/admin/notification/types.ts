@@ -22,6 +22,8 @@ export interface IAdminNotificationTemplate {
   description?: string | null;
   category: NotificationEventCategory | string;
   link?: string | null;
+  cta_text?: string | null;
+  clients: string[];
   admin?: boolean;
   unavailable_reason?: string;
   in_app_title?: string | null;
@@ -46,6 +48,8 @@ export interface IAdminNotificationTemplateFormValues {
   description?: string;
   category: string;
   link?: string;
+  cta_text?: string;
+  clients: string[];
   admin: boolean;
   in_app_title?: string;
   in_app_body?: string;
@@ -71,4 +75,39 @@ export interface IAdminNotificationDelivery {
   audience: NotificationAudienceType;
   recipient_count: number;
   channels: NotificationDeliveryChannel[];
+}
+
+export interface IAdminUserNotification {
+  id: string;
+  user_id: string;
+  user_email?: string;
+  user_name?: string;
+  notification_id?: string | null;
+  notification_event?: string | null;
+  title: string;
+  message: string;
+  link?: string | null;
+  clients: string[];
+  metadata: Record<string, unknown>;
+  operation_id?: string | null;
+  operation_type?: string | null;
+  operation_status?: string | null;
+  read: boolean;
+  read_at?: string | null;
+  created_at: string;
+  updated_at?: string;
+  discarded_at?: string | null;
+}
+
+export interface IAdminUserNotificationListParams {
+  [key: string]: unknown;
+  page?: number;
+  limit?: number;
+  search?: string;
+  user_id?: string;
+  client?: string;
+  status?: string;
+  discarded?: boolean | string;
+  sort_by?: string;
+  sort_order?: string;
 }

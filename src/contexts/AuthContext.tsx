@@ -8,12 +8,16 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import { useAtom } from "jotai";
 import { IUser } from "../models/user.model";
 import atoms from "../atoms";
 import { isTokenExpired } from "../helpers";
 import { useLoading } from "./LoadingContext";
+import UserController from "../modules/user/user.controller";
+import { AnalyticsService } from "../services";
+import AppConfig from "../AppConfig";
 
 interface IAuthContextType {
   isAuthenticated: boolean;
@@ -22,6 +26,7 @@ interface IAuthContextType {
   setCurrentUser: (user: IUser | null) => void;
   signin: (token: string, user: IUser) => void;
   signout: () => void;
+  refreshCurrentUser: () => Promise<IUser | null>;
   googleChallengeToken: string | null;
   setGoogleChallengeToken: (token: string | null) => void;
 }
@@ -37,6 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     string | null
   >(null);
   const { setLoading } = useLoading();
+  const userRefreshRef = useRef<Promise<IUser | null> | null>(null);
 
   // Check if authenticated using token expiry from JWT
   const isAuthenticated = useMemo(() => {
@@ -48,6 +54,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setToken(null);
     setCurrentUser(null);
     setGoogleChallengeToken(null);
+    void AnalyticsService.setUserId(null);
   }, [setToken, setCurrentUser, setGoogleChallengeToken]);
 
   // Update loading when token changes
@@ -61,7 +68,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (!token || !isTokenExpired(token)) return;
 
     const timeoutId = window.setTimeout(() => {
-      console.log("🔐 Token expired, signing out...");
+      if (AppConfig.IS_DEV) {
+        console.log("🔐 Token expired, signing out...");
+      }
       signout();
     }, 0);
 
@@ -74,7 +83,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const interval = setInterval(() => {
       if (isTokenExpired(token)) {
-        console.log("Token expired during session, signing out...");
+        if (AppConfig.IS_DEV) {
+          console.log("Token expired during session, signing out...");
+        }
         signout();
       }
     }, 3600000);
@@ -87,9 +98,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setToken(token);
       setCurrentUser(user);
       setGoogleChallengeToken(null);
+      void AnalyticsService.setUserId(user.id);
     },
     [setToken, setCurrentUser, setGoogleChallengeToken],
   );
+
+  const refreshCurrentUser = useCallback((): Promise<IUser | null> => {
+    if (userRefreshRef.current) return userRefreshRef.current;
+
+    const request = UserController.getCurrentUser()
+      .then((user) => {
+        if (user) setCurrentUser(user);
+        return user;
+      })
+      .finally(() => {
+        userRefreshRef.current = null;
+      });
+
+    userRefreshRef.current = request;
+    return request;
+  }, [setCurrentUser]);
 
   const value = useMemo(
     () => ({
@@ -99,6 +127,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setCurrentUser,
       signin,
       signout,
+      refreshCurrentUser,
       googleChallengeToken,
       setGoogleChallengeToken,
     }),
@@ -109,6 +138,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setCurrentUser,
       signin,
       signout,
+      refreshCurrentUser,
       googleChallengeToken,
     ],
   );
