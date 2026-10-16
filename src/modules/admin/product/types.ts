@@ -24,6 +24,7 @@ export interface IAdminProduct {
   google_play_product_id?: string | null;
   app_store_product_id?: string | null;
   available_on_myanmyanpay?: boolean;
+  credits?: number;
   in_app?: boolean;
   supported_providers?: string[];
   thumbnail_url?: string | null;
@@ -47,6 +48,7 @@ export interface IAdminProductFormValues {
   google_play_product_id?: string | null;
   app_store_product_id?: string | null;
   available_on_myanmyanpay?: boolean;
+  credits?: number;
   thumbnail_asset_id?: string | null;
 }
 

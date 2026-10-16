@@ -50,6 +50,7 @@ const initialValues: IAdminProductFormValues = {
   interval: PRODUCT_INTERVAL.MONTH,
   active: true,
   available_on_myanmyanpay: false,
+  credits: 0,
 };
 
 const buildInitialValues = (
@@ -66,6 +67,7 @@ const buildInitialValues = (
     interval: product.interval || PRODUCT_INTERVAL.ONE_TIME,
     active: product.active,
     available_on_myanmyanpay: product.available_on_myanmyanpay ?? false,
+    credits: product.credits ?? 0,
   };
 };
 
@@ -422,6 +424,18 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
               Free products are always one-time and cannot be recurring.
             </p>
           )}
+        </div>
+
+        <div className="flex flex-col">
+          <NumberInput
+            label="Credits granted on purchase"
+            min={0}
+            step={1}
+            value={values.credits ?? 0}
+            allowDecimals={false}
+            helperText="Credit-pack size — how many credits this product adds to the buyer's balance after a successful payment. 0 = access-only product."
+            onChange={(val) => updateValue("credits", val ?? 0)}
+          />
         </div>
 
         <Checkbox
