@@ -18,4 +18,5 @@ export const buildProductPayload = (
       ? PRODUCT_INTERVAL.ONE_TIME
       : values.interval || PRODUCT_INTERVAL.ONE_TIME,
   active: values.active,
+  available_on_myanmyanpay: !!values.available_on_myanmyanpay,
 });

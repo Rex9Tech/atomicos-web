@@ -149,7 +149,18 @@
       "subtotal": "Subtotal",
       "total_due_today": "Total Due Today",
       "too_many_attempts": "Too many attempts. Please wait {{seconds}}s before trying again.",
-      "attempts_remaining": "{{attempts}} attempt(s) remaining"
+      "attempts_remaining": "{{attempts}} attempt(s) remaining",
+      "mmpay_scan_hint": "Scan this QR with any MMQR-enabled banking or wallet app to pay.",
+      "mmpay_expires_in": "Expires in",
+      "mmpay_waiting": "Waiting for payment…",
+      "mmpay_expired": "This QR has expired.",
+      "mmpay_failed": "Payment failed or was canceled.",
+      "mmpay_get_new_qr": "Get a New QR",
+      "mmpay_download": "Download QR",
+      "mmpay_powered_by": "Payment powered by",
+      "mmpay_order_ref": "Order Ref",
+      "mmpay_generating": "Generating QR…",
+      "mmpay_paid": "Payment received! Activating your plan…"
     }
   },
 

@@ -14,6 +14,8 @@ import { IProduct, ICouponValidationResult } from "../types";
 import PaymentController from "../payment.controller";
 import { useToast } from "../../../contexts/ToastContext";
 import { useCountdown } from "../../../hooks";
+import QRCode from "qrcode";
+import { formatMoney } from "../../../helpers";
 
 interface ICheckoutDialogProps {
   product: IProduct | null;
@@ -22,11 +24,20 @@ interface ICheckoutDialogProps {
   onSuccess: () => void;
 }
 
-const formatMoney = (cents: number, currency: string = "usd") => {
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: currency.toUpperCase(),
-  }).format(cents / 100);
+interface IMmpayQrState {
+  orderId: string;
+  qr: string;
+  amount: number;
+  currency: string;
+  expiresAt?: string;
+}
+
+const formatCountdown = (totalSeconds: number) => {
+  const m = Math.floor(totalSeconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
 };
 
 export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
@@ -48,6 +59,14 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
   // Cooldown countdown hook
   const cooldown = useCountdown(0);
 
+  // ===== MyanMyanPay (MMQR) QR phase =====
+  const [mmpayQr, setMmpayQr] = useState<IMmpayQrState | null>(null);
+  const [qrImage, setQrImage] = useState<string>("");
+  const [qrStatus, setQrStatus] = useState<"pending" | "expired" | "failed">(
+    "pending",
+  );
+  const [qrSecondsLeft, setQrSecondsLeft] = useState<number>(0);
+
   // Reset attempts when cooldown expires
   const prevCooldownActiveRef = useRef(cooldown.isActive);
   useEffect(() => {
@@ -66,8 +85,75 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
       setCouponError(null);
       setIsSubmitting(false);
       setRemainingAttempts(3);
+      setMmpayQr(null);
+      setQrImage("");
+      setQrStatus("pending");
+      setQrSecondsLeft(0);
     }
   }, [isOpen, product?.id]);
+
+  // Render the MMQR payload to a PNG data URL (as-is — never modify the payload)
+  useEffect(() => {
+    let cancelled = false;
+    if (!mmpayQr?.qr) {
+      setQrImage("");
+      return;
+    }
+    QRCode.toDataURL(mmpayQr.qr, {
+      width: 512,
+      margin: 1,
+      errorCorrectionLevel: "M",
+    })
+      .then((url) => {
+        if (!cancelled) setQrImage(url);
+      })
+      .catch(() => {
+        /* leave placeholder */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [mmpayQr?.qr]);
+
+  // Countdown to the QR expiry
+  useEffect(() => {
+    if (!mmpayQr) return;
+    const target = mmpayQr.expiresAt
+      ? new Date(mmpayQr.expiresAt).getTime()
+      : Date.now() + 15 * 60 * 1000;
+    const tick = () => {
+      const left = Math.max(0, Math.floor((target - Date.now()) / 1000));
+      setQrSecondsLeft(left);
+      if (left === 0) {
+        setQrStatus((s) => (s === "pending" ? "expired" : s));
+      }
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [mmpayQr?.orderId, mmpayQr?.expiresAt, mmpayQr]);
+
+  // Poll our backend (updated by the verified webhook) while the QR is pending
+  useEffect(() => {
+    if (!mmpayQr || qrStatus !== "pending" || !isOpen) return;
+    const orderId = mmpayQr.orderId;
+    const poll = async () => {
+      const res = await PaymentController.getMmpayStatus(orderId);
+      if (!res.success) return; // transient failure — try again next tick
+      if (res.status === "succeeded") {
+        success(t(AppLocales.Payment.CheckoutDialog.MmpayPaid));
+        onSuccess();
+        onClose();
+      } else if (res.status === "failed") {
+        setQrStatus("failed");
+      } else if (res.status === "expired") {
+        setQrStatus("expired");
+      }
+    };
+    const id = window.setInterval(poll, 4000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mmpayQr?.orderId, qrStatus, isOpen]);
 
   if (!product) return null;
 
@@ -127,6 +213,25 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
     setCouponError(null);
   };
 
+  // ===== MyanMyanPay (MMQR) helpers =====
+  const handleMmpayRetry = async () => {
+    setMmpayQr(null);
+    setQrImage("");
+    setQrStatus("pending");
+    // Server auto-closes the stale attempt and returns a fresh QR.
+    await handleCheckout();
+  };
+
+  const downloadQr = () => {
+    if (!qrImage || !mmpayQr) return;
+    const a = document.createElement("a");
+    a.href = qrImage;
+    a.download = `atomicos-mmpay-${mmpayQr.orderId}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   const handleCheckout = async () => {
     const cleanCode = couponCode.trim().toUpperCase();
     let appliedCode: string | undefined;
@@ -175,6 +280,19 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
         return;
       }
 
+      // MyanMyanPay → show the MMQR to scan instead of redirecting.
+      if (result.qr && result.orderId) {
+        setMmpayQr({
+          orderId: result.orderId,
+          qr: result.qr,
+          amount: result.amount ?? product.unit_amount,
+          currency: result.currency || product.currency,
+          expiresAt: result.expiresAt,
+        });
+        setQrStatus("pending");
+        return;
+      }
+
       if (result.checkoutUrl) {
         success(t(AppLocales.Payment.CheckoutDialog.Redirecting));
         window.location.assign(result.checkoutUrl);
@@ -214,6 +332,123 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
       title={t(AppLocales.Payment.CheckoutDialog.Title)}
       className="max-w-lg"
     >
+      {mmpayQr ? (
+        <div className="space-y-5">
+          {/* Summary */}
+          <div className="text-center space-y-1">
+            <h3 className="font-bold text-lg text-base-content font-primary">
+              {product.name}
+            </h3>
+            <div className="text-3xl font-extrabold text-primary">
+              {formatMoney(mmpayQr.amount, mmpayQr.currency)}
+            </div>
+            <p className="text-xs text-base-content/60">
+              {t(AppLocales.Payment.CheckoutDialog.MmpayOrderRef)}:{" "}
+              <span className="font-mono">{mmpayQr.orderId}</span>
+            </p>
+          </div>
+
+          {/* QR code */}
+          <div className="flex justify-center">
+            <div className="rounded-2xl border-2 border-base-300 bg-white p-4 shadow-sm">
+              {qrImage ? (
+                <img src={qrImage} alt="MMQR" className="w-56 h-56" />
+              ) : (
+                <div className="w-56 h-56 flex items-center justify-center text-base-content/50 text-sm">
+                  {t(AppLocales.Payment.CheckoutDialog.MmpayGenerating)}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Status */}
+          {qrStatus === "pending" && (
+            <div className="text-center space-y-2">
+              <p className="text-body-s text-base-content/70">
+                {t(AppLocales.Payment.CheckoutDialog.MmpayScanHint)}
+              </p>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-warning bg-warning/10 border border-warning/30 rounded-full px-3 py-1">
+                  ⏳ {t(AppLocales.Payment.CheckoutDialog.MmpayExpiresIn)}{" "}
+                  {formatCountdown(qrSecondsLeft)}
+                </span>
+                <span className="inline-flex items-center gap-2 text-sm text-base-content/70">
+                  <span className="loading loading-spinner loading-xs" />
+                  {t(AppLocales.Payment.CheckoutDialog.MmpayWaiting)}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {qrStatus === "expired" && (
+            <div className="text-center space-y-3">
+              <p className="text-sm text-error font-medium">
+                ⌛ {t(AppLocales.Payment.CheckoutDialog.MmpayExpired)}
+              </p>
+              <Button
+                variant={ButtonVariants.PRIMARY}
+                fullWidth
+                onClick={handleMmpayRetry}
+                disabled={isSubmitting}
+              >
+                {isSubmitting
+                  ? t(AppLocales.Payment.CheckoutDialog.Processing)
+                  : t(AppLocales.Payment.CheckoutDialog.MmpayGetNewQr)}
+              </Button>
+            </div>
+          )}
+
+          {qrStatus === "failed" && (
+            <div className="text-center space-y-3">
+              <p className="text-sm text-error font-medium">
+                ⚠️ {t(AppLocales.Payment.CheckoutDialog.MmpayFailed)}
+              </p>
+              <Button
+                variant={ButtonVariants.PRIMARY}
+                fullWidth
+                onClick={handleMmpayRetry}
+                disabled={isSubmitting}
+              >
+                {t(AppLocales.Payment.CheckoutDialog.MmpayGetNewQr)}
+              </Button>
+            </div>
+          )}
+
+          {/* Actions */}
+          {qrStatus === "pending" && (
+            <div className="flex flex-col gap-2 pt-1">
+              <Button
+                variant={ButtonVariants.SECONDARY}
+                fullWidth
+                size={ComponentSizes.MD}
+                onClick={downloadQr}
+                disabled={!qrImage}
+              >
+                ⬇ {t(AppLocales.Payment.CheckoutDialog.MmpayDownload)}
+              </Button>
+              <Button
+                variant={ButtonVariants.TERTIARY}
+                fullWidth
+                size={ComponentSizes.SM}
+                onClick={onClose}
+              >
+                {t(AppLocales.Common.Cancel)}
+              </Button>
+            </div>
+          )}
+
+          {/* Compliance footer */}
+          <p className="text-center text-xs text-base-content/50">
+            {t(AppLocales.Payment.CheckoutDialog.MmpayPoweredBy)}{" "}
+            <span className="font-bold tracking-wide text-base-content/70">
+              myanmyanpay
+            </span>
+            <span className="ml-1.5 text-[10px] font-bold border border-base-content/30 rounded px-1 py-0.5 align-middle">
+              MMQR
+            </span>
+          </p>
+        </div>
+      ) : (
       <div className="space-y-6">
         {/* Product Summary */}
         <div className="bg-base-200/50 rounded-xl p-4 border border-base-300">
@@ -383,6 +618,7 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
           </Button>
         </div>
       </div>
+      )}
     </Dialog>
   );
 };

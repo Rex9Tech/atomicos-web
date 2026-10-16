@@ -174,6 +174,29 @@ export interface ICheckoutResponse {
   access_id?: string;
   coupon_code?: string;
   discount_amount?: number;
+  // ===== MyanMyanPay (MMQR) checkout =====
+  provider?: string;
+  qr?: string;
+  order_id?: string;
+  transaction_ref_id?: string;
+  amount?: number;
+  currency?: string;
+  expires_at?: string;
+  resumed?: boolean;
+  purchase_id?: string;
+}
+
+export interface IMmpayStatus {
+  provider?: string;
+  order_id: string;
+  purchase_id?: string;
+  product_id?: string;
+  status: "pending" | "succeeded" | "failed" | "expired" | string;
+  amount?: number;
+  currency?: string;
+  paid_at?: string;
+  expires_at?: string;
+  qr?: string | null;
 }
 
 export type { TCouponType } from "./constants";

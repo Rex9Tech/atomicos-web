@@ -5,6 +5,7 @@ import {
   IAccess,
   ICheckoutResponse,
   ICouponValidationResult,
+  IMmpayStatus,
   IProduct,
   IPurchase,
   ISubscription,
@@ -142,6 +143,19 @@ class PaymentService {
       AppRoutes.withId(
         AppRoutes.server.protected.PAYMENT_SESSION_STATUS,
         sessionId,
+      ),
+    );
+    return response;
+  }
+
+  // ===== MYANMYANPAY (MMQR) STATUS POLL =====
+  async getMmpayStatus(
+    orderId: string,
+  ): Promise<IApiResponse<IApiEnvelope<IMmpayStatus>>> {
+    const response = await api.get<IMmpayStatus>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.PAYMENT_MMPAY_SESSION_STATUS,
+        orderId,
       ),
     );
     return response;

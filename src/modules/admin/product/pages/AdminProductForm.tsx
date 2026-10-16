@@ -49,6 +49,7 @@ const initialValues: IAdminProductFormValues = {
   currency: PRODUCT_CURRENCY.USD,
   interval: PRODUCT_INTERVAL.MONTH,
   active: true,
+  available_on_myanmyanpay: false,
 };
 
 const buildInitialValues = (
@@ -64,6 +65,7 @@ const buildInitialValues = (
     currency: product.currency || PRODUCT_CURRENCY.USD,
     interval: product.interval || PRODUCT_INTERVAL.ONE_TIME,
     active: product.active,
+    available_on_myanmyanpay: product.available_on_myanmyanpay ?? false,
   };
 };
 
@@ -428,6 +430,19 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           containerClassName="min-h-10 md:self-end"
         >
           <span>{t(AppLocales.Admin.Products.Form.ActiveForPurchase)}</span>
+        </Checkbox>
+
+        <Checkbox
+          checked={!!values.available_on_myanmyanpay}
+          onChange={(event) =>
+            updateValue("available_on_myanmyanpay", event.target.checked)
+          }
+          containerClassName="min-h-10 md:self-end"
+        >
+          <span>
+            Available via MyanMyanPay (MMQR) — pay by scanning a QR with any
+            Myanmar banking app
+          </span>
         </Checkbox>
       </div>
 

@@ -9,6 +9,7 @@ export const ZERO_DECIMAL_CURRENCIES = new Set([
   "kmf",
   "krw",
   "mga",
+  "mmk", // MMK is treated as whole kyats — the MMQR gateway convention
   "pyg",
   "rwf",
   "ugx",
@@ -70,7 +71,6 @@ export const getCurrencySymbol = (currency?: string): string => {
 export const getSubunitName = (currency?: string): string => {
   const code = (currency || "usd").toLowerCase();
   if (getCurrencyDecimals(code) === 0) return "units";
-  if (code === "mmk") return "pyas";
   if (code === "gbp") return "pence";
   return "cents";
 };

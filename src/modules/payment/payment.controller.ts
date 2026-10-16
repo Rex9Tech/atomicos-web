@@ -4,6 +4,7 @@ import { getApiError, parsePagyList, parseRecord } from "../../services/api.serv
 import {
   IAccess,
   ICouponValidationResult,
+  IMmpayStatus,
   IProduct,
   IPurchase,
   ISubscription,
@@ -233,6 +234,14 @@ class PaymentController {
     freeAccessGranted?: boolean;
     couponCode?: string;
     discountAmount?: number;
+    // ===== MyanMyanPay (MMQR) checkout =====
+    provider?: string;
+    qr?: string;
+    orderId?: string;
+    expiresAt?: string;
+    amount?: number;
+    currency?: string;
+    resumed?: boolean;
     error?: string;
   }> {
     const response = await PaymentService.createCheckout(
@@ -253,6 +262,20 @@ class PaymentController {
         };
       }
 
+      // MyanMyanPay returns an MMQR payload instead of a redirect URL.
+      if (data?.qr && data?.order_id) {
+        return {
+          success: true,
+          provider: data.provider,
+          qr: data.qr,
+          orderId: data.order_id,
+          expiresAt: data.expires_at,
+          amount: data.amount,
+          currency: data.currency,
+          resumed: data.resumed,
+        };
+      }
+
       if (data?.checkout_url) {
         return {
           success: true,
@@ -269,6 +292,38 @@ class PaymentController {
         response,
         translate(AppLocales.Payment.Errors.CreateCheckout),
       ),
+    };
+  }
+
+  // ===== MYANMYANPAY (MMQR) STATUS =====
+  async getMmpayStatus(orderId: string): Promise<{
+    success: boolean;
+    status?: IMmpayStatus["status"];
+    qr?: string | null;
+    amount?: number;
+    currency?: string;
+    expiresAt?: string;
+    paidAt?: string;
+    error?: string;
+  }> {
+    const response = await PaymentService.getMmpayStatus(orderId);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      return {
+        success: true,
+        status: data.status,
+        qr: data.qr,
+        amount: data.amount,
+        currency: data.currency,
+        expiresAt: data.expires_at,
+        paidAt: data.paid_at,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to check payment status"),
     };
   }
 

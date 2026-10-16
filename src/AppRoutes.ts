@@ -165,6 +165,9 @@ class AppRoutes {
       // Payments
       PAYMENT_SESSION: AppRoutes.api("/payment/session"), // POST
       PAYMENT_SESSION_STATUS: AppRoutes.api("/payment/session/:id"), // GET
+      PAYMENT_MMPAY_SESSION_STATUS: AppRoutes.api(
+        "/payment/mmpay/session/:id",
+      ), // GET (MyanMyanPay QR status poll)
       PAYMENT_PRODUCTS: AppRoutes.api("/payment/products"), // GET
       PAYMENT_SUBSCRIPTIONS: AppRoutes.api("/payment/subscriptions"), // GET, POST
       PAYMENT_SUBSCRIPTION_CANCEL: AppRoutes.api(

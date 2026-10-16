@@ -23,6 +23,7 @@ export interface IAdminProduct {
   stripe_price_id?: string | null;
   google_play_product_id?: string | null;
   app_store_product_id?: string | null;
+  available_on_myanmyanpay?: boolean;
   in_app?: boolean;
   supported_providers?: string[];
   thumbnail_url?: string | null;
@@ -45,6 +46,7 @@ export interface IAdminProductFormValues {
   stripe_price_id?: string | null;
   google_play_product_id?: string | null;
   app_store_product_id?: string | null;
+  available_on_myanmyanpay?: boolean;
   thumbnail_asset_id?: string | null;
 }
 
