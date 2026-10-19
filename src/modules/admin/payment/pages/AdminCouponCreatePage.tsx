@@ -20,6 +20,11 @@ import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { AppLocales } from "../../../../locales/app_locales";
 import { PageHeader } from "../../components";
+import {
+  getCurrencySymbol,
+  toMajorUnits,
+  toSmallestUnits,
+} from "../../product/currency.utils";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import PaymentController from "../payment.controller";
 import ClientPaymentController from "../../../payment/payment.controller";
@@ -141,11 +146,12 @@ export const AdminCouponCreatePage: React.FC = () => {
       (entry) => !entry.includes("@"),
     );
 
-    // Minor units for fixed discounts (e.g. $10 -> 1000 cents), or raw integer percentage
+    // Minor units for fixed discounts (currency-aware: e.g. $10 -> 1000 cents,
+    // 5,000 MMK -> 5,000 — zero-decimal), or raw integer percentage
     const finalAmount =
       couponType === COUPON_TYPES.PERCENTAGE
         ? Math.round(amount)
-        : Math.round(amount * 100);
+        : toSmallestUnits(amount, currency);
 
     const basePayload = {
       title: title.trim(),
@@ -666,7 +672,7 @@ export const AdminCouponCreatePage: React.FC = () => {
                 <span className="text-base-content/60">
                   {c.coupon_type === COUPON_TYPES.PERCENTAGE
                     ? `${c.amount}% off`
-                    : `$${(c.amount / 100).toFixed(2)}`}
+                    : `${getCurrencySymbol(c.currency ?? undefined)}${toMajorUnits(c.amount, c.currency ?? undefined)}`}
                 </span>
               </div>
             ))}

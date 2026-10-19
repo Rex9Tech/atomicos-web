@@ -32,12 +32,14 @@ import {
 import PaymentController from "../payment.controller";
 import type { IUserCoupon } from "../../../payment/types";
 import type { IApiPagination } from "../../../../models";
+import { toMajorUnits } from "../../product/currency.utils";
 
+// Smallest-unit amounts → major units, currency-aware (MMK is zero-decimal).
 const money = (amount: number, currency: string = "usd") =>
   new Intl.NumberFormat(undefined, {
     style: "currency",
     currency: currency.toUpperCase(),
-  }).format(amount / 100);
+  }).format(toMajorUnits(amount, currency));
 
 export interface IAdminRedemptionsTableProps {
   couponId?: string;

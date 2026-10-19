@@ -38,12 +38,15 @@ import PaymentController from "../payment.controller";
 import type { ICoupon } from "../../../payment/types";
 import { useToast } from "../../../../contexts/ToastContext";
 import { AdminRedemptionsTable } from "../components";
+import { toMajorUnits } from "../../product/currency.utils";
 
+// Coupon amounts are stored in smallest units; MMK is zero-decimal so the
+// generic /100 would show 99x-wrong totals for kyats.
 const money = (amount: number, currency: string = "usd") =>
   new Intl.NumberFormat(undefined, {
     style: "currency",
     currency: currency.toUpperCase(),
-  }).format(amount / 100);
+  }).format(toMajorUnits(amount, currency));
 
 export const AdminCouponDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
