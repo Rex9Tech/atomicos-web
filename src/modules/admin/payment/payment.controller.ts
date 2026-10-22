@@ -3,6 +3,8 @@ import { getApiError, parsePagyList, parseRecord } from "../../../services/api.s
 import PaymentService from "./payment.service";
 import type {
   IAdminCouponFilters,
+  IAdminCreditFilters,
+  IAdminCreditTransaction,
   IAdminPurchase,
   IAdminPurchaseFilters,
   IAdminSubscription,
@@ -242,6 +244,31 @@ class PaymentController {
       pagination: null as IApiPagination | null,
       error: getApiError(response, "Failed to load redemptions ledger"),
     };
+  }
+  async getCredits(params?: IAdminCreditFilters) {
+    const response = await PaymentService.getCredits(params);
+    if (response.data?.status?.success) {
+      const { records, pagination } =
+        parsePagyList<IAdminCreditTransaction>(response);
+      return { success: true as const, credits: records, pagination };
+    }
+    return {
+      success: false as const,
+      credits: [] as IAdminCreditTransaction[],
+      pagination: null as IApiPagination | null,
+      error: getApiError(response, "Failed to load credit activity"),
+    };
+  }
+
+  async getCreditSummary() {
+    const response = await PaymentService.getCreditSummary();
+    const body = response.data?.data;
+    return response.data?.status?.success && body
+      ? { success: true as const, summary: body }
+      : {
+          success: false as const,
+          error: getApiError(response, "Failed to load credit summary"),
+        };
   }
 }
 

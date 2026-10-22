@@ -70,6 +70,12 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.tag,
       },
       {
+        labelKey: AppLocales.Admin.Nav.Items.Credits,
+        to: AppRoutes.client.protected.admin.CREDITS,
+        resource: ADMIN_RESOURCES.CREDITS,
+        icon: iconsLib.sparkles,
+      },
+      {
         labelKey: AppLocales.Admin.Nav.Items.Accesses,
         to: AppRoutes.client.protected.admin.ACCESSES,
         resource: ADMIN_RESOURCES.ACCESSES,

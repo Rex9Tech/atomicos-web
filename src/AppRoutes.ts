@@ -80,6 +80,7 @@ class AppRoutes {
         COUPON_DETAIL: AppRoutes.admin("/coupons/:id"),
         COUPONS_RECYCLE_BIN: AppRoutes.admin("/coupons/bin"),
         USER_COUPONS: AppRoutes.admin("/user-coupons"),
+        CREDITS: AppRoutes.admin("/credits"),
         ASSETS: AppRoutes.admin("/assets"),
         ASSET_DETAIL: AppRoutes.admin("/assets/:id"),
         ASSETS_RECYCLE_BIN: AppRoutes.admin("/assets/bin"),
@@ -287,6 +288,8 @@ class AppRoutes {
           "/payment/coupons/:id/redemptions",
         ), // GET
         PAYMENT_USER_COUPONS: AppRoutes.adminApi("/payment/user_coupons"), // GET
+        PAYMENT_CREDITS: AppRoutes.adminApi("/payment/credits"), // GET
+        PAYMENT_CREDITS_SUMMARY: AppRoutes.adminApi("/payment/credits/summary"), // GET
         ASSETS: AppRoutes.adminApi("/assets"), // GET
         ASSET_DETAIL: AppRoutes.adminApi("/assets/:id"), // GET, PUT, DELETE
         ASSET_UPLOAD: AppRoutes.adminApi("/assets/upload"), // POST

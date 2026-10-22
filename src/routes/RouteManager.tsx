@@ -75,6 +75,7 @@ import {
   AdminCouponCreatePage,
   AdminCouponDetailPage,
   AdminUserCouponsPage,
+  AdminCreditsPage,
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRoleDetailPage,
@@ -710,6 +711,19 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.USER_COUPONS}
               element={<AdminUserCouponsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PAYMENT_CREDITS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.CREDITS}
+              element={<AdminCreditsPage />}
             />
           </Route>
           <Route

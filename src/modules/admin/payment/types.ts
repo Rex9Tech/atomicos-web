@@ -80,3 +80,36 @@ export interface IBatchCreateCouponPayload {
   prefix?: string;
   coupon: ICreateCouponPayload;
 }
+
+export interface IAdminCreditTransaction {
+  id: string;
+  user_id?: string;
+  kind: "grant" | "spend" | string;
+  amount: number;
+  balance_after: number;
+  source?: string | null;
+  email?: string | null;
+  username?: string | null;
+  metadata?: Record<string, unknown> | null;
+  created_at?: string;
+}
+
+export interface IAdminCreditFilters {
+  page?: number;
+  limit?: number;
+  kind?: string;
+  source?: string;
+  search?: string;
+  user_id?: string;
+}
+
+export interface IAdminCreditSummary {
+  totals: {
+    granted: number;
+    spent: number;
+    outstanding: number;
+    users_with_credits: number;
+  };
+  spend_by_source: Record<string, number>;
+  grant_by_source: Record<string, number>;
+}

@@ -8,6 +8,9 @@ import { api } from "../../../services/api.service";
 import type { ICoupon, IUserCoupon } from "../../payment/types";
 import type {
   IAdminCouponFilters,
+  IAdminCreditFilters,
+  IAdminCreditSummary,
+  IAdminCreditTransaction,
   IAdminPurchase,
   IAdminPurchaseFilters,
   IAdminSubscription,
@@ -196,6 +199,21 @@ class PaymentService {
       AppRoutes.server.protected.admin.PAYMENT_USER_COUPONS,
       params as Record<string, unknown>,
     );
+  }
+  // ===== CREDITS =====
+  getCredits(
+    params?: IAdminCreditFilters,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminCreditTransaction>[]>>
+  > {
+    return api.get(
+      AppRoutes.server.protected.admin.PAYMENT_CREDITS,
+      params as Record<string, unknown>,
+    );
+  }
+
+  getCreditSummary(): Promise<IApiResponse<IApiEnvelope<IAdminCreditSummary>>> {
+    return api.get(AppRoutes.server.protected.admin.PAYMENT_CREDITS_SUMMARY);
   }
 }
 

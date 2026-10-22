@@ -6,3 +6,4 @@ export * from "./AdminCouponsPage";
 export * from "./AdminCouponCreatePage";
 export * from "./AdminCouponDetailPage";
 export * from "./AdminUserCouponsPage";
+export * from "./AdminCreditsPage";

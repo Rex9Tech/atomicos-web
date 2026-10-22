@@ -360,6 +360,7 @@
         "purchases": "Purchases",
         "subscriptions": "Subscriptions",
         "coupons": "Coupons",
+        "credits": "Credits",
         "accesses": "Access",
         "notifications": "Notifications",
         "user_notifications": "User Notifications",
@@ -675,6 +676,49 @@
         "order_id": "Order ID"
       },
       "errors": { "load": "Failed to load purchases" }
+    },
+    "credits": {
+      "title": "Credits",
+      "description": "Credit usage across the platform — chat, meeting summaries, grants, and purchases.",
+      "search": "Search user, email, or source...",
+      "filters": {
+        "all_kinds": "All movements",
+        "all_sources": "All sources",
+        "spend": "Spends",
+        "grant": "Grants"
+      },
+      "stats": {
+        "granted": "Total credited",
+        "spent": "Total spent",
+        "outstanding": "Credits outstanding",
+        "users": "Users with credits"
+      },
+      "usage": {
+        "title": "Usage breakdown",
+        "spent_by_source": "Spent by feature",
+        "granted_by_source": "Credited by source"
+      },
+      "sources": {
+        "chat": "Chat",
+        "meeting_summary": "Meeting summary",
+        "signup": "Signup bonus",
+        "backfill": "Backfill",
+        "purchase": "Purchases",
+        "other": "Other"
+      },
+      "table": {
+        "user": "User",
+        "movement": "Movement",
+        "source": "Source",
+        "amount": "Amount",
+        "balance": "Balance after",
+        "date": "Date"
+      },
+      "kinds": {
+        "grant": "Grant",
+        "spend": "Spend"
+      },
+      "errors": { "load": "Failed to load credit activity" }
     },
     "subscriptions": {
       "title": "Subscriptions",

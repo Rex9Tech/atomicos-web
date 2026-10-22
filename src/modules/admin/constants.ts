@@ -67,6 +67,7 @@ export const ADMIN_RESOURCES = {
   PAYMENT_PURCHASES: "payment_purchases",
   PAYMENT_COUPONS: "payment_coupons",
   PAYMENT_USER_COUPONS: "payment_user_coupons",
+  PAYMENT_CREDITS: "payment_credits",
 
   // Aliases for seamless component compatibility
   ROOMS: "chat_rooms",
@@ -83,6 +84,7 @@ export const ADMIN_RESOURCES = {
   PURCHASES: "payment_purchases",
   COUPONS: "payment_coupons",
   USER_COUPONS: "payment_user_coupons",
+  CREDITS: "payment_credits",
 } as const;
 
 export type TAdminResourceName =
@@ -134,6 +136,7 @@ export const ADMIN_NAV_LABELS = {
   SUBSCRIPTIONS: "Subscriptions",
   COUPONS: "Coupons",
   USER_COUPONS: "Redemptions",
+  CREDITS: "Credits",
   ACCESSES: "Access",
   FEEDBACK: "Feedback Inbox",
   LOGS: "Client Logs & Telemetry",

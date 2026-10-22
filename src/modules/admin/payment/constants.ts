@@ -46,6 +46,22 @@ export const ADMIN_PURCHASE_TABLE_KEYS = {
 
 export const ADMIN_PURCHASE_COLUMNS = ADMIN_PURCHASE_TABLE_KEYS;
 
+export const ADMIN_CREDIT_SORT_KEYS = {
+  CREATED_AT: "created_at",
+  AMOUNT: "amount",
+} as const;
+
+export const ADMIN_CREDIT_TABLE_KEYS = {
+  USER: "user",
+  MOVEMENT: "movement",
+  SOURCE: "source",
+  AMOUNT: "amount",
+  BALANCE: "balance",
+  DATE: "date",
+} as const;
+
+export const ADMIN_CREDIT_COLUMNS = ADMIN_CREDIT_TABLE_KEYS;
+
 export const ADMIN_SUBSCRIPTION_TABLE_KEYS = {
   SUBSCRIPTION: "subscription",
   USER: "user",
