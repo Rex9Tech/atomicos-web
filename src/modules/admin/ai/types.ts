@@ -60,6 +60,8 @@ export interface IAdminAiRun {
   prompt_tokens?: number | null;
   completion_tokens?: number | null;
   total_tokens?: number | null;
+  cost_usd?: number | null;
+  cost_display?: string | null;
   latency_ms?: number | null;
   error?: string | null;
   request_metadata?: Record<string, unknown> | null;

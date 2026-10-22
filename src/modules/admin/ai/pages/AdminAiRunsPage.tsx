@@ -287,6 +287,15 @@ export const AdminAiRunsPage: React.FC = () => {
         ),
       },
       {
+        key: "cost_display",
+        header: t(AppLocales.Admin.Ai.RunsTable.Cost),
+        render: (run) => (
+          <span className="font-mono text-xs">
+            {run.cost_display || "-"}
+          </span>
+        ),
+      },
+      {
         key: "latency_ms",
         header: t(AppLocales.Admin.Ai.RunsTable.Latency),
         sortKey: ADMIN_AI_RUN_SORT_KEYS.LATENCY_MS,
