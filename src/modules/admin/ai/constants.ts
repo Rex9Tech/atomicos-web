@@ -81,6 +81,7 @@ export const ADMIN_AI_FEATURE_OPTIONS = [
   { value: "summarize", label: "Summarize" },
   { value: "translate", label: "Translate" },
   { value: "analyze", label: "Analyze" },
+  { value: "transcribe", label: "Live Transcribe" },
 ] as const;
 
 export const ADMIN_AI_PROFILE_STATUS_OPTIONS = [
