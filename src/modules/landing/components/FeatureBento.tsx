@@ -19,7 +19,7 @@ const FEATURE_CELLS: IFeatureCell[] = [
     id: "atoms",
     icon: "document",
     title: "Atoms, the unit of everything",
-    text: "Every note, file, recording, and meeting lands as one titled, dated, categorized atom that AI can read.",
+    text: "Every note, file, recording, and meeting lands as one titled, dated, categorized atom. Search finds them instantly, and AI can read every one.",
     className: "md:col-span-2",
     variant: "gradient",
   },
@@ -134,7 +134,7 @@ export const FeatureBento: React.FC<{ id?: string }> = ({ id = "Features" }) => 
                 <Asset
                   asset={brand.mark}
                   showLoadingPlaceholder={false}
-                  className="pointer-events-none absolute! -right-10 -bottom-12 w-56 h-56 opacity-[0.14] rotate-12"
+                  className="pointer-events-none absolute! -right-10 -bottom-12 w-64 h-64 opacity-[0.16] rotate-12"
                 />
               )}
             </div>
