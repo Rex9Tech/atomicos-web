@@ -28,6 +28,10 @@ import rexoneCoreImg from "./images/rexone-core.jpg";
 import rexoneWebImg from "./images/rexone-web.jpg";
 import rexoneMobileImg from "./images/rexone-mobile.jpg";
 
+// AtomicOS Brand Assets (mirrored from the AtomicOS mobile app)
+import atomicosAppIcon from "./brand/atomicos-app-icon.png";
+import atomicosMark from "./brand/atomicos-mark.png";
+
 // Icons (Library components - Heroicons, Lucide, etc.)
 import {
   MoonIcon,
@@ -88,6 +92,7 @@ import {
   PhotoIcon,
   TagIcon,
   DevicePhoneMobileIcon,
+  ComputerDesktopIcon,
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
@@ -128,6 +133,23 @@ export const projectImages = {
     src: rexoneMobileImg,
     alt: "RexOne Mobile",
     title: "RexOne Mobile",
+  },
+} as const;
+
+// ============================================================
+// BRAND ASSETS
+// ============================================================
+
+export const brand = {
+  appIcon: {
+    src: atomicosAppIcon,
+    alt: "AtomicOS app icon",
+    title: "AtomicOS",
+  },
+  mark: {
+    src: atomicosMark,
+    alt: "AtomicOS mark",
+    title: "AtomicOS",
   },
 } as const;
 
@@ -229,5 +251,6 @@ export const iconsLib = {
   tag: TagIcon,
   copy: DocumentDuplicateIcon,
   devicePhoneMobile: DevicePhoneMobileIcon,
+  computerDesktop: ComputerDesktopIcon,
   externalLink: ArrowTopRightOnSquareIcon,
 } as const;

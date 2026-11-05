@@ -1,19 +1,9 @@
 // src/modules/landing/components/LandingNav.tsx
 
 import React, { useState } from "react";
-import { icons, iconsLib } from "../../../assets";
-import { useAuth } from "../../../contexts";
-import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { DialogAuthSteps } from "../../../modules/auth";
-import {
-  Asset,
-  Button,
-  ButtonVariants,
-  ComponentSizes,
-  TextLink,
-} from "../../../design";
-import { isRex9LandingDomain } from "../helpers";
+import { brand, iconsLib } from "../../../assets";
+import { Asset, Button, ButtonVariants, ComponentSizes, TextLink } from "../../../design";
+import { isRex9LandingDomain, useOpenApp } from "../helpers";
 
 export interface ILandingNavProps {
   activeSection?: string;
@@ -21,28 +11,21 @@ export interface ILandingNavProps {
   hideEnter?: boolean;
 }
 
+const NAV_ITEMS = [
+  { label: "Features", href: "#Features" },
+  { label: "Platforms", href: "#Platforms" },
+  { label: "FAQ", href: "#FAQ" },
+  { label: "Support", href: "#Support" },
+];
+
 export const LandingNav: React.FC<ILandingNavProps> = ({
-  activeSection = "#Greetings",
+  activeSection = "#Home",
   onSectionClick,
   hideEnter,
 }) => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const openApp = useOpenApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const currentSection = activeSection;
   const shouldHideEnter = hideEnter ?? isRex9LandingDomain();
-
-  const navItems = [
-    { label: "Greetings", href: "#Greetings" },
-    { label: "Skills", href: "#Skills" },
-    { label: "Features", href: "#Features" },
-    { label: "Comparison", href: "#Comparison" },
-    { label: "Projects", href: "#Projects" },
-    { label: "Testimonials", href: "#Testimonials" },
-    { label: "FAQs", href: "#FAQ" },
-    { label: "Sponsor", href: "#Sponsor" },
-    { label: "Contact", href: "#Contact" },
-  ];
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
@@ -60,40 +43,52 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
     }
   };
 
-  const handleEnterClick = () => {
+  const handleOpenApp = () => {
     setIsMobileMenuOpen(false);
-    if (isAuthenticated) {
-      navigate(AppRoutes.client.protected.HOME);
-    } else {
-      navigate(AppRoutes.buildDialogUrl(DialogAuthSteps.INITIAL));
-    }
+    openApp();
   };
+
+  const brandMark = (
+    <TextLink
+      href="#Home"
+      onClick={(e) => handleNavClick(e, "#Home")}
+      className="flex items-center gap-2.5 no-underline select-none group text-base-content! hover:no-underline"
+      aria-label="AtomicOS home"
+    >
+      <Asset
+        asset={brand.appIcon}
+        showLoadingPlaceholder={false}
+        className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 select-none rounded-[10px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_18px_rgba(var(--color-primary-rgb),0.28)]"
+      />
+      <span className="font-primary text-xl sm:text-2xl font-bold tracking-tight">
+        Atomic<span className="text-primary font-extrabold">OS</span>
+      </span>
+    </TextLink>
+  );
+
+  const enterButton = (full: boolean) => (
+    <Button
+      variant={ButtonVariants.PRIMARY}
+      size={ComponentSizes.SM}
+      onClick={handleOpenApp}
+      className={`bg-primary! border-primary! text-primary-content! font-bold hover:bg-primary-dark! hover:border-primary-dark! hover:text-white! shadow-[0_0_16px_rgba(var(--color-primary-rgb),0.3)] ${
+        full ? "px-5! py-2!" : "py-1.5! px-4! text-xs!"
+      }`}
+    >
+      Open app
+    </Button>
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full bg-glass-nav backdrop-blur-xl border-b border-glass-border transition-all duration-300">
-      <div className="max-w-7xl mx-auto h-16 sm:h-20 px-4 sm:px-6 md:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto h-16 sm:h-18 px-4 sm:px-6 md:px-8 flex items-center justify-between">
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center justify-between w-full">
-          {/* Left: Brand Logo & Wordmark */}
-          <TextLink
-            href="#Greetings"
-            onClick={(e) => handleNavClick(e, "#Greetings")}
-            className="flex items-center gap-3 no-underline select-none group text-base-content! hover:no-underline"
-            aria-label="RexOne Home"
-          >
-            <Asset
-              asset={icons.logo}
-              className="h-8 sm:h-9 w-8 sm:w-9 shrink-0 select-none transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.6)]"
-            />
-            <span className="font-display text-2xl sm:text-3xl font-bold tracking-wider text-glow-white [text-shadow:0_0_7px_var(--color-glow-white),0_0_15px_rgba(var(--color-primary-rgb),0.85),0_0_30px_rgba(var(--color-primary-rgb),0.5)]">
-              RexOne
-            </span>
-          </TextLink>
+          {brandMark}
 
-          {/* Middle: Navigation Links */}
-          <div className="flex items-center space-x-5 lg:space-x-6.5 font-primary text-sm sm:text-[15px] font-medium tracking-normal text-base-content">
-            {navItems.map((item) => {
-              const isActive = currentSection === item.href;
+          <div className="flex items-center space-x-6 lg:space-x-7 font-primary text-sm sm:text-[15px] font-medium text-base-content">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.href;
               return (
                 <TextLink
                   key={item.href}
@@ -101,8 +96,8 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={`transition-colors duration-200 hover:no-underline ${
                     isActive
-                      ? "text-primary-light! font-bold"
-                      : "text-base-content/75! hover:text-white!"
+                      ? "text-primary! font-bold"
+                      : "text-base-content/70! hover:text-white!"
                   }`}
                 >
                   {item.label}
@@ -111,49 +106,15 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
             })}
           </div>
 
-          {/* Right: Enter Button */}
-          {!shouldHideEnter && (
-            <Button
-              variant={ButtonVariants.PRIMARY}
-              size={ComponentSizes.SM}
-              onClick={handleEnterClick}
-              className="font-semibold shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] px-5 py-2 text-sm"
-            >
-              Enter
-            </Button>
-          )}
+          {!shouldHideEnter && enterButton(true)}
         </nav>
 
         {/* Mobile Navigation Header */}
         <div className="flex md:hidden items-center justify-between w-full h-full">
-          {/* Left: Brand Logo & Title */}
-          <TextLink
-            href="#Greetings"
-            onClick={(e) => handleNavClick(e, "#Greetings")}
-            className="flex items-center gap-2.5 no-underline select-none text-base-content! hover:no-underline"
-            aria-label="RexOne Home"
-          >
-            <Asset
-              asset={icons.logo}
-              className="h-8 w-8 shrink-0 select-none drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.6)]"
-            />
-            <span className="font-display text-xl sm:text-2xl font-bold tracking-wider text-glow-white [text-shadow:0_0_7px_var(--color-glow-white),0_0_15px_rgba(var(--color-primary-rgb),0.85),0_0_30px_rgba(var(--color-primary-rgb),0.5)]">
-              RexOne
-            </span>
-          </TextLink>
+          {brandMark}
 
-          {/* Right: Enter & Toggle */}
           <div className="flex items-center gap-2">
-            {!shouldHideEnter && (
-              <Button
-                variant={ButtonVariants.PRIMARY}
-                size={ComponentSizes.SM}
-                onClick={handleEnterClick}
-                className="py-1.5! px-4! text-xs font-semibold font-primary"
-              >
-                Enter
-              </Button>
-            )}
+            {!shouldHideEnter && enterButton(false)}
 
             <Button
               variant={ButtonVariants.TERTIARY}
@@ -175,8 +136,8 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
       {isMobileMenuOpen && (
         <div className="md:hidden bg-glass-nav backdrop-blur-2xl border-b border-glass-border-hover py-4 px-6">
           <div className="flex flex-col space-y-3 text-center font-primary text-base font-medium">
-            {navItems.map((item) => {
-              const isActive = currentSection === item.href;
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.href;
               return (
                 <TextLink
                   key={item.href}
@@ -184,8 +145,8 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={`py-2 transition-colors duration-200 hover:no-underline ${
                     isActive
-                      ? "text-primary-light! font-bold"
-                      : "text-base-content/75! hover:text-white!"
+                      ? "text-primary! font-bold"
+                      : "text-base-content/70! hover:text-white!"
                   }`}
                 >
                   {item.label}
@@ -198,3 +159,5 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
     </header>
   );
 };
+
+export default LandingNav;

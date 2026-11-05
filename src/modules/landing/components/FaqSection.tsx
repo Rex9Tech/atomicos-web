@@ -18,49 +18,49 @@ export interface IFaqSectionProps {
 
 export const GENERAL_FAQS: IFaqItem[] = [
   {
-    question: "What is RexOne and who is it designed for?",
+    question: "What is AtomicOS?",
     answer:
-      "RexOne is an open-source, production-grade Tri-Platform application foundation engineered by Rex9. It unifies a robust Rails 8 API backend, a modern React 19 web portal, and a native Flutter 3 mobile client into an integrated, battle-tested ecosystem. It is designed for ambitious solo founders, product studios, and engineering teams who want to build serious digital products without burning 6–9 months rebuilding foundational plumbing or drowning in uncontrolled AI technical debt.",
+      "AtomicOS is an AI workspace for your notes, meetings, and files. You capture everything as atoms, organize them into neurons, and use AI to write, summarize, and answer questions across it all.",
   },
   {
-    question:
-      "Why use a dedicated Rails 8 API backend instead of Next.js server actions or Express?",
+    question: "What is an atom?",
     answer:
-      "Full-stack single-runtime monoliths cram database queries, server actions, background tasks, and DOM hydration into a fragile Node.js runtime, frequently causing serverless timeouts and memory leaks. RexOne enforces clean client-server separation: a dedicated Rails 8 API with Solid Queue fiber concurrency directly on PostgreSQL 18 (zero Redis bills), enterprise Devise JWT with atomic JTI revocation lists, and quarantined CPU containers for heavy media processing (libvips and FFmpeg).",
+      "An atom is the core unit of AtomicOS. A note, an uploaded file, a recording, or a meeting all become atoms, each with a title, summary, category, and optional meeting date.",
   },
   {
-    question:
-      "How does the Flutter 3 mobile app achieve native 60fps performance and offline-first sync?",
+    question: "What are neurons?",
     answer:
-      "Unlike webview-wrapped hybrid shells that suffer from DOM latency and clunky gestures, RexOne compiles pure Dart into native ARM machine code with fluid 60fps animations. It features local-first SQLite persistence powered by Drift with AES-256-GCM encryption, allowing users to interact with data and media completely offline, with automatic sync via REST and ActionCable WebSockets upon reconnecting.",
+      "Neurons are how you organize atoms. Group them into neurons like Projects, Clients, or Ideas, and keep every piece of context in the right place. Removing an atom from a neuron never deletes its content.",
   },
   {
-    question: "How does self-hosted Garage S3 storage work in RexOne?",
+    question: "Which AI models power AtomicOS?",
     answer:
-      "RexOne natively integrates Garage (port 3100), a lightweight, self-hosted, distributed S3-compatible object store. You achieve complete data ownership and eliminate high AWS S3 storage and egress fees. Universal storage keys (storage_key) ensure deterministic asset retrieval across backend, web, and mobile without proprietary SDK lock-in.",
+      "AtomicOS routes each AI action across leading models, including Google Gemini and DeepSeek. Every AI run records its tokens, latency, and cost, so operators always know what was spent.",
   },
   {
-    question:
-      "What is Discipline-Driven Development (DDD) and why does LAW.md matter?",
+    question: "Can AtomicOS transcribe meetings live?",
     answer:
-      "Discipline-Driven Development (DDD) is our engineering paradigm governed by an immutable constitution (LAW.md and AGENTS.md). In an era where AI agents make code generation effortless, unguided generation produces exponential technical debt. RexOne enforces Law U14 (pure, deterministic parameter contracts with zero duplicate aliases or loose fallback options) and Law U15 (human-readable plain English). Both human contributors and AI agents must follow this constitution, guaranteeing zero dead code and zero zombie shims.",
+      "Yes. Start a live session and AtomicOS streams speech to text in real time. When you finish, the transcript stays attached to the meeting atom, ready to search or summarize.",
   },
   {
-    question:
-      "How does RexOne handle real-time WebSockets across Web and Mobile?",
+    question: "Which languages does AtomicOS support?",
     answer:
-      "RexOne uses ActionCable with Solid Cable running directly on PostgreSQL. The Rails 8 backend broadcasts real-time events that are seamlessly consumed by both the React 19 web application (via native WebSocket listeners) and the Flutter 3 mobile client (via the ActionCable Dart client) with unified channel paradigms and payload schemas.",
+      "The interface ships in English and Burmese today, with more languages on the way.",
   },
   {
-    question: "Is RexOne completely free to use for commercial products?",
+    question: "How do credits work?",
     answer:
-      "Yes, 100%. RexOne is licensed under the Apache 2.0 open-source license. You can freely use it, fork it, and build proprietary commercial SaaS products, mobile applications, or enterprise platforms with zero royalties, zero paywalled tiers, and no license fees.",
+      "AI actions spend credits. New accounts start with free credits, and you can top up with the wallets you already use, including KBZPay, WavePay, AyaPay, and MMQR.",
   },
   {
-    question:
-      "How do I start building with RexOne and receive upstream updates?",
+    question: "Is my data safe?",
     answer:
-      "You can fork or clone the repository (https://github.com/rex-9/rexone-core). RexOne's clean modular architecture allows you to build your business-specific features while pulling upstream core improvements, security patches, and framework enhancements directly from the upstream repository without merge conflicts.",
+      "Sessions lock to one device per platform, tokens are revoked when you sign out, and you can delete your account and its files at any time from Settings.",
+  },
+  {
+    question: "Where can I use AtomicOS?",
+    answer:
+      "In any modern browser today. Native iOS and Android apps are in final testing and arrive next.",
   },
 ];
 
@@ -68,7 +68,7 @@ export const COMPARISON_FAQS: IFaqItem[] = [
   {
     question: "What are the best ShipFast alternatives in 2026?",
     answer:
-      "The premier ShipFast alternatives in 2026 are RexOne, Supastarter, Makerkit, Jumpstart Pro, and SaaS Pegasus. While commercial alternatives focus on single-framework web templates behind $169–$799 paywalls, RexOne (https://rexone.rex9.me) is the only 100% free, Apache 2.0 open-source tri-platform alternative providing a production-grade backend (Rails 8 API), modern web portal (React 19), and native mobile app (Flutter 3) in one synchronized ecosystem.",
+      "The premier ShipFast alternatives in 2026 are RexOne, Supastarter, Makerkit, Jumpstart Pro, and SaaS Pegasus. While commercial alternatives focus on single-framework web templates behind $169-$799 paywalls, RexOne (https://rexone.rex9.me) is the only 100% free, Apache 2.0 open-source tri-platform alternative providing a production-grade backend (Rails 8 API), modern web portal (React 19), and native mobile app (Flutter 3) in one synchronized ecosystem.",
   },
   {
     question:
@@ -138,15 +138,15 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
 
   const badgeText = isComparison
     ? "Starter Kit & Boilerplate FAQs"
-    : "Architectural Clarity & FAQs";
+    : "Questions, answered";
 
   const headingText = isComparison
     ? "Comparison Frequently Asked Questions"
-    : "Frequently Asked Questions";
+    : "Frequently asked questions";
 
   const descriptionText = isComparison
-    ? "Unvarnished, factual comparisons between RexOne and commercial SaaS boilerplates ($169–$799)."
-    : "Unvarnished, factual answers for founders, software engineers, and AI coding agents.";
+    ? "Unvarnished, factual comparisons between RexOne and commercial SaaS boilerplates ($169-$799)."
+    : "The essentials on atoms, neurons, AI, credits, and privacy.";
 
   return (
     <section
@@ -154,18 +154,18 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
       className={`py-12 scroll-mt-24 space-y-8 font-primary ${className}`}
       aria-label={headingText}
     >
-      <div className="text-center space-y-3 max-w-3xl mx-auto px-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-primary/40 bg-primary/15 text-primary-light backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)]">
-          <iconsLib.sparkles className="w-4 h-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)]" />
-          <span className="text-xs font-bold tracking-wider uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+      <div className="text-center space-y-3 max-w-3xl mx-auto px-4 al-reveal">
+        <div className="al-chip">
+          <iconsLib.sparkles className="w-4 h-4 text-primary" />
+          <span className="text-xs font-bold tracking-wider uppercase">
             {badgeText}
           </span>
         </div>
 
-        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
           {headingText}
         </h2>
-        <p className="text-sm sm:text-base text-base-content/80">
+        <p className="text-sm sm:text-base text-base-content/70">
           {descriptionText}
         </p>
       </div>
@@ -175,79 +175,59 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
         {faqs.map((faq, i) => (
           <div
             key={i}
-            className="rounded-2xl bg-glass-card/90 border border-glass-border backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-glass-border-hover hover:bg-glass-card-hover"
+            className="al-surface al-surface-hover rounded-2xl overflow-hidden transition-all duration-300"
           >
             <button
               type="button"
               onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-white hover:text-primary-light transition-colors cursor-pointer"
+              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base hover:text-primary-light transition-colors cursor-pointer"
               aria-expanded={activeFaq === i}
             >
               <span>{faq.question}</span>
               <iconsLib.chevronDown
                 className={`w-5 h-5 shrink-0 transition-transform duration-300 ${
-                  activeFaq === i ? "rotate-180 text-primary" : "text-base-content/50"
+                  activeFaq === i
+                    ? "rotate-180 text-primary"
+                    : "text-base-content/50"
                 }`}
               />
             </button>
             {activeFaq === i && (
-              <div className="px-6 pb-5 pt-1 text-sm text-base-content/90 leading-relaxed border-t border-glass-border/40 font-primary">
+              <div className="px-6 pb-5 pt-1 text-sm text-base-content/80 leading-relaxed border-t border-glass-border/40 font-primary">
                 {faq.answer}
               </div>
             )}
           </div>
         ))}
 
-        {/* Cross-Link / Redirect Banner between Landing FAQs and VS FAQs */}
-        <div className="pt-3">
-          {isComparison ? (
+        {/* Cross-link banner (VsPage only) */}
+        {isComparison && (
+          <div className="pt-3">
             <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/40 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl shadow-[0_0_25px_rgba(var(--color-primary-rgb),0.2)]">
               <div className="flex items-center gap-3.5 text-left">
                 <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.4)]">
                   <iconsLib.sparkles className="w-5 h-5 text-primary-light" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-sm sm:text-base text-white">
-                    Looking for General Platform &amp; Architecture FAQs?
+                  <h3 className="font-display font-bold text-sm sm:text-base">
+                    Looking for AtomicOS product FAQs?
                   </h3>
-                  <p className="text-xs sm:text-sm text-base-content/80 mt-0.5">
-                    Explore Rails 8, React 19, Flutter 3, Garage S3, and Discipline-Driven Development details.
+                  <p className="text-xs sm:text-sm text-base-content/70 mt-0.5">
+                    Explore atoms, neurons, AI models, credits, and platform
+                    details.
                   </p>
                 </div>
               </div>
               <TextLink
                 to={`${AppRoutes.client.public.ROOT}#FAQ`}
-                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-primary-content font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
               >
-                <span>View General FAQs</span>
+                <span>View Product FAQs</span>
                 <iconsLib.chevronRight className="w-4 h-4" />
               </TextLink>
             </div>
-          ) : (
-            <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/40 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl shadow-[0_0_25px_rgba(var(--color-primary-rgb),0.2)]">
-              <div className="flex items-center gap-3.5 text-left">
-                <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.4)]">
-                  <iconsLib.chartBar className="w-5 h-5 text-primary-light" />
-                </div>
-                <div>
-                  <h3 className="font-display font-bold text-sm sm:text-base text-white">
-                    Looking for Starter Kit &amp; Boilerplate Comparisons?
-                  </h3>
-                  <p className="text-xs sm:text-sm text-base-content/80 mt-0.5">
-                    Comparing RexOne against ShipFast, Makerkit, Supastarter, Jumpstart Pro, SaaS Pegasus, and more?
-                  </p>
-                </div>
-              </div>
-              <TextLink
-                to={`${AppRoutes.client.public.VS}#faq`}
-                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
-              >
-                <span>View Comparison FAQs</span>
-                <iconsLib.chevronRight className="w-4 h-4" />
-              </TextLink>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

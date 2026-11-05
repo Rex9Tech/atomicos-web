@@ -115,6 +115,54 @@ export const colors = {
   },
 } as const;
 
+// AtomicOS Brand Tokens (mirrors the AtomicOS mobile design system: deep forest night + emerald green)
+export const atomicos = {
+  primary: "#22C55E",
+  primaryRgb: "34, 197, 94",
+  primaryLight: "#4ADE80",
+  primaryDark: "#15803D",
+  secondary: "#34D399",
+  accent: "#166534",
+  primaryContent: "#052E16",
+
+  glowWhite: "#F0FDF4",
+  glowOuter: "#14532D",
+  glowOuterRgb: "20, 83, 45",
+
+  shadows: {
+    glow: "rgba(34, 197, 94, 0.4)",
+    glassCard: "rgba(34, 197, 94, 0.35)",
+    glassHover: "rgba(34, 197, 94, 0.45)",
+  },
+
+  // Night (Deep Forest) surfaces
+  night: {
+    background: "#08130D",
+    surface: "#10231A",
+    card: "#13261A",
+    border: "#23412E",
+    divider: "#193222",
+    textPrimary: "#FFFFFF",
+    textSecondary: "#D7E8DC",
+    textMuted: "#98B5A0",
+  },
+
+  // Glassmorphism tokens in the AtomicOS palette
+  glass: {
+    nav: "rgba(8, 19, 13, 0.82)",
+    card: "rgba(17, 37, 24, 0.42)",
+    cardHover: "rgba(22, 50, 34, 0.6)",
+    form: "rgba(13, 30, 20, 0.65)",
+    project: "rgba(12, 26, 17, 0.55)",
+    projectHover: "rgba(16, 35, 24, 0.75)",
+    border: "rgba(34, 197, 94, 0.22)",
+    borderHover: "rgba(34, 197, 94, 0.55)",
+    tag: "rgba(34, 197, 94, 0.65)",
+    tagBg: "rgba(34, 197, 94, 0.08)",
+    tagBgHover: "rgba(34, 197, 94, 0.28)",
+  },
+} as const;
+
 export const BrandColors = {
   PRIMARY: "primary",
   PRIMARY_LIGHT: "primaryLight",

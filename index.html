@@ -7,7 +7,8 @@
       (function() {
         try {
           const savedTheme = localStorage.getItem('theme');
-          const theme = savedTheme ? JSON.parse(savedTheme) : 'day';
+          const isLanding = window.location.pathname === '/';
+          const theme = savedTheme ? JSON.parse(savedTheme) : (isLanding ? 'night' : 'day');
           document.documentElement.setAttribute('data-theme', theme);
         } catch (e) {
           document.documentElement.setAttribute('data-theme', 'day');
@@ -23,25 +24,36 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#160b11" />
+    <meta name="theme-color" content="#08130D" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
     <!-- Primary Meta Tags -->
     <title>AtomicOS</title>
     <meta name="title" content="AtomicOS" />
-    <meta name="description" content="AtomicOS — a modern AI-powered workspace platform." />
+    <meta
+      name="description"
+      content="AtomicOS is an AI workspace for your notes, meetings, and files. Capture atoms, organize with neurons, and ask AI across everything."
+    />
 
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="AtomicOS" />
     <meta property="og:title" content="AtomicOS" />
-    <meta property="og:description" content="AtomicOS — a modern AI-powered workspace platform." />
+    <meta
+      property="og:description"
+      content="Capture atoms. Ask anything. The AI workspace for your notes, meetings, and files."
+    />
+    <meta property="og:image" content="/brand/atomicos-og.png" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AtomicOS" />
-    <meta name="twitter:description" content="AtomicOS — a modern AI-powered workspace platform." />
+    <meta
+      name="twitter:description"
+      content="Capture atoms. Ask anything. The AI workspace for your notes, meetings, and files."
+    />
+    <meta name="twitter:image" content="/brand/atomicos-og.png" />
   </head>
   <body>
     <div id="root"></div>

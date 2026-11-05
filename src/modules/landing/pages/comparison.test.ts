@@ -3,7 +3,6 @@
 import { describe, it, expect } from "vitest";
 import AppRoutes from "../../../AppRoutes";
 import { ALL_COMPETITORS, COMPARISON_DATA, COMPARISON_FAQS } from "./VsPage";
-import { COMPETITORS } from "../components/ComparisonSection";
 import { GENERAL_FAQS } from "../components/FaqSection";
 
 describe("Comparison Routes & SEO Setup", () => {
@@ -29,10 +28,6 @@ describe("Comparison Routes & SEO Setup", () => {
     expect(competitorIds).toContain("openSaas");
   });
 
-  it("validates comparison section on landing page covers all competitors", () => {
-    expect(COMPETITORS.length).toBeGreaterThanOrEqual(8);
-  });
-
   it("ensures comparison rows evaluate key architectural criteria", () => {
     const features = COMPARISON_DATA.map((row) => row.feature);
     expect(features).toContain("Supported Platforms");
@@ -49,11 +44,11 @@ describe("Comparison Routes & SEO Setup", () => {
     expect(questions.some((q) => q.includes("Redis hosting costs"))).toBe(true);
   });
 
-  it("contains rich general platform FAQs for the landing page", () => {
+  it("contains rich general product FAQs for the landing page", () => {
     expect(GENERAL_FAQS.length).toBeGreaterThanOrEqual(8);
-    const questions = GENERAL_FAQS.map((faq) => faq.question);
-    expect(questions.some((q) => q.includes("Rails 8 API"))).toBe(true);
-    expect(questions.some((q) => q.includes("Garage S3"))).toBe(true);
-    expect(questions.some((q) => q.includes("Discipline-Driven Development"))).toBe(true);
+    const questions = GENERAL_FAQS.map((faq) => faq.question.toLowerCase());
+    expect(questions.some((q) => q.includes("atom"))).toBe(true);
+    expect(questions.some((q) => q.includes("neuron"))).toBe(true);
+    expect(questions.some((q) => q.includes("credits"))).toBe(true);
   });
 });

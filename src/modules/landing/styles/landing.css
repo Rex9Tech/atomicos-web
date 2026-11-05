@@ -1,0 +1,258 @@
+/* src/modules/landing/styles/landing.css
+ * AtomicOS landing styles. Brand tokens live in the [data-page="landing"] theme
+ * block (see tailwind.config.js + src/design/elements/colors.ts).
+ * No hardcoded brand colors here: everything resolves from CSS variables.
+ */
+
+.al-root {
+  position: relative;
+  overflow-x: clip;
+  background-color: var(--color-base-100);
+}
+
+.al-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      1100px 520px at 78% -6%,
+      rgba(var(--color-primary-rgb), 0.14),
+      transparent 62%
+    ),
+    radial-gradient(
+      840px 460px at 4% 104%,
+      rgba(var(--color-primary-rgb), 0.08),
+      transparent 58%
+    ),
+    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.05), transparent 34%);
+}
+
+.al-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Glass surfaces */
+.al-surface {
+  background: var(--color-glass-card);
+  border: 1px solid var(--color-glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.al-surface-hover:hover {
+  border-color: var(--color-glass-border-hover);
+  background: var(--color-glass-card-hover);
+}
+
+.al-tile {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.28);
+  color: var(--color-primary);
+}
+
+.al-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 9999px;
+  background: var(--color-glass-card);
+  border: 1px solid var(--color-glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-base-content);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+}
+
+/* Bento variants */
+.al-bento-a {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.16),
+    rgba(var(--color-primary-rgb), 0.04) 46%,
+    var(--color-glass-card)
+  );
+}
+
+/* App icon showcase */
+.al-app-icon {
+  border-radius: 30%;
+  box-shadow:
+    0 26px 80px rgba(0, 0, 0, 0.6),
+    0 0 70px rgba(var(--color-primary-rgb), 0.28);
+}
+
+.al-orbit {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px dashed rgba(var(--color-primary-rgb), 0.38);
+}
+
+.al-orbit-2 {
+  border-style: solid;
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+.al-halo {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(var(--color-primary-rgb), 0.32),
+    transparent 66%
+  );
+  filter: blur(26px);
+}
+
+.al-ring-dot {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  margin-left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  box-shadow:
+    0 0 10px rgba(var(--color-primary-rgb), 0.9),
+    0 0 26px rgba(var(--color-primary-rgb), 0.5);
+}
+
+/* Motion (all guarded by prefers-reduced-motion below) */
+.al-float {
+  animation: al-float 6.5s ease-in-out infinite;
+}
+
+.al-float-slow {
+  animation: al-float 9s ease-in-out infinite;
+}
+
+.al-spin {
+  animation: al-spin 70s linear infinite;
+}
+
+.al-spin-reverse {
+  animation: al-spin 110s linear infinite reverse;
+}
+
+@keyframes al-float {
+  0%,
+  100% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes al-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Live equalizer (transcribe tile) */
+.al-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 22px;
+}
+
+.al-eq span {
+  width: 3px;
+  border-radius: 9999px;
+  background: rgba(var(--color-primary-rgb), 0.85);
+  animation: al-eq 1.15s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.al-eq span:nth-child(1) {
+  height: 35%;
+  animation-delay: 0s;
+}
+
+.al-eq span:nth-child(2) {
+  height: 70%;
+  animation-delay: 0.15s;
+}
+
+.al-eq span:nth-child(3) {
+  height: 100%;
+  animation-delay: 0.3s;
+}
+
+.al-eq span:nth-child(4) {
+  height: 55%;
+  animation-delay: 0.45s;
+}
+
+.al-eq span:nth-child(5) {
+  height: 80%;
+  animation-delay: 0.6s;
+}
+
+@keyframes al-eq {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Hero entrance (time-based, runs once on load) */
+.al-enter {
+  animation: al-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.al-enter-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.al-enter-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.al-enter-delay-3 {
+  animation-delay: 0.24s;
+}
+
+/* Scroll-driven reveal (progressive enhancement only) */
+@supports (animation-timeline: view()) {
+  .al-reveal {
+    animation: al-rise both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 42%;
+  }
+}
+
+@keyframes al-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .al-float,
+  .al-float-slow,
+  .al-spin,
+  .al-spin-reverse,
+  .al-eq span,
+  .al-enter,
+  .al-reveal {
+    animation: none;
+  }
+}

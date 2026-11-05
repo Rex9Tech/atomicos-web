@@ -1,11 +1,11 @@
 {
   "name": "AtomicOS",
   "short_name": "AtomicOS",
-  "description": "AtomicOS — a modern AI-powered workspace platform.",
+  "description": "AtomicOS is an AI workspace for your notes, meetings, and files. Capture atoms, organize with neurons, and ask AI across everything.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#160b11",
-  "theme_color": "#160b11",
+  "background_color": "#08130D",
+  "theme_color": "#08130D",
   "icons": [
     {
       "src": "/favicon-192x192.png",
