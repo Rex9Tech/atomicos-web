@@ -55,7 +55,7 @@ export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
       <Asset
         asset={icons.logo}
         className={cn(
-          "h-9 w-9 shrink-0 select-none transition-transform duration-300 hover:scale-105",
+          "h-9 w-9 shrink-0 select-none transition-transform duration-300 hover:scale-105 rounded-[9px]",
           isAdmin && "drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]",
         )}
       />

@@ -23,7 +23,7 @@ export const TermsPage: React.FC = () => {
   return (
     <LegalLayout
       title="Terms & Conditions"
-      subtitle="The covenant between Rex9 and our community. Clear rules, architectural principles, and transparent terms governing the RexOne ecosystem."
+      subtitle="The covenant between AtomicOS and our community. Clear rules, architectural principles, and transparent terms governing the AtomicOS platform."
       lastUpdated="Effective Date: September 21, 2026"
       tableOfContents={TERMS_TOC}
     >
@@ -38,18 +38,18 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          Welcome to RexOne. By accessing, browsing, registering for, or using
-          any portion of the RexOne web client (
+          Welcome to AtomicOS. By accessing, browsing, registering for, or using
+          any portion of the AtomicOS web client (
           <code className="text-primary font-mono text-xs px-1.5 py-0.5 rounded bg-base-300/60">
-            rexone.rex9.me
+            atomicos.io
           </code>
           ), API endpoints (
           <code className="text-primary font-mono text-xs px-1.5 py-0.5 rounded bg-base-300/60">
-            api.rexone.rex9.me
+            core.atomicos.io
           </code>
           ), mobile clients, or related services (collectively, the "Platform"),
           you enter into a legally binding covenant with{" "}
-          <strong>Rex9 / RexOne</strong> ("RexOne", "we", "us", or "our").
+          <strong>AtomicOS</strong> ("AtomicOS", "we", "us", or "our").
         </p>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
           If you do not agree to these Terms and Conditions or our accompanying{" "}
@@ -77,7 +77,7 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          To use RexOne, you affirm that you are at least 16 years old (or the
+          To use AtomicOS, you affirm that you are at least 16 years old (or the
           age of legal majority in your country of residence) and possess full
           legal authority to enter into these terms.
         </p>
@@ -114,7 +114,7 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne is engineered as a battle-hardened, high-discipline architectural foundation. You
+          AtomicOS is engineered as a battle-hardened, high-discipline architectural foundation. You
           agree never to use or attempt to use the platform in ways that
           degrade, exploit, or subvert its integrity. Prohibited conduct
           includes:
@@ -158,7 +158,7 @@ export const TermsPage: React.FC = () => {
               Spam & Unauthorized Relay
             </h4>
             <p className="text-base-content/75 leading-relaxed">
-              Using RexOne's notification or messaging pipelines for unsolicited
+              Using the AtomicOS notification or messaging pipelines for unsolicited
               bulk messages, phishing, or financial scams.
             </p>
           </div>
@@ -178,7 +178,7 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne offers free access tiers, one-time product licenses, and
+          AtomicOS offers free access tiers, one-time product licenses, and
           recurring premium subscriptions. All payment transactions are powered
           by Stripe Inc.
         </p>
@@ -246,16 +246,16 @@ export const TermsPage: React.FC = () => {
         </div>
         <div className="space-y-3 text-sm text-base-content/80">
           <p>
-            <strong>RexOne Proprietary Assets:</strong> All software
+            <strong>AtomicOS Proprietary Assets:</strong> All software
             architecture, codebases, design tokens, logos, visual trademarks,
             documentation, and interface layouts are the exclusive property of
-            Rex9 and its licensors. Open-source components are provided under
+            AtomicOS and its licensors. Open-source components are provided under
             their respective open-source licenses.
           </p>
           <p>
             <strong>Your Content Ownership:</strong> You retain complete
             ownership of any media, documents, text, code, or digital assets you
-            upload to RexOne. By uploading content, you grant RexOne only the
+            upload to AtomicOS. By uploading content, you grant AtomicOS only the
             limited, non-exclusive license strictly necessary to store, encode,
             and transmit your content back to you and your authorized users.
           </p>
@@ -275,7 +275,7 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne includes artificial intelligence modules, generative chat
+          AtomicOS includes artificial intelligence modules, generative chat
           assistants, and automated background runs. You acknowledge and agree
           that:
         </p>
@@ -290,7 +290,7 @@ export const TermsPage: React.FC = () => {
             in production, legal, financial, or critical applications.
           </li>
           <li>
-            RexOne makes no warranty that AI features will be error-free or
+            AtomicOS makes no warranty that AI features will be error-free or
             uninterrupted.
           </li>
         </ul>
@@ -351,8 +351,8 @@ export const TermsPage: React.FC = () => {
             PURPOSE, AND NON-INFRINGEMENT.
           </p>
           <p className="leading-relaxed">
-            TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL REX9,
-            REXONE, ITS ARCHITECTS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT,
+            TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL ATOMICOS,
+            ITS OPERATORS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT,
             INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR LOSS OF
             PROFITS, REVENUE, DATA, OR USE, ARISING OUT OF OR IN CONNECTION WITH
             YOUR ACCESS OR USE OF THE PLATFORM.
@@ -398,7 +398,7 @@ export const TermsPage: React.FC = () => {
           We may modify these Terms occasionally to accommodate legal updates,
           platform growth, or new features. When changes are published, the
           "Effective Date" at the top of this document will be updated. Your
-          continued use of RexOne after changes take effect constitutes your
+          continued use of AtomicOS after changes take effect constitutes your
           binding acceptance of the modified Terms.
         </p>
       </section>
@@ -421,24 +421,24 @@ export const TermsPage: React.FC = () => {
         </p>
         <div className="p-4 rounded-xl bg-base-300/30 border border-glass-border space-y-2 text-sm">
           <p>
-            <strong>Rex9 Engineering & MeritMoon Operations</strong>
+            <strong>AtomicOS</strong>
           </p>
           <p className="text-xs sm:text-sm text-base-content/80">
             Official Legal & Support Email:{" "}
             <a
-              href="mailto:rex@rex9.me"
+              href="mailto:support@atomicos.io"
               className="text-primary hover:underline font-semibold"
             >
-              rex@rex9.me
+              support@atomicos.io
             </a>
           </p>
           <p className="text-xs sm:text-sm text-base-content/80">
-            Creator & Lead Architect:{" "}
+            Legal Notices:{" "}
             <a
-              href="mailto:rex@rex9.me"
+              href="mailto:support@atomicos.io"
               className="text-primary hover:underline font-semibold"
             >
-              rex@rex9.me
+              support@atomicos.io
             </a>
           </p>
         </div>

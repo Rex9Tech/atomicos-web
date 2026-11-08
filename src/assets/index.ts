@@ -20,13 +20,7 @@ import mediumSvg from "./design/medium.svg";
 import twitterSvg from "./design/twitter.svg";
 import instagramIcon from "./icons/instagram.svg";
 import googleIcon from "./icons/google.svg";
-import rexoneLogoSvg from "./icons/rexone-logo.svg";
 import quoteIcon from "./icons/quote.svg";
-
-// Projects Images (RexOne Repos Only)
-import rexoneCoreImg from "./images/rexone-core.jpg";
-import rexoneWebImg from "./images/rexone-web.jpg";
-import rexoneMobileImg from "./images/rexone-mobile.jpg";
 
 // AtomicOS Brand Assets (mirrored from the AtomicOS mobile app)
 import atomicosAppIcon from "./brand/atomicos-app-icon.png";
@@ -107,7 +101,7 @@ import noteSound from "./sounds/note.mp3";
 // ============================================================
 
 export const images = {
-  banner: { src: banner, alt: "Banner image", title: "RexOne Banner" },
+  banner: { src: banner, alt: "Banner image", title: "AtomicOS Banner" },
   darkBrickWall: {
     src: darkBrickWall,
     alt: "Dark Brick Wall",
@@ -119,20 +113,6 @@ export const images = {
     src: errorImg,
     alt: "Failed to load image",
     title: "Image Load Failed",
-  },
-} as const;
-
-// ============================================================
-// PROJECT ASSETS (RexOne Ecosystem Only)
-// ============================================================
-
-export const projectImages = {
-  rexoneCore: { src: rexoneCoreImg, alt: "RexOne Core", title: "RexOne Core" },
-  rexoneWeb: { src: rexoneWebImg, alt: "RexOne Web", title: "RexOne Web" },
-  rexoneMobile: {
-    src: rexoneMobileImg,
-    alt: "RexOne Mobile",
-    title: "RexOne Mobile",
   },
 } as const;
 
@@ -158,8 +138,7 @@ export const brand = {
 // ============================================================
 
 export const icons = {
-  logo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
-  rexoneLogo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
+  logo: { src: atomicosAppIcon, alt: "AtomicOS logo", title: "AtomicOS" },
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
   google: { src: googleIcon, alt: "Google icon", title: "Google" },
   github: { src: githubSvg, alt: "GitHub", title: "GitHub" },

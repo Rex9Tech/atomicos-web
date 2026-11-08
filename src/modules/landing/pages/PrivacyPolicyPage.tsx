@@ -23,7 +23,7 @@ export const PrivacyPolicyPage: React.FC = () => {
   return (
     <LegalLayout
       title="Privacy Policy"
-      subtitle="At RexOne, disciplined architecture and user trust go hand in hand. This policy describes how we collect, safeguard, and honor your personal data across the RexOne ecosystem."
+      subtitle="At AtomicOS, disciplined architecture and user trust go hand in hand. This policy describes how we collect, safeguard, and honor your personal data across the AtomicOS platform."
       lastUpdated="Effective Date: September 21, 2026"
       tableOfContents={PRIVACY_TOC}
     >
@@ -39,20 +39,16 @@ export const PrivacyPolicyPage: React.FC = () => {
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
           This Privacy Policy governs the collection, processing, and storage of
-          personal data by <strong>Rex9 / RexOne</strong> ("RexOne", "we", "us",
+          personal data by <strong>AtomicOS</strong> ("AtomicOS", "we", "us",
           or "our") when you access or interact with our web client (
           <code className="text-primary font-mono text-xs px-1.5 py-0.5 rounded bg-base-300/60">
-            rexone.rex9.me
+            atomicos.io
           </code>
           ), core APIs (
           <code className="text-primary font-mono text-xs px-1.5 py-0.5 rounded bg-base-300/60">
-            api.rexone.rex9.me
+            core.atomicos.io
           </code>
-          ), mobile applications, and services operating under{" "}
-          <code className="text-primary font-mono text-xs px-1.5 py-0.5 rounded bg-base-300/60">
-            meritmoon.com
-          </code>
-          .
+          ), and mobile applications.
         </p>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
           We adhere to the foundational engineering doctrine:{" "}
@@ -169,7 +165,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             preventing automated abuse or credential stuffing.
           </li>
           <li>
-            <strong>We NEVER Sell Your Data:</strong> RexOne does not sell,
+            <strong>We NEVER Sell Your Data:</strong> AtomicOS does not sell,
             rent, monetize, or trade your personal data or uploaded media to
             third-party data brokers or advertisers.
           </li>
@@ -313,7 +309,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne uses browser storage exclusively for functional,
+          AtomicOS uses browser storage exclusively for functional,
           authentication, and security purposes. We do not use third-party
           advertising cookies, behavioral tracking pixels, or cross-site
           fingerprinting.
@@ -345,7 +341,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          Regardless of your physical jurisdiction, RexOne provides all users
+          Regardless of your physical jurisdiction, AtomicOS provides all users
           with full control over their data:
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
@@ -393,7 +389,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne provides AI-driven assistants, chat channels, and background
+          AtomicOS provides AI-driven assistants, chat channels, and background
           runs. Your personal prompts, private chats, and confidential inputs
           are strictly isolated per account and are{" "}
           <strong>never used to train public foundational AI models</strong>.
@@ -460,24 +456,24 @@ export const PrivacyPolicyPage: React.FC = () => {
         </p>
         <div className="p-4 rounded-xl bg-base-300/30 border border-glass-border space-y-2 text-sm">
           <p>
-            <strong>Rex9 Engineering & MeritMoon Operations</strong>
+            <strong>AtomicOS</strong>
           </p>
           <p className="text-xs sm:text-sm text-base-content/80">
             Support & Privacy Email:{" "}
             <a
-              href="mailto:rex@rex9.me"
+              href="mailto:support@atomicos.io"
               className="text-primary hover:underline font-semibold"
             >
-              rex@rex9.me
+              support@atomicos.io
             </a>
           </p>
           <p className="text-xs sm:text-sm text-base-content/80">
-            Lead Architect Email:{" "}
+            Legal Inquiries:{" "}
             <a
-              href="mailto:rex@rex9.me"
+              href="mailto:support@atomicos.io"
               className="text-primary hover:underline font-semibold"
             >
-              rex@rex9.me
+              support@atomicos.io
             </a>
           </p>
         </div>

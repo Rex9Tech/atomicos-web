@@ -120,15 +120,15 @@ export const LegalLayout: React.FC<ILegalLayoutProps> = ({
           <TextLink
             to={AppRoutes.client.public.ROOT}
             className="flex items-center gap-3 no-underline select-none group text-base-content! hover:no-underline"
-            aria-label="Return to RexOne Home"
+            aria-label="Return to AtomicOS Home"
           >
             <Asset
               asset={icons.logo}
-              className="h-8 sm:h-9 w-8 sm:w-9 shrink-0 select-none transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.6)]"
+              className="h-8 sm:h-9 w-8 sm:w-9 shrink-0 select-none rounded-[9px] transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.6)]"
             />
             <div className="flex items-center gap-2">
               <span className="font-display text-2xl sm:text-3xl font-bold tracking-wider text-glow-white [text-shadow:0_0_7px_var(--color-glow-white),0_0_15px_rgba(var(--color-primary-rgb),0.85),0_0_30px_rgba(var(--color-primary-rgb),0.5)]">
-                RexOne
+                Atomic<span className="text-primary font-extrabold">OS</span>
               </span>
               <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold uppercase tracking-wider bg-primary/15 text-primary-light border border-primary/30">
                 Legal
@@ -166,7 +166,7 @@ export const LegalLayout: React.FC<ILegalLayoutProps> = ({
           {/* Right Action: Star Button (matching Home & VS) */}
           <div className="flex items-center gap-2">
             <Button
-              href="https://github.com/rex-9/rexone-core"
+              href="https://github.com/Rex9Tech/atomicos-core"
               target="_blank"
               rel="noopener noreferrer"
               variant={ButtonVariants.PRIMARY}
@@ -210,7 +210,7 @@ export const LegalLayout: React.FC<ILegalLayoutProps> = ({
         {/* Document Header Hero */}
         <div className="mb-8 sm:mb-12 text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary-light text-xs font-semibold tracking-wider uppercase drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.4)]">
-            <span>RexOne Covenant & Legal</span>
+            <span>AtomicOS Legal</span>
             <span className="text-primary/50">•</span>
             <span>{lastUpdated}</span>
           </div>
@@ -299,10 +299,10 @@ export const LegalLayout: React.FC<ILegalLayoutProps> = ({
                 <div className="pt-3 border-t border-glass-border/60 text-xs text-base-content/50 space-y-2">
                   <p>Questions or legal notices?</p>
                   <a
-                    href="mailto:rex@rex9.me"
+                    href="mailto:support@atomicos.io"
                     className="inline-flex items-center gap-1.5 text-primary hover:underline font-semibold"
                   >
-                    <span>rex@rex9.me</span>
+                    <span>support@atomicos.io</span>
                   </a>
                 </div>
               </div>
