@@ -6,9 +6,6 @@ import { icons, iconsLib, images } from "../../../assets";
 import AppRoutes from "../../../AppRoutes";
 import {
   Asset,
-  Button,
-  ButtonVariants,
-  ComponentSizes,
   TextLink,
 } from "../../../design";
 import { LandingFooter } from "./LandingFooter";
@@ -162,22 +159,6 @@ export const LegalLayout: React.FC<ILegalLayoutProps> = ({
               Terms &amp; Conditions
             </TextLink>
           </nav>
-
-          {/* Right Action: Star Button (matching Home & VS) */}
-          <div className="flex items-center gap-2">
-            <Button
-              href="https://github.com/Rex9Tech/atomicos-core"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant={ButtonVariants.PRIMARY}
-              size={ComponentSizes.SM}
-              className="font-semibold shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm inline-flex items-center gap-1.5 sm:gap-2"
-            >
-              <iconsLib.sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-warning fill-warning" />
-              <span className="hidden sm:inline">Star on GitHub</span>
-              <span className="sm:hidden">Star</span>
-            </Button>
-          </div>
         </div>
 
         {/* Mobile Sub-Navigation Tabs */}
