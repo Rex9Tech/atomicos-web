@@ -1,6 +1,6 @@
 // src/modules/admin/components/AdminLayout.tsx
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AppRoutes from "../../../AppRoutes";
@@ -20,6 +20,28 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Scope the AtomicOS brand tokens to the admin console (green on forest
+  // night surfaces instead of the app's default scarlet theme).
+  useEffect(() => {
+    const root = document.documentElement;
+    const prevTheme = root.getAttribute("data-theme");
+    const hadPage = root.hasAttribute("data-page");
+
+    root.setAttribute("data-page", "admin");
+    root.setAttribute("data-theme", "night");
+
+    return () => {
+      if (!hadPage) {
+        root.removeAttribute("data-page");
+      }
+      if (prevTheme) {
+        root.setAttribute("data-theme", prevTheme);
+      } else {
+        root.removeAttribute("data-theme");
+      }
+    };
+  }, []);
 
   const displayName = useMemo(
     () =>

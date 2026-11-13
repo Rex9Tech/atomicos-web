@@ -109,7 +109,7 @@ export default {
           '--color-error': colors.semantic.error,
           '--color-error-content': colors.text.night.primary,
         },
-        '[data-page="landing"], [data-page="legal"]': {
+        '[data-page="landing"], [data-page="legal"], [data-page="admin"]': {
           '--color-primary': atomicos.primary,
           '--color-primary-rgb': atomicos.primaryRgb,
           '--color-primary-light': atomicos.primaryLight,
